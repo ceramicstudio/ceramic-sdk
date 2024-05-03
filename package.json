@@ -1,0 +1,15 @@
+{
+  "name": "ceramic-sdk",
+  "private": true,
+  "scripts": {
+    "lint": "biome check --apply packages/*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.7.1",
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.5.0",
+    "@types/node": "^20.12.7",
+    "del-cli": "^5.1.0",
+    "typescript": "^5.4.5"
+  }
+}
