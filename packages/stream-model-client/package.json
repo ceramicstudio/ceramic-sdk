@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/http-client",
+  "name": "@ceramic-sdk/stream-model-client",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "http", "client"],
+  "keywords": ["ceramic", "stream", "client"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/http-client"
+    "directory": "packages/stream-model-client"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -21,7 +21,6 @@
   },
   "sideEffects": false,
   "scripts": {
-    "generate": "openapi-typescript https://raw.githubusercontent.com/ceramicnetwork/rust-ceramic/main/api-server/api/openapi.yaml -o ./src/__generated__/api.d.ts",
     "build:clean": "del dist",
     "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
     "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --skipLibCheck",
@@ -33,11 +32,7 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "openapi-fetch": "^0.9.5"
-  },
-  "devDependencies": {
-    "@ceramic-sdk/types": "workspace:^",
-    "openapi-typescript": "^6.7.5"
+    "@ceramic-sdk/stream-model": "workspace:^"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
@@ -52,5 +47,9 @@
         }
       ]
     }
+  },
+  "devDependencies": {
+    "@ceramic-sdk/types": "workspace:^",
+    "dids": "^5.0.2"
   }
 }

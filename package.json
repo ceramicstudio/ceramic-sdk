@@ -2,14 +2,21 @@
   "name": "ceramic-sdk",
   "private": true,
   "scripts": {
+    "build": "pnpm --filter \"@ceramic-sdk/*\" build:types && turbo run build:js",
     "lint": "biome check --apply packages/*"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.1",
+    "@biomejs/biome": "1.7.3",
     "@swc/cli": "^0.3.12",
-    "@swc/core": "^1.5.0",
-    "@types/node": "^20.12.7",
+    "@swc/core": "^1.5.3",
+    "@types/node": "^20.12.10",
     "del-cli": "^5.1.0",
+    "turbo": "^1.13.3",
     "typescript": "^5.4.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "@ceramicnetwork/streamid": "^4.1.0"
+    }
   }
 }

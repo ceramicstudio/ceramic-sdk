@@ -230,52 +230,6 @@ export interface paths {
       }
     }
   }
-  '/events/{sort_key}/{sort_value}': {
-    /**
-     * Get events matching the interest stored on the node
-     * @deprecated
-     */
-    get: {
-      parameters: {
-        query?: {
-          /** @description the controller to filter */
-          controller?: string
-          /** @description the stream to filter */
-          streamId?: string
-          /** @description token that designates the point to resume from, that is find keys added after this point */
-          offset?: number
-          /** @description the maximum number of events to return, default is 10000. */
-          limit?: number
-        }
-        path: {
-          /** @description name of the sort_key e.g. 'model' */
-          sort_key: string
-          /** @description value associated with the sort key e.g. model ID */
-          sort_value: string
-        }
-      }
-      responses: {
-        /** @description success */
-        200: {
-          content: {
-            'application/json': components['schemas']['EventsGet']
-          }
-        }
-        /** @description bad request */
-        400: {
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
-  }
   '/feed/events': {
     /** Get all new event keys since resume token */
     get: {
