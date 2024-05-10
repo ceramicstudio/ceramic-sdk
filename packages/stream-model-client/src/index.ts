@@ -1,10 +1,11 @@
 import {
   MODEL,
   type ModelDefinition,
+  type ModelInitEventPayload,
   assertValidModelContent,
   validateController,
 } from '@ceramic-sdk/stream-model'
-import type { DID, EventHeader, SignedEvent } from '@ceramic-sdk/types'
+import type { DID, SignedEvent } from '@ceramic-sdk/types'
 
 export async function createInitEventPayload(
   did: DID,
@@ -16,12 +17,15 @@ export async function createInitEventPayload(
   }
 
   const controller = did.hasParent ? did.parent : did.id
-  const header: EventHeader = {
-    sep: 'model',
-    model: MODEL.bytes,
-    controllers: [controller],
+  const payload: ModelInitEventPayload = {
+    data,
+    header: {
+      sep: 'model',
+      model: MODEL.bytes,
+      controllers: [controller],
+    },
   }
-  const event = await did.createDagJWS({ data, header })
+  const event = await did.createDagJWS(payload)
   await validateController(controller, event)
 
   return event

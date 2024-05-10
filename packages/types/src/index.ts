@@ -1,11 +1,10 @@
+import type { DagJWSResult as SignedEvent } from 'dids'
+
 export type { CAR } from 'cartonne'
-export type {
-  DagJWS,
-  DagJWSResult as SignedEvent,
-  DID,
-  JWSSignature,
-} from 'dids'
+export type { DagJWS, DID, JWSSignature } from 'dids'
 export type { CID } from 'multiformats/cid'
+
+export type { SignedEvent }
 
 export type EventHeader = {
   controllers: [string]
@@ -13,3 +12,10 @@ export type EventHeader = {
   sep: string
   unique?: Uint8Array
 }
+
+export type EventPayload<T = unknown> = {
+  data: T
+  header: EventHeader
+}
+
+export type AnyEvent = EventPayload<unknown> | SignedEvent
