@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/events",
+  "name": "@ceramic-sdk/key-did",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "events"],
+  "keywords": ["ceramic", "did", "ed25519"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/events"
+    "directory": "packages/key-did"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,17 +32,9 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@ipld/dag-cbor": "^9.2.0",
-    "@ipld/dag-json": "^10.2.0",
-    "cartonne": "^3.0.1",
-    "dag-jose": "^5.0.0",
-    "multiformats": "^13.1.0",
-    "multihashes-sync": "^2.0.0",
-    "uint8arrays": "^5.0.3"
-  },
-  "devDependencies": {
-    "@ceramic-sdk/key-did": "workspace:^",
-    "@ceramic-sdk/types": "workspace:^"
+    "dids": "^5.0.2",
+    "key-did-provider-ed25519": "^4.0.2",
+    "key-did-resolver": "^4.0.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

@@ -7,4 +7,9 @@ export {
   signedEventToCAR,
   unsignedEventToCAR,
 } from './codecs.js'
-export { isJWS, isSignedEvent } from './utils.js'
+export {
+  type PartialEventHeader,
+  createSignedEvent,
+  signEvent,
+} from './signing.js'
+export { assertSignedEvent, isJWS, isSignedEvent } from './utils.js'

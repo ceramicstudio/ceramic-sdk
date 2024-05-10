@@ -1,4 +1,4 @@
-import type { DagJWSResult as SignedEvent } from 'dids'
+import type { DagJWSResult as SignedEvent, VerifyJWSResult } from 'dids'
 
 export type { CAR } from 'cartonne'
 export type { DagJWS, DID, JWSSignature } from 'dids'
@@ -19,3 +19,8 @@ export type EventPayload<T = unknown> = {
 }
 
 export type AnyEvent = EventPayload<unknown> | SignedEvent
+
+export type VerifiedEvent<T = unknown> = VerifyJWSResult &
+  EventPayload<T> & {
+    cacaoBlock?: Uint8Array
+  }

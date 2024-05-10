@@ -1,7 +1,10 @@
 import type { AnyEvent, EventPayload, SignedEvent } from '@ceramic-sdk/types'
+import * as dagJson from '@ipld/dag-json'
 import { type CAR, CARFactory, CarBlock } from 'cartonne'
+import * as dagJose from 'dag-jose'
 import { bases } from 'multiformats/basics'
 import { CID } from 'multiformats/cid'
+import { sha256 } from 'multihashes-sync/sha2'
 
 import {
   base64urlToJSON,
@@ -11,6 +14,9 @@ import {
 } from './utils.js'
 
 const carFactory = new CARFactory()
+carFactory.codecs.add(dagJose)
+carFactory.codecs.add(dagJson)
+carFactory.hashers.add(sha256)
 
 export type Base = keyof typeof bases
 
@@ -99,10 +105,10 @@ export function eventFromString(
   value: string,
   base: Base = DEFAULT_BASE,
 ): AnyEvent {
-  const decode = bases[base]?.decode
-  if (decode == null) {
+  const codec = bases[base]
+  if (codec == null) {
     throw new Error(`Unsupported base: ${base}`)
   }
-  const car = carFactory.fromBytes(decode(value))
+  const car = carFactory.fromBytes(codec.decode(value))
   return eventFromCAR(car)
 }
