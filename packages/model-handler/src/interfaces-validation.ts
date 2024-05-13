@@ -3,7 +3,7 @@ import type {
   ModelDefinitionV2,
   ModelRelationsDefinitionV2,
   ModelViewsDefinitionV2,
-} from '@ceramic-sdk/stream-model'
+} from '@ceramic-sdk/model-protocol'
 import { JsonReference } from 'json-ptr'
 import type { JSONSchema } from 'json-schema-typed/draft-2020-12'
 import isMatch from 'lodash.ismatch'

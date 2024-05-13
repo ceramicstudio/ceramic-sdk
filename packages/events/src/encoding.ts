@@ -1,4 +1,8 @@
-import type { AnyEvent, EventPayload, SignedEvent } from '@ceramic-sdk/types'
+import type {
+  CeramicEvent,
+  EventPayload,
+  SignedEvent,
+} from '@ceramic-sdk/types'
 import * as dagJson from '@ipld/dag-json'
 import { type CAR, CARFactory, CarBlock } from 'cartonne'
 import * as dagJose from 'dag-jose'
@@ -63,20 +67,20 @@ export function unsignedEventToCAR(event: EventPayload): CAR {
   return car
 }
 
-export function eventToCAR(event: AnyEvent): CAR {
+export function eventToCAR(event: CeramicEvent): CAR {
   return isSignedEvent(event)
     ? signedEventToCAR(event)
     : unsignedEventToCAR(event)
 }
 
 export function eventToString(
-  event: AnyEvent,
+  event: CeramicEvent,
   base: Base = DEFAULT_BASE,
 ): string {
   return eventToCAR(event).toString(base)
 }
 
-export function eventFromCAR(car: CAR): AnyEvent {
+export function eventFromCAR(car: CAR): CeramicEvent {
   const cid = car.roots[0]
   const root = car.get(cid)
 
@@ -104,7 +108,7 @@ export function eventFromCAR(car: CAR): AnyEvent {
 export function eventFromString(
   value: string,
   base: Base = DEFAULT_BASE,
-): AnyEvent {
+): CeramicEvent {
   const codec = bases[base]
   if (codec == null) {
     throw new Error(`Unsupported base: ${base}`)

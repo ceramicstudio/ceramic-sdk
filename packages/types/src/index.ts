@@ -18,7 +18,7 @@ export type EventPayload<T = unknown> = {
   header: EventHeader
 }
 
-export type AnyEvent = EventPayload<unknown> | SignedEvent
+export type CeramicEvent = EventPayload<unknown> | SignedEvent
 
 export type VerifiedEvent<T = unknown> = VerifyJWSResult &
   EventPayload<T> & {

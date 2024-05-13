@@ -8,7 +8,7 @@ import {
   eventToString,
   signedEventToCAR,
   unsignedEventToCAR,
-} from '../src/codecs.js'
+} from '../src/encoding.js'
 import { signEvent } from '../src/signing.js'
 import { assertSignedEvent, isSignedEvent } from '../src/utils.js'
 

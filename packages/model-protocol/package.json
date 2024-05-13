@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/stream-model",
+  "name": "@ceramic-sdk/model-protocol",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "stream"],
+  "keywords": ["ceramic", "stream", "model"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/stream-model"
+    "directory": "packages/model-protocol"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -34,7 +34,6 @@
   "dependencies": {
     "@ceramicnetwork/codecs": "^4.9.0",
     "@didtools/cacao": "^3.0.1",
-    "@ipld/dag-cbor": "^9.2.0",
     "ajv": "^8.13.0",
     "ajv-formats": "^3.0.1",
     "codeco": "^1.2.1",

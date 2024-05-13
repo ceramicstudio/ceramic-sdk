@@ -3,10 +3,13 @@
   "private": true,
   "scripts": {
     "build": "pnpm --filter \"@ceramic-sdk/*\" build:types && turbo run build:js",
-    "lint": "biome check --apply packages/*"
+    "lint": "biome check --apply packages/*",
+    "test": "turbo run test -- --passWithNoTests",
+    "test:ci": "turbo run test:ci"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
+    "@jest/globals": "^29.7.0",
     "@swc/cli": "^0.3.12",
     "@swc/core": "^1.5.5",
     "@swc/jest": "^0.2.36",
@@ -14,7 +17,7 @@
     "@types/node": "^20.12.11",
     "del-cli": "^5.1.0",
     "jest": "^29.7.0",
-    "tsx": "^4.9.3",
+    "tsx": "^4.10.1",
     "turbo": "^1.13.3",
     "typescript": "^5.4.5"
   },

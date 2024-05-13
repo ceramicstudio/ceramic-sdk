@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/stream-model-client",
+  "name": "@ceramic-sdk/model-handler",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "stream", "client"],
+  "keywords": ["ceramic", "stream", "model", "handler"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/stream-model-client"
+    "directory": "packages/model-handler"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,7 +32,17 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@ceramic-sdk/stream-model": "workspace:^"
+    "@ceramic-sdk/events": "workspace:^",
+    "@ceramic-sdk/model-protocol": "workspace:^",
+    "codeco": "^1.2.1",
+    "dids": "^5.0.2",
+    "json-ptr": "^3.1.1",
+    "lodash.ismatch": "^4.4.0"
+  },
+  "devDependencies": {
+    "@ceramic-sdk/types": "workspace:^",
+    "@types/lodash.ismatch": "^4.4.9",
+    "json-schema-typed": "^8.0.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
@@ -47,9 +57,5 @@
         }
       ]
     }
-  },
-  "devDependencies": {
-    "@ceramic-sdk/types": "workspace:^",
-    "dids": "^5.0.2"
   }
 }

@@ -1,4 +1,4 @@
-# Ceramic Model stream
+# Ceramic Model stream protocol
 
 ## License
 

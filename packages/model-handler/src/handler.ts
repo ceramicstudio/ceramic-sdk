@@ -1,10 +1,12 @@
+import { verifyEvent } from '@ceramic-sdk/events'
 import {
-  type ModelInitEventPayload,
+  type ModelDefinition,
   ModelMetadata,
-  type ModelSnapshot,
+  type ModelState,
   assertValidModelContent,
+  getModelStreamID,
   validateController,
-} from '@ceramic-sdk/stream-model'
+} from '@ceramic-sdk/model-protocol'
 import type { SignedEvent } from '@ceramic-sdk/types'
 import { decode } from 'codeco'
 
@@ -17,17 +19,16 @@ import type { Context } from './types.js'
 export async function handleInitEvent(
   event: SignedEvent,
   context: Context,
-): Promise<ModelSnapshot> {
-  const verified = await context.verifier.verifyJWS(event.jws)
-  const payload = verified.payload as ModelInitEventPayload
+): Promise<ModelState> {
+  const verified = await verifyEvent<ModelDefinition>(context.verifier, event)
 
   const metadata = decode(ModelMetadata, {
-    controller: payload.header.controllers[0],
-    model: payload.header.model,
+    controller: verified.header.controllers[0],
+    model: verified.header.model,
   })
   await validateController(metadata.controller, event)
 
-  const content = payload.data
+  const content = verified.data
   assertValidModelContent(content)
   if (content.version !== '1.0') {
     if (content.interface) {
@@ -37,5 +38,10 @@ export async function handleInitEvent(
     }
   }
 
-  return { content, metadata }
+  const streamID = await getModelStreamID({
+    data: verified.data,
+    header: verified.header,
+  })
+
+  return { id: streamID.toString(), content, metadata, log: [event] }
 }

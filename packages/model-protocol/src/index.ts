@@ -1,4 +1,5 @@
 export * from './assertions.js'
 export * from './codecs.js'
 export * from './constants.js'
+export * from './streamid.js'
 export * from './types.js'

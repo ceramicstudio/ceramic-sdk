@@ -12,6 +12,7 @@ import {
   array,
   boolean,
   identity,
+  intersection,
   literal,
   nullCodec,
   optional,
@@ -20,10 +21,11 @@ import {
   strict,
   string,
   union,
+  unknownRecord,
 } from 'codeco'
 import type { JSONSchema } from 'json-schema-typed/draft-2020-12'
 
-const ajv = new Ajv({
+export const ajv = new Ajv({
   strict: true,
   allErrors: true,
   allowMatchingProperties: false,
@@ -359,8 +361,27 @@ export type ModelDefinition = TypeOf<typeof ModelDefinition>
 /**
  * Model snapshot, containing the metadata and model definition.
  */
-export const ModelSnapshot = strict({
-  metadata: ModelMetadata,
-  content: ModelDefinition,
-})
+export const ModelSnapshot = strict(
+  {
+    metadata: ModelMetadata,
+    content: ModelDefinition,
+  },
+  'ModelSnapshot',
+)
 export type ModelSnapshot = TypeOf<typeof ModelSnapshot>
+
+/**
+ * Model state, extending the model snapshot with stream ID and events log
+ */
+export const ModelState = intersection(
+  [
+    ModelSnapshot,
+    strict({
+      id: streamIdString,
+      // TODO: event codecs
+      log: array(unknownRecord),
+    }),
+  ],
+  'ModelState',
+)
+export type ModelState = TypeOf<typeof ModelState>

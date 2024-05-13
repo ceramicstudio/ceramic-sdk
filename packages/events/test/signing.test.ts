@@ -1,11 +1,12 @@
 import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
-import type { EventHeader } from '@ceramic-sdk/types'
+import type { EventHeader, EventPayload } from '@ceramic-sdk/types'
 
 import {
   type PartialEventHeader,
   createSignedEvent,
   getSignedEventPayload,
   signEvent,
+  verifyEvent,
 } from '../src/signing.js'
 import { assertSignedEvent } from '../src/utils.js'
 
@@ -13,21 +14,33 @@ const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
 const defaultHeader: PartialEventHeader = { model: new Uint8Array() }
 
+const testEventPayload: EventPayload = {
+  data: null,
+  header: {
+    controllers: [authenticatedDID.id],
+    model: new Uint8Array(),
+    sep: 'test',
+  },
+}
+
 test('signEvent() signs the given event payload', async () => {
-  const event = await signEvent(authenticatedDID, {
-    data: null,
-    header: {
-      controllers: [authenticatedDID.id],
-      model: new Uint8Array(),
-      sep: 'test',
-    },
-  })
+  const event = await signEvent(authenticatedDID, testEventPayload)
   assertSignedEvent(event)
 })
 
-test.todo('getSignedEventPayload()')
+test('getSignedEventPayload() returns the EventPayload of a SignedEvent', async () => {
+  const signed = await signEvent(authenticatedDID, testEventPayload)
+  const event = await getSignedEventPayload(signed)
+  expect(event).toEqual(testEventPayload)
+})
 
-test.todo('verifyEvent()')
+test('verifyEvent() verifies the signed event signature and extract the payload', async () => {
+  const signed = await signEvent(authenticatedDID, testEventPayload)
+  const verified = await verifyEvent(authenticatedDID, signed)
+  expect(verified.didResolutionResult).toBeDefined()
+  expect(verified.kid).toBeDefined()
+  expect(verified).toMatchObject(testEventPayload)
+})
 
 describe('createSignedEvent()', () => {
   test('authenticates the DID', async () => {

@@ -4,7 +4,11 @@ import { decode } from 'codeco'
 import { JsonReference } from 'json-ptr'
 import type { JSONSchema } from 'json-schema-typed/draft-2020-12'
 
-import { ModelDefinition, ModelRelationsDefinitionV2 } from './codecs.js'
+import {
+  ModelDefinition,
+  ModelRelationsDefinitionV2,
+  ObjectSchema,
+} from './codecs.js'
 import { MODEL_STREAM_ID, VERSION } from './constants.js'
 
 type Schema = Exclude<JSONSchema, boolean>
@@ -219,8 +223,11 @@ function validateAdditionalProperties(schema: Schema): void {
   }
 }
 
-export function assertValidSchema(schema: JSONSchema.Object) {
-  recursiveMap(schema, validateAdditionalProperties)
+export function assertValidSchema(
+  schema: unknown,
+): asserts schema is JSONSchema.Object {
+  const decoded = decode(ObjectSchema, schema)
+  recursiveMap(decoded, validateAdditionalProperties)
 }
 
 export function assertValidModelContent(content: ModelDefinition) {

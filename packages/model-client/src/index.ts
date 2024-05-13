@@ -4,7 +4,7 @@ import {
   type ModelInitEventPayload,
   assertValidModelContent,
   validateController,
-} from '@ceramic-sdk/stream-model'
+} from '@ceramic-sdk/model-protocol'
 import type { DID, SignedEvent } from '@ceramic-sdk/types'
 
 export async function createInitEventPayload(
