@@ -1,4 +1,3 @@
-import type { SignedEvent } from '@ceramic-sdk/types'
 import { Cacao } from '@didtools/cacao'
 import { decode } from 'codeco'
 import { JsonReference } from 'json-ptr'
@@ -9,7 +8,7 @@ import {
   ModelRelationsDefinitionV2,
   ObjectSchema,
 } from './codecs.js'
-import { MODEL_STREAM_ID, VERSION } from './constants.js'
+import { MODEL_RESOURCE_URI, VERSION } from './constants.js'
 
 type Schema = Exclude<JSONSchema, boolean>
 
@@ -81,35 +80,31 @@ export function assertValidRelations(content: ModelDefinition) {
 export function assertValidCacao(cacao: Cacao, controller: string): void {
   if (cacao.p.iss !== controller) {
     throw new Error(
-      `Cacao issuer ${cacao.p.iss} does not match controller ${controller}`,
+      `Invalid CACAO: issuer ${cacao.p.iss} does not match controller ${controller}`,
     )
   }
   if (cacao.p.exp != null) {
-    throw new Error('only did:pkh CACAO without expiry is supported')
+    throw new Error('Invalid CACAO: no expiry date should be set')
   }
-  const hasModelResource = cacao.p.resources?.includes(
-    `ceramic://*?model=${MODEL_STREAM_ID}`,
-  )
-  if (!hasModelResource) {
-    throw new Error(
-      `only cacao with resource "ceramic://*?model=${MODEL_STREAM_ID}" is supported`,
-    )
+  if (!cacao.p.resources?.includes(MODEL_RESOURCE_URI)) {
+    throw new Error(`Invalid CACAO: missing resource "${MODEL_RESOURCE_URI}"`)
   }
 }
 
 export async function validateController(
   controller: string,
-  event: SignedEvent,
+  cacaoBlock?: Uint8Array,
 ): Promise<void> {
-  const unsupported = `Unsupported model controller ${controller}`
-  if (controller.startsWith('did:pkh:') && event.cacaoBlock != null) {
-    const cacao = await Cacao.fromBlockBytes(event.cacaoBlock)
-    if (cacao == null) {
-      throw new Error(`${unsupported}, only did:pkh with CACAO is supported`)
+  if (controller.startsWith('did:pkh:')) {
+    if (cacaoBlock == null) {
+      throw new Error('Missing CACAO block to validate did:pkh controller')
     }
+    const cacao = await Cacao.fromBlockBytes(cacaoBlock)
     assertValidCacao(cacao, controller)
   } else if (!controller.startsWith('did:key:')) {
-    throw new Error(`${unsupported}, only did:key is supported`)
+    throw new Error(
+      `Unsupported model controller ${controller}, only did:key and did:pkh are supported`,
+    )
   }
 }
 

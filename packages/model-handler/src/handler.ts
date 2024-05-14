@@ -26,7 +26,7 @@ export async function handleInitEvent(
     controller: verified.header.controllers[0],
     model: verified.header.model,
   })
-  await validateController(metadata.controller, event)
+  await validateController(metadata.controller, event.cacaoBlock)
 
   const content = verified.data
   assertValidModelContent(content)

@@ -26,7 +26,7 @@ export async function createInitEventPayload(
     },
   }
   const event = await did.createDagJWS(payload)
-  await validateController(controller, event)
+  await validateController(controller, event.cacaoBlock)
 
   return event
 }

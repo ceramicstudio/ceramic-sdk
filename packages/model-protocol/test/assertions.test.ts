@@ -1,36 +1,86 @@
+import { type Cacao, CacaoBlock } from '@didtools/cacao'
 import type { JSONSchema } from 'json-schema-typed/draft-2020-12'
 
-import { assertValidSchema, assertValidSetFields } from '../src/assertions.js'
+import {
+  assertValidCacao,
+  assertValidSchema,
+  assertValidSetFields,
+  validateController,
+} from '../src/assertions.js'
+import { MODEL_RESOURCE_URI } from '../src/constants.js'
 
-const VALID_JSON_SCHEMA_2020_12_NO_ADDITIONAL_PROPS = {
-  $schema: 'https://json-schema.org/draft/2020-12/schema',
-  type: 'object',
-  properties: {
-    stringPropName: {
-      type: 'string',
-      maxLength: 80,
-    },
-    objectPropName: {
-      $ref: '#/$defs/EmbeddedObject',
-    },
-  },
-  $defs: {
-    EmbeddedObject: {
-      type: 'object',
-      properties: {
-        stringPropName: {
-          type: 'string',
-          maxLength: 80,
-        },
+const validCacao = {
+  p: { iss: 'did:pkh:123', resources: [MODEL_RESOURCE_URI] },
+} as unknown as Cacao
+
+describe('assertValidCacao()', () => {
+  test('passes the expected checks', () => {
+    assertValidCacao(validCacao, 'did:pkh:123')
+  })
+
+  test('checks the CACAO issuer is the expected controller', () => {
+    expect(() => {
+      assertValidCacao(
+        { p: { iss: 'did:pkh:123' } } as unknown as Cacao,
+        'did:test:456',
+      )
+    }).toThrow(
+      'Invalid CACAO: issuer did:pkh:123 does not match controller did:test:456',
+    )
+  })
+
+  test('checks the CACAO does not expire', () => {
+    expect(() => {
+      assertValidCacao(
+        {
+          p: { iss: 'did:pkh:123', exp: new Date().toISOString() },
+        } as unknown as Cacao,
+        'did:pkh:123',
+      )
+    }).toThrow('Invalid CACAO: no expiry date should be set')
+  })
+
+  test('checks the CACAO contains the Model resource', () => {
+    expect(() => {
+      assertValidCacao(
+        {
+          p: { iss: 'did:pkh:123', resources: ['ceramic://test'] },
+        } as unknown as Cacao,
+        'did:pkh:123',
+      )
+    }).toThrow(`Invalid CACAO: missing resource "${MODEL_RESOURCE_URI}"`)
+  })
+})
+
+describe('assertValidSchema()', () => {
+  const VALID_JSON_SCHEMA_2020_12_NO_ADDITIONAL_PROPS = {
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    type: 'object',
+    properties: {
+      stringPropName: {
+        type: 'string',
+        maxLength: 80,
       },
-      additionalProperties: false,
+      objectPropName: {
+        $ref: '#/$defs/EmbeddedObject',
+      },
     },
-  },
-  additionalProperties: false,
-  required: ['stringPropName'],
-} satisfies JSONSchema.Object
+    $defs: {
+      EmbeddedObject: {
+        type: 'object',
+        properties: {
+          stringPropName: {
+            type: 'string',
+            maxLength: 80,
+          },
+        },
+        additionalProperties: false,
+      },
+    },
+    additionalProperties: false,
+    required: ['stringPropName'],
+  } satisfies JSONSchema.Object
 
-describe('SchemaValidation', () => {
   it('validates correct 2020-12 schema', () => {
     expect(() => {
       assertValidSchema(VALID_JSON_SCHEMA_2020_12_NO_ADDITIONAL_PROPS)
@@ -232,5 +282,37 @@ describe('assertValidSetFields()', () => {
         $defs: { refSchema: { type: 'string' } },
       })
     }).not.toThrow()
+  })
+})
+
+describe('validateController()', () => {
+  test('requires the CACAO block to be provided if the controller uses did:pkh', async () => {
+    await expect(async () => {
+      await validateController('did:pkh:123')
+    }).rejects.toThrow('Missing CACAO block to validate did:pkh controller')
+  })
+
+  test('validates the CACAO block if the controller uses did:pkh', async () => {
+    const cacaoBlock = await CacaoBlock.fromCacao(validCacao)
+
+    await expect(async () => {
+      await validateController('did:pkh:456', cacaoBlock.bytes)
+    }).rejects.toThrow(
+      'Invalid CACAO: issuer did:pkh:123 does not match controller did:pkh:456',
+    )
+
+    await expect(
+      validateController('did:pkh:123', cacaoBlock.bytes),
+    ).resolves.not.toThrow()
+  })
+
+  test('only allows did:key in addition to did:pkh', async () => {
+    await expect(async () => {
+      await validateController('did:test:123')
+    }).rejects.toThrow(
+      'Unsupported model controller did:test:123, only did:key and did:pkh are supported',
+    )
+
+    await expect(validateController('did:key:123')).resolves.not.toThrow()
   })
 })
