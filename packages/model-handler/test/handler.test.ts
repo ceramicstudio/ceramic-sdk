@@ -1,12 +1,17 @@
 import { EthereumDID } from '@ceramic-sdk/ethereum-did'
-import { createSignedEvent } from '@ceramic-sdk/events'
+import { createSignedEvent, signEvent } from '@ceramic-sdk/events'
 import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import {
   MODEL,
   MODEL_RESOURCE_URI,
   type ModelDefinition,
+  type ModelDefinitionV2,
+  type ModelInitEventPayload,
+  type ModelSnapshot,
+  getModelStreamID,
 } from '@ceramic-sdk/model-protocol'
 import type { DID, SignedEvent } from '@ceramic-sdk/types'
+import { jest } from '@jest/globals'
 
 import { handleInitEvent } from '../src/handler.js'
 import type { Context } from '../src/types.js'
@@ -34,11 +39,30 @@ const testModelV1: ModelDefinition = {
   },
 }
 
+const testInterfaceModel: ModelDefinitionV2 = {
+  version: '2.0',
+  name: 'TestInterface',
+  description: 'Test interface',
+  accountRelation: { type: 'none' },
+  interface: true,
+  implements: [],
+  schema: {
+    type: 'object',
+    properties: {
+      test: { type: 'string', maxLength: 10 },
+    },
+    additionalProperties: false,
+  },
+}
+
 async function createModelEvent(
   did: DID,
   definition: ModelDefinition = testModelV1,
 ): Promise<SignedEvent> {
-  return await await createSignedEvent(did, definition, { model: MODEL.bytes })
+  return await await createSignedEvent(did, definition, {
+    model: MODEL.bytes,
+    sep: 'model',
+  })
 }
 
 const validEvent = await createModelEvent(authenticatedDID)
@@ -84,7 +108,9 @@ describe('handleInitEvent()', () => {
 
       await expect(async () => {
         await handleInitEvent(invalidEvent, defaultContext)
-      }).rejects.toThrow('Invalid CACAO: no expiry date should be set')
+      }).rejects.toThrow(
+        'Invalid CACAO: Model Streams do not support CACAOs with expiration times',
+      )
 
       await expect(
         handleInitEvent(validEvent, defaultContext),
@@ -92,13 +118,134 @@ describe('handleInitEvent()', () => {
     })
   })
 
-  test.todo('validates the content')
+  test('validates the content', async () => {
+    // @ts-expect-error
+    const invalidDefinition: ModelDefinition = { ...testModelV1, version: '0' }
+    const event = await createModelEvent(authenticatedDID, invalidDefinition)
+    await expect(async () => {
+      await handleInitEvent(event, defaultContext)
+    }).rejects.toThrow('Unsupported version format: 0')
+  })
 
-  test.todo('validates interfaces')
+  test('validates interfaces', async () => {
+    const invalidInterface = {
+      ...testInterfaceModel,
+      schema: { type: 'object', properties: {}, additionalProperties: false },
+    }
+    // @ts-expect-error
+    const event = await createModelEvent(authenticatedDID, invalidInterface)
+    await expect(async () => {
+      await handleInitEvent(event, defaultContext)
+    }).rejects.toThrow(
+      'Invalid interface: a least one propery or view must be present',
+    )
+  })
 
-  test.todo('validates interface implementations')
+  test('validates interface implementations', async () => {
+    const MODEL_ID_1 =
+      'kjzl6hvfrbw6c5ykyyjq0v80od0nhdimprq7j2pccg1l100ktiiqcc01ddka001'
+    const MODEL_ID_2 =
+      'kjzl6hvfrbw6c5ykyyjq0v80od0nhdimprq7j2pccg1l100ktiiqcc01ddka002'
 
-  test.todo('validates interfaces')
+    const interfaceModel: ModelDefinitionV2 = {
+      version: '2.0',
+      name: 'ExpectedModel',
+      accountRelation: { type: 'none' },
+      interface: true,
+      implements: [],
+      schema: {
+        type: 'object',
+        properties: { foo: { type: 'string' } },
+        additionalProperties: false,
+      },
+      relations: {
+        foo: { type: 'account' },
+      },
+      views: {
+        bar: { type: 'documentAccount' },
+      },
+      immutableFields: ['foo'],
+    }
 
-  test.todo('returns the created stream state')
+    const loadModel = jest.fn(() => {
+      return Promise.resolve({
+        content: interfaceModel,
+      } as unknown as ModelSnapshot)
+    })
+    const context = { loadModel, verifier: authenticatedDID }
+
+    try {
+      const event = await createModelEvent(authenticatedDID, {
+        version: '2.0',
+        name: 'MyModel',
+        accountRelation: { type: 'list' },
+        interface: false,
+        implements: [MODEL_ID_1, MODEL_ID_2],
+        schema: {
+          type: 'object',
+          properties: { foo: { type: 'string' } },
+          additionalProperties: false,
+        },
+        immutableFields: [],
+      })
+      await handleInitEvent(event, context)
+    } catch (error) {
+      expect(error.errors).toHaveLength(2)
+      const model1Errors = error.errors[0].errors
+      expect(model1Errors).toHaveLength(3)
+      expect(model1Errors[0].toString()).toBe(
+        `Error: Invalid relations implementation of interface ${MODEL_ID_1}`,
+      )
+      expect(model1Errors[1].toString()).toBe(
+        `Error: Invalid views implementation of interface ${MODEL_ID_1}`,
+      )
+      expect(model1Errors[2].toString()).toBe(
+        `Error: Invalid immutable fields implementation of interface ${MODEL_ID_1}`,
+      )
+    }
+    expect(loadModel).toHaveBeenCalledTimes(2)
+
+    const event = await createModelEvent(authenticatedDID, {
+      version: '2.0',
+      name: 'MyModel',
+      accountRelation: { type: 'list' },
+      interface: false,
+      implements: [MODEL_ID_1, MODEL_ID_2],
+      schema: {
+        type: 'object',
+        properties: { foo: { type: 'string' } },
+        additionalProperties: false,
+      },
+      relations: {
+        foo: { type: 'account' },
+      },
+      views: {
+        bar: { type: 'documentAccount' },
+      },
+      immutableFields: ['foo'],
+    })
+    await expect(handleInitEvent(event, context)).resolves.not.toThrow()
+  })
+
+  test('returns the created stream state', async () => {
+    const payload: ModelInitEventPayload = {
+      data: testModelV1,
+      header: {
+        controllers: [authenticatedDID.id],
+        model: MODEL.bytes,
+        sep: 'model',
+      },
+    }
+    const [event, streamID] = await Promise.all([
+      signEvent(authenticatedDID, payload),
+      getModelStreamID(payload),
+    ])
+
+    const state = await handleInitEvent(event, defaultContext)
+    expect(state.id).toBe(streamID.toString())
+    expect(state.content).toEqual(testModelV1)
+    expect(state.metadata.controller).toBe(authenticatedDID.id)
+    expect(state.metadata.model.equals(MODEL)).toBe(true)
+    expect(state.log[0]).toBe(event)
+  })
 })

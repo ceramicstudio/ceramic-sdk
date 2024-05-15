@@ -9,8 +9,6 @@ import * as dagCbor from '@ipld/dag-cbor'
 import * as Block from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 
-const DEFAULT_SEP = 'model'
-
 export async function signEvent(
   did: DID,
   payload: EventPayload,
@@ -18,7 +16,10 @@ export async function signEvent(
   return await did.createDagJWS(payload)
 }
 
-export type PartialEventHeader = Partial<EventHeader> & { model: Uint8Array }
+// Make controllers optional in the event header as createSignedEvent() will inject it as needed
+export type PartialEventHeader = Omit<EventHeader, 'controllers'> & {
+  controllers?: [string]
+}
 
 export async function createSignedEvent<T>(
   did: DID,
@@ -31,8 +32,7 @@ export async function createSignedEvent<T>(
   const controllers = header.controllers ?? [
     did.hasParent ? did.parent : did.id,
   ]
-  const sep = header.sep ?? DEFAULT_SEP
-  return await signEvent(did, { data, header: { ...header, controllers, sep } })
+  return await signEvent(did, { data, header: { ...header, controllers } })
 }
 
 export async function getSignedEventPayload<T = unknown>(

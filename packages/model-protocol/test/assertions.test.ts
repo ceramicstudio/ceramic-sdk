@@ -37,7 +37,9 @@ describe('assertValidCacao()', () => {
         } as unknown as Cacao,
         'did:pkh:123',
       )
-    }).toThrow('Invalid CACAO: no expiry date should be set')
+    }).toThrow(
+      'Invalid CACAO: Model Streams do not support CACAOs with expiration times',
+    )
   })
 
   test('checks the CACAO contains the Model resource', () => {

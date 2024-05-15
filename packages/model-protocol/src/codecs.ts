@@ -12,7 +12,6 @@ import {
   array,
   boolean,
   identity,
-  intersection,
   literal,
   nullCodec,
   optional,
@@ -44,6 +43,9 @@ export type SchemaType =
   | JSONSchema.Array
   | JSONSchema.Object
 
+/**
+ * Create a codec for a specific JSON Schema type such as Object, String, etc.
+ */
 export function createSchemaType<T extends SchemaType>(
   type: T['type'],
   name: string,
@@ -94,9 +96,7 @@ export const ModelMetadata = strict(
      */
     controller: didString,
     /**
-     * The StreamID that all Model streams have as their 'model' for indexing purposes. Note that
-     * this StreamID doesn't refer to a valid Stream and cannot be loaded, it's just a way to index
-     * all Models.
+     * All Model streams have the same 'model' constant in their metadata. It is not a valid StreamID and cannot by loaded, but serves as a way to signal to indexers to index the set of all Models
      */
     model: streamIdAsBytes,
   },
@@ -373,15 +373,14 @@ export type ModelSnapshot = TypeOf<typeof ModelSnapshot>
 /**
  * Model state, extending the model snapshot with stream ID and events log
  */
-export const ModelState = intersection(
-  [
-    ModelSnapshot,
-    strict({
-      id: streamIdString,
-      // TODO: event codecs
-      log: array(unknownRecord),
-    }),
-  ],
+export const ModelState = strict(
+  {
+    id: streamIdString,
+    metadata: ModelMetadata,
+    content: ModelDefinition,
+    // TODO: event codecs
+    log: array(unknownRecord),
+  },
   'ModelState',
 )
 export type ModelState = TypeOf<typeof ModelState>

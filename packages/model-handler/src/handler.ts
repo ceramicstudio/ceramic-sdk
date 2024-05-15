@@ -33,9 +33,8 @@ export async function handleInitEvent(
   if (content.version !== '1.0') {
     if (content.interface) {
       validateInterface(content)
-    } else {
-      await validateImplementedInterfaces(content, context)
     }
+    await validateImplementedInterfaces(content, context)
   }
 
   const streamID = await getModelStreamID({

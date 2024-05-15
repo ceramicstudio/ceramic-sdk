@@ -12,7 +12,10 @@ import { assertSignedEvent } from '../src/utils.js'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
-const defaultHeader: PartialEventHeader = { model: new Uint8Array() }
+const defaultHeader: PartialEventHeader = {
+  model: new Uint8Array(),
+  sep: 'model',
+}
 
 const testEventPayload: EventPayload = {
   data: null,

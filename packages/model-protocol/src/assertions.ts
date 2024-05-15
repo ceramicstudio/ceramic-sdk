@@ -84,7 +84,9 @@ export function assertValidCacao(cacao: Cacao, controller: string): void {
     )
   }
   if (cacao.p.exp != null) {
-    throw new Error('Invalid CACAO: no expiry date should be set')
+    throw new Error(
+      'Invalid CACAO: Model Streams do not support CACAOs with expiration times',
+    )
   }
   if (!cacao.p.resources?.includes(MODEL_RESOURCE_URI)) {
     throw new Error(`Invalid CACAO: missing resource "${MODEL_RESOURCE_URI}"`)
