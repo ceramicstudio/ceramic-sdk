@@ -23,8 +23,6 @@
     "typescript": "^5.4.5"
   },
   "pnpm": {
-    "overrides": {
-      "@ceramicnetwork/streamid": "^4.1.0"
-    }
+    "overrides": {}
   }
 }

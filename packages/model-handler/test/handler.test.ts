@@ -7,7 +7,6 @@ import {
   type ModelDefinition,
   type ModelDefinitionV2,
   type ModelInitEventPayload,
-  type ModelSnapshot,
   getModelStreamID,
 } from '@ceramic-sdk/model-protocol'
 import type { DID, SignedEvent } from '@ceramic-sdk/types'
@@ -167,12 +166,8 @@ describe('handleInitEvent()', () => {
       immutableFields: ['foo'],
     }
 
-    const loadModel = jest.fn(() => {
-      return Promise.resolve({
-        content: interfaceModel,
-      } as unknown as ModelSnapshot)
-    })
-    const context = { loadModel, verifier: authenticatedDID }
+    const loadModelDefinition = jest.fn(() => Promise.resolve(interfaceModel))
+    const context = { loadModelDefinition, verifier: authenticatedDID }
 
     try {
       const event = await createModelEvent(authenticatedDID, {
@@ -203,7 +198,7 @@ describe('handleInitEvent()', () => {
         `Error: Invalid immutable fields implementation of interface ${MODEL_ID_1}`,
       )
     }
-    expect(loadModel).toHaveBeenCalledTimes(2)
+    expect(loadModelDefinition).toHaveBeenCalledTimes(2)
 
     const event = await createModelEvent(authenticatedDID, {
       version: '2.0',

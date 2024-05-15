@@ -1,9 +1,5 @@
-import {
-  didString,
-  streamIdAsBytes,
-  streamIdString,
-} from '@ceramicnetwork/codecs'
-import '@ceramicnetwork/streamid' // Import needed for TS reference
+import { didString, streamIdAsBytes, streamIdString } from '@ceramic-sdk/codecs'
+import '@ceramic-sdk/identifiers' // Import needed for TS reference
 import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'
 import {
@@ -23,6 +19,7 @@ import {
   unknownRecord,
 } from 'codeco'
 import type { JSONSchema } from 'json-schema-typed/draft-2020-12'
+import 'ts-essentials' // Import needed for TS reference
 
 export const ajv = new Ajv({
   strict: true,
@@ -357,18 +354,6 @@ export const ModelDefinition = union(
   'ModelDefinition',
 )
 export type ModelDefinition = TypeOf<typeof ModelDefinition>
-
-/**
- * Model snapshot, containing the metadata and model definition.
- */
-export const ModelSnapshot = strict(
-  {
-    metadata: ModelMetadata,
-    content: ModelDefinition,
-  },
-  'ModelSnapshot',
-)
-export type ModelSnapshot = TypeOf<typeof ModelSnapshot>
 
 /**
  * Model state, extending the model snapshot with stream ID and events log

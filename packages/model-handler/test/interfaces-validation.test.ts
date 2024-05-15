@@ -1022,8 +1022,8 @@ describe('interfaces validation', () => {
       immutableFields: ['foo'],
     }
 
-    const loadModel = jest.fn(() => ({ content: interfaceModel }))
-    const context = { loadModel } as unknown as Context
+    const loadModelDefinition = jest.fn(() => Promise.resolve(interfaceModel))
+    const context = { loadModelDefinition } as unknown as Context
 
     try {
       await validateImplementedInterfaces(
@@ -1055,7 +1055,7 @@ describe('interfaces validation', () => {
         `Error: Invalid immutable fields implementation of interface ${MODEL_ID_1}`,
       )
     }
-    expect(loadModel).toHaveBeenCalledTimes(2)
+    expect(loadModelDefinition).toHaveBeenCalledTimes(2)
 
     await expect(
       validateImplementedInterfaces(

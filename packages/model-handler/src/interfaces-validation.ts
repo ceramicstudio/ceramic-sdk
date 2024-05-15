@@ -747,12 +747,9 @@ export async function validateImplementedInterfaces(
   const toValidate = ((model as ModelDefinitionV2).implements ?? []).map(
     async (interfaceID) => {
       try {
-        const interfaceModel = await context.loadModel(interfaceID)
-        validateInterfaceImplementation(
-          interfaceID,
-          interfaceModel.content,
-          model,
-        )
+        const interfaceDefinition =
+          await context.loadModelDefinition(interfaceID)
+        validateInterfaceImplementation(interfaceID, interfaceDefinition, model)
       } catch (error) {
         errors.push(error as Error)
       }

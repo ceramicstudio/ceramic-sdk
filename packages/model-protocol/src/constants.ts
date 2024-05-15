@@ -1,4 +1,4 @@
-import { StreamID } from '@ceramicnetwork/streamid'
+import { StreamID } from '@ceramic-sdk/identifiers'
 
 // The hardcoded "model" StreamID that all Model streams have in their metadata. This provides
 // a "model" StreamID that can be indexed to query the set of all published Models.

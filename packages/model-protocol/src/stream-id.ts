@@ -1,4 +1,4 @@
-import { StreamID } from '@ceramicnetwork/streamid'
+import { StreamID } from '@ceramic-sdk/identifiers'
 
 import { STREAM_TYPE_ID } from './constants.js'
 import type { ModelInitEventPayload } from './types.js'
