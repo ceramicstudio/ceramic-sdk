@@ -1,5 +1,6 @@
-import { didString, streamIdAsBytes, streamIdString } from '@ceramic-sdk/codecs'
-import '@ceramic-sdk/identifiers' // Import needed for TS reference
+import { SignedEvent } from '@ceramic-sdk/events'
+import { streamIDAsBytes, streamIDString } from '@ceramic-sdk/identifiers'
+import { didString } from '@didtools/codecs'
 import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'
 import {
@@ -12,14 +13,17 @@ import {
   nullCodec,
   optional,
   record,
+  refinement,
   sparse,
   strict,
   string,
+  tuple,
   union,
-  unknownRecord,
 } from 'codeco'
 import type { JSONSchema } from 'json-schema-typed/draft-2020-12'
 import 'ts-essentials' // Import needed for TS reference
+
+import { MODEL } from './constants.js'
 
 export const ajv = new Ajv({
   strict: true,
@@ -81,7 +85,7 @@ export const ObjectSchema = createSchemaType<JSONSchema.Object>(
 )
 export type ObjectSchema = TypeOf<typeof ObjectSchema>
 
-export const optionalModelString = union([streamIdString, nullCodec])
+export const optionalModelString = union([streamIDString, nullCodec])
 
 /**
  * Metadata for a Model Stream
@@ -95,7 +99,7 @@ export const ModelMetadata = strict(
     /**
      * All Model streams have the same 'model' constant in their metadata. It is not a valid StreamID and cannot by loaded, but serves as a way to signal to indexers to index the set of all Models
      */
-    model: streamIdAsBytes,
+    model: streamIDAsBytes,
   },
   'ModelMetadata',
 )
@@ -144,7 +148,7 @@ export type ModelAccountRelationV2 = TypeOf<typeof ModelAccountRelationV2>
 export const ModelRelationDefinition = union(
   [
     strict({ type: literal('account') }),
-    strict({ type: literal('document'), model: streamIdString }),
+    strict({ type: literal('document'), model: streamIDString }),
   ],
   'ModelRelationDefinition',
 )
@@ -203,17 +207,17 @@ export const ModelRelationViewDefinition = union(
   [
     strict({
       type: literal('relationDocument'),
-      model: streamIdString,
+      model: streamIDString,
       property: string,
     }),
     strict({
       type: literal('relationFrom'),
-      model: streamIdString,
+      model: streamIDString,
       property: string,
     }),
     strict({
       type: literal('relationCountFrom'),
-      model: streamIdString,
+      model: streamIDString,
       property: string,
     }),
   ],
@@ -232,17 +236,17 @@ export const ModelRelationViewDefinitionV2 = union(
     }),
     strict({
       type: literal('relationFrom'),
-      model: streamIdString,
+      model: streamIDString,
       property: string,
     }),
     strict({
       type: literal('relationCountFrom'),
-      model: streamIdString,
+      model: streamIDString,
       property: string,
     }),
     strict({
       type: literal('relationSetFrom'),
-      model: streamIdString,
+      model: streamIDString,
       property: string,
     }),
   ],
@@ -335,7 +339,7 @@ export const ModelDefinitionV2 = sparse(
     name: string,
     description: optional(string),
     interface: boolean,
-    implements: array(streamIdString),
+    implements: array(streamIDString),
     schema: ObjectSchema,
     immutableFields: optional(array(string)),
     accountRelation: ModelAccountRelationV2,
@@ -356,15 +360,39 @@ export const ModelDefinition = union(
 export type ModelDefinition = TypeOf<typeof ModelDefinition>
 
 /**
+ * Header of a Model Stream.
+ */
+export const ModelEventHeader = strict(
+  {
+    controllers: tuple([didString]),
+    model: refinement(streamIDAsBytes, (id) => id.equals(MODEL)),
+    sep: literal('model'),
+  },
+  'ModelEventHeader',
+)
+export type ModelEventHeader = TypeOf<typeof ModelEventHeader>
+
+/**
+ * Model Init event payload.
+ */
+export const ModelInitEventPayload = strict(
+  {
+    data: ModelDefinition,
+    header: ModelEventHeader,
+  },
+  'ModelInitEventPayload',
+)
+export type ModelInitEventPayload = TypeOf<typeof ModelInitEventPayload>
+
+/**
  * Model state, extending the model snapshot with stream ID and events log
  */
 export const ModelState = strict(
   {
-    id: streamIdString,
+    id: streamIDString,
     metadata: ModelMetadata,
     content: ModelDefinition,
-    // TODO: event codecs
-    log: array(unknownRecord),
+    log: array(SignedEvent),
   },
   'ModelState',
 )

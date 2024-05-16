@@ -1,14 +1,18 @@
-import { verifyEvent } from '@ceramic-sdk/events'
 import {
-  type ModelDefinition,
+  type SignedEvent,
+  type VerifiedEvent,
+  verifyEvent,
+} from '@ceramic-sdk/events'
+import {
+  ModelInitEventPayload,
   ModelMetadata,
   type ModelState,
   assertValidModelContent,
   getModelStreamID,
   validateController,
 } from '@ceramic-sdk/model-protocol'
-import type { SignedEvent } from '@ceramic-sdk/types'
 import { decode } from 'codeco'
+import type { DID } from 'dids'
 
 import {
   validateImplementedInterfaces,
@@ -16,15 +20,22 @@ import {
 } from './interfaces-validation.js'
 import type { Context } from './types.js'
 
+export async function verifyInitEvent(
+  verifier: DID,
+  event: SignedEvent,
+): Promise<VerifiedEvent<ModelInitEventPayload>> {
+  return await verifyEvent(verifier, event, ModelInitEventPayload)
+}
+
 export async function handleInitEvent(
   event: SignedEvent,
   context: Context,
 ): Promise<ModelState> {
-  const verified = await verifyEvent<ModelDefinition>(context.verifier, event)
+  const verified = await verifyInitEvent(context.verifier, event)
 
   const metadata = decode(ModelMetadata, {
     controller: verified.header.controllers[0],
-    model: verified.header.model,
+    model: verified.header.model.bytes,
   })
   await validateController(metadata.controller, event.cacaoBlock)
 

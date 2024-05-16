@@ -36,27 +36,14 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.12.12)
       tsx:
-        specifier: ^4.10.2
-        version: 4.10.2
+        specifier: ^4.10.3
+        version: 4.10.3
       turbo:
         specifier: ^1.13.3
         version: 1.13.3
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
-
-  packages/codecs:
-    dependencies:
-      '@ceramic-sdk/identifiers':
-        specifier: workspace:^
-        version: link:../identifiers
-      codeco:
-        specifier: ^1.2.1
-        version: 1.2.1
-    devDependencies:
-      ts-essentials:
-        specifier: ^10.0.0
-        version: 10.0.0(typescript@5.4.5)
 
   packages/ethereum-did:
     dependencies:
@@ -76,11 +63,17 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.4.5)
       viem:
-        specifier: ^2.10.5
-        version: 2.10.5(typescript@5.4.5)
+        specifier: ^2.10.8
+        version: 2.10.8(typescript@5.4.5)
 
   packages/events:
     dependencies:
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@ipld/dag-cbor':
         specifier: ^9.2.0
         version: 9.2.0
@@ -90,6 +83,9 @@ importers:
       cartonne:
         specifier: ^3.0.1
         version: 3.0.1
+      codeco:
+        specifier: ^1.2.1
+        version: 1.2.1
       dag-jose:
         specifier: ^5.0.0
         version: 5.0.0
@@ -106,9 +102,12 @@ importers:
       '@ceramic-sdk/key-did':
         specifier: workspace:^
         version: link:../key-did
-      '@ceramic-sdk/types':
-        specifier: workspace:^
-        version: link:../types
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.4.5)
+      ts-essentials:
+        specifier: ^10.0.0
+        version: 10.0.0(typescript@5.4.5)
 
   packages/http-client:
     dependencies:
@@ -116,9 +115,6 @@ importers:
         specifier: ^0.9.5
         version: 0.9.5
     devDependencies:
-      '@ceramic-sdk/types':
-        specifier: workspace:^
-        version: link:../types
       openapi-typescript:
         specifier: ^6.7.5
         version: 6.7.5
@@ -128,6 +124,9 @@ importers:
       '@ipld/dag-cbor':
         specifier: ^9.2.0
         version: 9.2.0
+      codeco:
+        specifier: ^1.2.1
+        version: 1.2.1
       mapmoize:
         specifier: ^1.2.1
         version: 1.2.1
@@ -165,6 +164,9 @@ importers:
       '@ceramic-sdk/model-protocol':
         specifier: workspace:^
         version: link:../model-protocol
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.4.5)
     devDependencies:
       '@ceramic-sdk/ethereum-did':
         specifier: workspace:^
@@ -172,9 +174,6 @@ importers:
       '@ceramic-sdk/key-did':
         specifier: workspace:^
         version: link:../key-did
-      '@ceramic-sdk/types':
-        specifier: workspace:^
-        version: link:../types
 
   packages/model-handler:
     dependencies:
@@ -203,9 +202,9 @@ importers:
       '@ceramic-sdk/key-did':
         specifier: workspace:^
         version: link:../key-did
-      '@ceramic-sdk/types':
-        specifier: workspace:^
-        version: link:../types
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/lodash.ismatch':
         specifier: ^4.4.9
         version: 4.4.9
@@ -215,15 +214,18 @@ importers:
 
   packages/model-protocol:
     dependencies:
-      '@ceramic-sdk/codecs':
+      '@ceramic-sdk/events':
         specifier: workspace:^
-        version: link:../codecs
+        version: link:../events
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../identifiers
       '@didtools/cacao':
         specifier: ^3.0.1
         version: 3.0.1(typescript@5.4.5)
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
       ajv:
         specifier: ^8.13.0
         version: 8.13.0
@@ -240,27 +242,12 @@ importers:
       '@ceramic-sdk/ethereum-did':
         specifier: workspace:^
         version: link:../ethereum-did
-      '@ceramic-sdk/types':
-        specifier: workspace:^
-        version: link:../types
       json-schema-typed:
         specifier: ^8.0.1
         version: 8.0.1
       ts-essentials:
         specifier: ^10.0.0
         version: 10.0.0(typescript@5.4.5)
-
-  packages/types:
-    dependencies:
-      cartonne:
-        specifier: ^3.0.1
-        version: 3.0.1
-      dids:
-        specifier: ^5.0.2
-        version: 5.0.2(typescript@5.4.5)
-      multiformats:
-        specifier: ^13.1.0
-        version: 13.1.0
 
 packages:
 
@@ -1620,6 +1607,11 @@ packages:
     peerDependencies:
       ws: '*'
 
+  isows@1.0.4:
+    resolution: {integrity: sha512-hEzjY+x9u9hPmBom9IIAqdJCwNLax+xrPb51vEPpERoFlIxgmZcHzsT5jKG06nvInKOBGvReAVz80Umed5CczQ==}
+    peerDependencies:
+      ws: '*'
+
   istanbul-lib-coverage@3.2.2:
     resolution: {integrity: sha512-O8dpsF+r0WV/8MNRKfnmrtCWhuKjxrq2w+jpzBL5UZKTi2LeVWnWOmWRxFlesJONmc+wLAGvKQZEOanko0LFTg==}
     engines: {node: '>=8'}
@@ -2381,8 +2373,8 @@ packages:
       typescript:
         optional: true
 
-  tsx@4.10.2:
-    resolution: {integrity: sha512-gOfACgv1ElsIjvt7Fp0rMJKGnMGjox0JfGOfX3kmZCV/yZumaNqtHGKBXt1KgaYS9KjDOmqGeI8gHk/W7kWVZg==}
+  tsx@4.10.3:
+    resolution: {integrity: sha512-f0g60aFSVRVkzcQkEflh8fPLRfmt+HJHgWi/plG5UgvVaV+9TcpOwJ0sZJSACXmwmjMPg9yQR0BhTLbhkfV2uA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -2483,8 +2475,8 @@ packages:
       typescript:
         optional: true
 
-  viem@2.10.5:
-    resolution: {integrity: sha512-rzU2y6poYgXu7axcQmwddaJ/nGP3tjtslXdUCu+PvryeXACuuqoyP3chjTEHciG84a663gYbrVGbxNUFA3aURQ==}
+  viem@2.10.8:
+    resolution: {integrity: sha512-ttCXlDmjjcZ8M/eJezXFzDtHj+RFOjEQ3elmXnCC7suXo/y8CuIM1LrIoyUFk7LKIE5E+bzmWUErS4u/MQBtpQ==}
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
@@ -4030,6 +4022,10 @@ snapshots:
     dependencies:
       ws: 8.13.0
 
+  isows@1.0.4(ws@8.13.0):
+    dependencies:
+      ws: 8.13.0
+
   istanbul-lib-coverage@3.2.2: {}
 
   istanbul-lib-instrument@5.2.1:
@@ -4918,7 +4914,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.5
 
-  tsx@4.10.2:
+  tsx@4.10.3:
     dependencies:
       esbuild: 0.20.2
       get-tsconfig: 4.7.5
@@ -5018,7 +5014,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  viem@2.10.5(typescript@5.4.5):
+  viem@2.10.8(typescript@5.4.5):
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
       '@noble/curves': 1.2.0
@@ -5026,7 +5022,7 @@ snapshots:
       '@scure/bip32': 1.3.2
       '@scure/bip39': 1.2.1
       abitype: 1.0.0(typescript@5.4.5)
-      isows: 1.0.3(ws@8.13.0)
+      isows: 1.0.4(ws@8.13.0)
       ws: 8.13.0
     optionalDependencies:
       typescript: 5.4.5

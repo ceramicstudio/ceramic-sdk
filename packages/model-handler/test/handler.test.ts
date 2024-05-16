@@ -1,5 +1,9 @@
 import { EthereumDID } from '@ceramic-sdk/ethereum-did'
-import { createSignedEvent, signEvent } from '@ceramic-sdk/events'
+import {
+  type SignedEvent,
+  createSignedEvent,
+  signEvent,
+} from '@ceramic-sdk/events'
 import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import {
   MODEL,
@@ -9,8 +13,9 @@ import {
   type ModelInitEventPayload,
   getModelStreamID,
 } from '@ceramic-sdk/model-protocol'
-import type { DID, SignedEvent } from '@ceramic-sdk/types'
+import { asDIDString } from '@didtools/codecs'
 import { jest } from '@jest/globals'
+import type { DID } from 'dids'
 
 import { handleInitEvent } from '../src/handler.js'
 import type { Context } from '../src/types.js'
@@ -18,7 +23,7 @@ import type { Context } from '../src/types.js'
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
 const defaultContext: Context = {
-  loadModel: () => {
+  loadModelDefinition: () => {
     throw new Error('Not implemented')
   },
   verifier: createDID(),
@@ -58,8 +63,8 @@ async function createModelEvent(
   did: DID,
   definition: ModelDefinition = testModelV1,
 ): Promise<SignedEvent> {
-  return await await createSignedEvent(did, definition, {
-    model: MODEL.bytes,
+  return await createSignedEvent(did, definition, {
+    model: MODEL,
     sep: 'model',
   })
 }
@@ -123,7 +128,7 @@ describe('handleInitEvent()', () => {
     const event = await createModelEvent(authenticatedDID, invalidDefinition)
     await expect(async () => {
       await handleInitEvent(event, defaultContext)
-    }).rejects.toThrow('Unsupported version format: 0')
+    }).rejects.toThrow('Invalid value "0"')
   })
 
   test('validates interfaces', async () => {
@@ -226,8 +231,8 @@ describe('handleInitEvent()', () => {
     const payload: ModelInitEventPayload = {
       data: testModelV1,
       header: {
-        controllers: [authenticatedDID.id],
-        model: MODEL.bytes,
+        controllers: [asDIDString(authenticatedDID.id)],
+        model: MODEL,
         sep: 'model',
       },
     }

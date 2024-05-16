@@ -1,10 +1,11 @@
-import { StreamID } from '@ceramic-sdk/identifiers'
 import { type Context, Type, refinement, string } from 'codeco'
+
+import { StreamID } from './stream-id.js'
 
 /**
  * Verify if `input` is a StreamID string.
  */
-export function isStreamIdString(input: string): input is string {
+export function isStreamIDString(input: string): input is string {
   try {
     StreamID.fromString(input)
     return true
@@ -16,16 +17,16 @@ export function isStreamIdString(input: string): input is string {
 /**
  * codeco codec for StreamID string.
  */
-export const streamIdString = refinement(
+export const streamIDString = refinement(
   string,
-  isStreamIdString,
+  isStreamIDString,
   'StreamID-string',
 )
 
 /**
  * codeco codec for StreamID encoded as string.
  */
-export const streamIdAsString = new Type<StreamID, string, string>(
+export const streamIDAsString = new Type<StreamID, string, string>(
   'StreamID-as-string',
   (input: unknown): input is StreamID => StreamID.isInstance(input),
   (input: string, context: Context) => {
@@ -43,7 +44,7 @@ export const streamIdAsString = new Type<StreamID, string, string>(
 /**
  * codeco codec for StreamID encoded as Uint8Array bytes.
  */
-export const streamIdAsBytes = new Type<StreamID, Uint8Array, Uint8Array>(
+export const streamIDAsBytes = new Type<StreamID, Uint8Array, Uint8Array>(
   'StreamID-as-bytes',
   (input: unknown): input is StreamID => StreamID.isInstance(input),
   (input: Uint8Array, context: Context) => {

@@ -42,7 +42,7 @@
   "devDependencies": {
     "@ceramic-sdk/ethereum-did": "workspace:^",
     "@ceramic-sdk/key-did": "workspace:^",
-    "@ceramic-sdk/types": "workspace:^",
+    "@didtools/codecs": "^3.0.0",
     "@types/lodash.ismatch": "^4.4.9",
     "json-schema-typed": "^8.0.1"
   },

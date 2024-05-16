@@ -1,6 +1,13 @@
+import { randomStreamID } from '@ceramic-sdk/identifiers'
 import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
-import type { EventPayload } from '@ceramic-sdk/types'
+import { asDIDString } from '@didtools/codecs'
+import { decode } from 'codeco'
 
+import {
+  type EventPayload,
+  SignedEvent,
+  assertSignedEvent,
+} from '../src/codecs.js'
 import {
   eventFromCAR,
   eventFromString,
@@ -10,15 +17,14 @@ import {
   unsignedEventToCAR,
 } from '../src/encoding.js'
 import { signEvent } from '../src/signing.js'
-import { assertSignedEvent, isSignedEvent } from '../src/utils.js'
 
 const did = await getAuthenticatedDID(new Uint8Array(32))
 
 const testEventPayload: EventPayload = {
   data: null,
   header: {
-    controllers: [did.id],
-    model: new Uint8Array(),
+    controllers: [asDIDString(did.id)],
+    model: randomStreamID(),
     sep: 'test',
   },
 }
@@ -47,7 +53,7 @@ test('encode and decode any supported event as CAR', async () => {
 
   const encodedEvent = eventToCAR(testEventPayload)
   const decodedEvent = eventFromCAR(encodedEvent)
-  expect(isSignedEvent(decodedEvent)).toBe(false)
+  expect(SignedEvent.is(decodedEvent)).toBe(false)
   expect(decodedEvent).toEqual(testEventPayload)
 })
 
@@ -60,6 +66,6 @@ test('encode and decode any supported event as string', async () => {
 
   const encodedEvent = eventToString(testEventPayload)
   const decodedEvent = eventFromString(encodedEvent)
-  expect(isSignedEvent(decodedEvent)).toBe(false)
+  expect(SignedEvent.is(decodedEvent)).toBe(false)
   expect(decodedEvent).toEqual(testEventPayload)
 })

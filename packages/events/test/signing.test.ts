@@ -1,6 +1,12 @@
+import { randomStreamID } from '@ceramic-sdk/identifiers'
 import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
-import type { EventHeader, EventPayload } from '@ceramic-sdk/types'
+import { asDIDString } from '@didtools/codecs'
 
+import {
+  type EventHeader,
+  type EventPayload,
+  assertSignedEvent,
+} from '../src/codecs.js'
 import {
   type PartialEventHeader,
   createSignedEvent,
@@ -8,20 +14,19 @@ import {
   signEvent,
   verifyEvent,
 } from '../src/signing.js'
-import { assertSignedEvent } from '../src/utils.js'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
 const defaultHeader: PartialEventHeader = {
-  model: new Uint8Array(),
+  model: randomStreamID(),
   sep: 'model',
 }
 
 const testEventPayload: EventPayload = {
   data: null,
   header: {
-    controllers: [authenticatedDID.id],
-    model: new Uint8Array(),
+    controllers: [asDIDString(authenticatedDID.id)],
+    model: randomStreamID(),
     sep: 'test',
   },
 }
@@ -67,8 +72,8 @@ describe('createSignedEvent()', () => {
 
   test('uses the provided values', async () => {
     const header: EventHeader = {
-      controllers: ['did:test:123'],
-      model: new Uint8Array([1, 2, 3]),
+      controllers: [asDIDString('did:test:123')],
+      model: randomStreamID(),
       sep: 'foo',
       unique: new Uint8Array([4, 5, 6]),
     }

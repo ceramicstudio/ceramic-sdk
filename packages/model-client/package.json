@@ -33,12 +33,12 @@
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
-    "@ceramic-sdk/model-protocol": "workspace:^"
+    "@ceramic-sdk/model-protocol": "workspace:^",
+    "dids": "^5.0.2"
   },
   "devDependencies": {
     "@ceramic-sdk/ethereum-did": "workspace:^",
-    "@ceramic-sdk/key-did": "workspace:^",
-    "@ceramic-sdk/types": "workspace:^"
+    "@ceramic-sdk/key-did": "workspace:^"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

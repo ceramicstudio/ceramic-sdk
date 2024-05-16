@@ -1,4 +1,3 @@
-import type { DagJWS, SignedEvent } from '@ceramic-sdk/types'
 import type { CID } from 'multiformats/cid'
 import { toString as bytesToString, fromString } from 'uint8arrays'
 
@@ -6,31 +5,6 @@ export const MAX_BLOCK_SIZE = 256000 // 256 KB
 
 export function base64urlToJSON<T = Record<string, unknown>>(value: string): T {
   return JSON.parse(bytesToString(fromString(value, 'base64url')))
-}
-
-export function isJWS(data: unknown): data is DagJWS {
-  return (
-    data != null &&
-    typeof data === 'object' &&
-    typeof (data as DagJWS).payload === 'string' &&
-    Array.isArray((data as DagJWS).signatures)
-  )
-}
-
-export function isSignedEvent(event: unknown): event is SignedEvent {
-  return (
-    event != null &&
-    typeof event === 'object' &&
-    isJWS((event as SignedEvent).jws)
-  )
-}
-
-export function assertSignedEvent(
-  event: unknown,
-): asserts event is SignedEvent {
-  if (!isSignedEvent(event)) {
-    throw new Error('Input is not a SignedEvent')
-  }
 }
 
 /**

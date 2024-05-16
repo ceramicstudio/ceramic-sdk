@@ -1,4 +1,3 @@
-// import type { CAR, CID } from '@ceramic-sdk/types'
 import createAPIClient, { type HeadersOptions } from 'openapi-fetch'
 
 import type { components, paths } from './__generated__/api'

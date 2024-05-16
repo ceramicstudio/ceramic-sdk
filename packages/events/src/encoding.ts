@@ -1,21 +1,14 @@
-import type {
-  CeramicEvent,
-  EventPayload,
-  SignedEvent,
-} from '@ceramic-sdk/types'
+import { DagJWS } from '@didtools/codecs'
 import * as dagJson from '@ipld/dag-json'
 import { type CAR, CARFactory, CarBlock } from 'cartonne'
+import { decode } from 'codeco'
 import * as dagJose from 'dag-jose'
 import { bases } from 'multiformats/basics'
 import { CID } from 'multiformats/cid'
 import { sha256 } from 'multihashes-sync/sha2'
 
-import {
-  base64urlToJSON,
-  isJWS,
-  isSignedEvent,
-  restrictBlockSize,
-} from './utils.js'
+import { type CeramicEvent, EventPayload, SignedEvent } from './codecs.js'
+import { base64urlToJSON, restrictBlockSize } from './utils.js'
 
 const carFactory = new CARFactory()
 carFactory.codecs.add(dagJose)
@@ -60,7 +53,7 @@ export function signedEventToCAR(event: SignedEvent): CAR {
 
 export function unsignedEventToCAR(event: EventPayload): CAR {
   const car = carFactory.build()
-  const cid = car.put(event, { isRoot: true })
+  const cid = car.put(EventPayload.encode(event), { isRoot: true })
   // biome-ignore lint/style/noNonNullAssertion: added to CAR file right before
   const cidBlock = car.blocks.get(cid)!.payload
   restrictBlockSize(cidBlock, cid)
@@ -68,7 +61,7 @@ export function unsignedEventToCAR(event: EventPayload): CAR {
 }
 
 export function eventToCAR(event: CeramicEvent): CAR {
-  return isSignedEvent(event)
+  return SignedEvent.is(event)
     ? signedEventToCAR(event)
     : unsignedEventToCAR(event)
 }
@@ -84,14 +77,14 @@ export function eventFromCAR(car: CAR): CeramicEvent {
   const cid = car.roots[0]
   const root = car.get(cid)
 
-  if (isJWS(root)) {
+  if (DagJWS.is(root)) {
     const linkedBlock = root.link
       ? car.blocks.get(root.link)?.payload
       : undefined
     if (linkedBlock == null) {
       throw new Error('Linked block not found')
     }
-    const event: SignedEvent = { jws: root, linkedBlock }
+    const event = decode(SignedEvent, { jws: root, linkedBlock })
     const header = base64urlToJSON<{ cap?: string }>(
       root.signatures[0].protected,
     )
@@ -102,7 +95,7 @@ export function eventFromCAR(car: CAR): CeramicEvent {
     return event
   }
 
-  return root
+  return decode(EventPayload, root)
 }
 
 export function eventFromString(

@@ -36,7 +36,6 @@
     "openapi-fetch": "^0.9.5"
   },
   "devDependencies": {
-    "@ceramic-sdk/types": "workspace:^",
     "openapi-typescript": "^6.7.5"
   },
   "jest": {
