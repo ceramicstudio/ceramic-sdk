@@ -36,8 +36,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.12.12)
       tsx:
-        specifier: ^4.10.3
-        version: 4.10.3
+        specifier: ^4.10.5
+        version: 4.10.5
       turbo:
         specifier: ^1.13.3
         version: 1.13.3
@@ -63,8 +63,8 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.4.5)
       viem:
-        specifier: ^2.10.8
-        version: 2.10.8(typescript@5.4.5)
+        specifier: ^2.11.0
+        version: 2.11.0(typescript@5.4.5)
 
   packages/events:
     dependencies:
@@ -84,8 +84,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1
       codeco:
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       dag-jose:
         specifier: ^5.0.0
         version: 5.0.0
@@ -112,12 +112,12 @@ importers:
   packages/http-client:
     dependencies:
       openapi-fetch:
-        specifier: ^0.9.5
-        version: 0.9.5
+        specifier: ^0.9.7
+        version: 0.9.7
     devDependencies:
       openapi-typescript:
-        specifier: ^6.7.5
-        version: 6.7.5
+        specifier: ^6.7.6
+        version: 6.7.6
 
   packages/identifiers:
     dependencies:
@@ -125,8 +125,8 @@ importers:
         specifier: ^9.2.0
         version: 9.2.0
       codeco:
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       mapmoize:
         specifier: ^1.2.1
         version: 1.2.1
@@ -184,8 +184,8 @@ importers:
         specifier: workspace:^
         version: link:../model-protocol
       codeco:
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.4.5)
@@ -233,8 +233,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.13.0)
       codeco:
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       json-ptr:
         specifier: ^3.1.1
         version: 3.1.1
@@ -1192,8 +1192,8 @@ packages:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
 
-  codeco@1.2.1:
-    resolution: {integrity: sha512-jJHt2yEpV2p/pY1qQ0JZUScjWCqvZgE8SBYqzAEXo+DrpFB2BFs9RJp67GP2syg0+cMJ8DK14KOJZhFhhvH1nQ==}
+  codeco@1.2.2:
+    resolution: {integrity: sha512-lhIoURrqjebeKShlY8hpJSeB7oPvCXLB786lPCnLpqOSzPZ96lXFcdIGt5CU0GW1vNzQDlMQIaLCvT++Pb/G7A==}
 
   collect-v8-coverage@1.0.2:
     resolution: {integrity: sha512-lHl4d5/ONEbLlJvaJNtsF/Lz+WvB07u2ycqTYbdrq7UypDXailES4valYb2eWiJFxZlVmpGekfqoxQhzyFdT4Q==}
@@ -1989,14 +1989,14 @@ packages:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
 
-  openapi-fetch@0.9.5:
-    resolution: {integrity: sha512-ToRnypJB2G5bEUZqJ4mGty/qDVgAZ4BW0znlXQAECxAp4EM8dYtgQ1mrw2Ij6W7knN4VawHvFq8uTqzXyMGNPA==}
+  openapi-fetch@0.9.7:
+    resolution: {integrity: sha512-NMp/GEmWSGO0b2d731IdGXcMP2PF85Rk1q+oy2Mx/DYMdP3pgTZTRamKxgZpkHhM4iOVsyD1iP5HKL9Fr6CH2Q==}
 
   openapi-typescript-helpers@0.0.8:
     resolution: {integrity: sha512-1eNjQtbfNi5Z/kFhagDIaIRj6qqDzhjNJKz8cmMW0CVdGwT6e1GLbAfgI0d28VTJa1A8jz82jm/4dG8qNoNS8g==}
 
-  openapi-typescript@6.7.5:
-    resolution: {integrity: sha512-ZD6dgSZi0u1QCP55g8/2yS5hNJfIpgqsSGHLxxdOjvY7eIrXzj271FJEQw33VwsZ6RCtO/NOuhxa7GBWmEudyA==}
+  openapi-typescript@6.7.6:
+    resolution: {integrity: sha512-c/hfooPx+RBIOPM09GSxABOZhYPblDoyaGhqBkD/59vtpN21jEuWKDlM0KYTvqJVlSYjKs0tBcIdeXKChlSPtw==}
     hasBin: true
 
   os-filter-obj@2.0.0:
@@ -2373,8 +2373,8 @@ packages:
       typescript:
         optional: true
 
-  tsx@4.10.3:
-    resolution: {integrity: sha512-f0g60aFSVRVkzcQkEflh8fPLRfmt+HJHgWi/plG5UgvVaV+9TcpOwJ0sZJSACXmwmjMPg9yQR0BhTLbhkfV2uA==}
+  tsx@4.10.5:
+    resolution: {integrity: sha512-twDSbf7Gtea4I2copqovUiNTEDrT8XNFXsuHpfGbdpW/z9ZW4fTghzzhAG0WfrCuJmJiOEY1nLIjq4u3oujRWQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -2475,8 +2475,8 @@ packages:
       typescript:
         optional: true
 
-  viem@2.10.8:
-    resolution: {integrity: sha512-ttCXlDmjjcZ8M/eJezXFzDtHj+RFOjEQ3elmXnCC7suXo/y8CuIM1LrIoyUFk7LKIE5E+bzmWUErS4u/MQBtpQ==}
+  viem@2.11.0:
+    resolution: {integrity: sha512-JwGxcpr3pUlquXWkRdXAWTOaY3RDPftrkxksiIWlPEgLWRYOLuFkJyxmvLTE6ZY3njww8vmZP97UqBt0R+B/xw==}
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
@@ -2808,7 +2808,7 @@ snapshots:
 
   '@didtools/codecs@3.0.0':
     dependencies:
-      codeco: 1.2.1
+      codeco: 1.2.2
       multiformats: 13.1.0
       uint8arrays: 5.1.0
 
@@ -2834,7 +2834,7 @@ snapshots:
 
   '@didtools/siwx@2.0.0':
     dependencies:
-      codeco: 1.2.1
+      codeco: 1.2.2
 
   '@esbuild/aix-ppc64@0.20.2':
     optional: true
@@ -3574,7 +3574,7 @@ snapshots:
 
   co@4.6.0: {}
 
-  codeco@1.2.1: {}
+  codeco@1.2.2: {}
 
   collect-v8-coverage@1.0.2: {}
 
@@ -3713,7 +3713,7 @@ snapshots:
       '@didtools/codecs': 3.0.0
       '@didtools/pkh-ethereum': 0.5.0(typescript@5.4.5)
       '@stablelib/random': 1.0.2
-      codeco: 1.2.1
+      codeco: 1.2.2
       dag-jose-utils: 4.0.0
       did-jwt: 7.4.7
       did-resolver: 4.1.0
@@ -4584,13 +4584,13 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openapi-fetch@0.9.5:
+  openapi-fetch@0.9.7:
     dependencies:
       openapi-typescript-helpers: 0.0.8
 
   openapi-typescript-helpers@0.0.8: {}
 
-  openapi-typescript@6.7.5:
+  openapi-typescript@6.7.6:
     dependencies:
       ansi-colors: 4.1.3
       fast-glob: 3.3.2
@@ -4914,7 +4914,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.5
 
-  tsx@4.10.3:
+  tsx@4.10.5:
     dependencies:
       esbuild: 0.20.2
       get-tsconfig: 4.7.5
@@ -5014,7 +5014,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  viem@2.10.8(typescript@5.4.5):
+  viem@2.11.0(typescript@5.4.5):
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
       '@noble/curves': 1.2.0

@@ -34,7 +34,7 @@
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
-    "codeco": "^1.2.1",
+    "codeco": "^1.2.2",
     "dids": "^5.0.2",
     "json-ptr": "^3.1.1",
     "lodash.ismatch": "^4.4.0"

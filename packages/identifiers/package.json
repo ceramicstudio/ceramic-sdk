@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@ipld/dag-cbor": "^9.2.0",
-    "codeco": "^1.2.1",
+    "codeco": "^1.2.2",
     "mapmoize": "^1.2.1",
     "multiformats": "^13.1.0",
     "uint8arrays": "^5.1.0",

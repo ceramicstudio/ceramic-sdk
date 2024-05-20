@@ -33,10 +33,10 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "openapi-fetch": "^0.9.5"
+    "openapi-fetch": "^0.9.7"
   },
   "devDependencies": {
-    "openapi-typescript": "^6.7.5"
+    "openapi-typescript": "^6.7.6"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
