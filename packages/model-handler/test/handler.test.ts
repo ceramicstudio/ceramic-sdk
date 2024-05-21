@@ -8,6 +8,7 @@ import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import {
   MODEL,
   MODEL_RESOURCE_URI,
+  MODEL_STREAM_ID,
   type ModelDefinition,
   type ModelDefinitionV2,
   type ModelInitEventPayload,
@@ -245,7 +246,7 @@ describe('handleInitEvent()', () => {
     expect(state.id).toBe(streamID.toString())
     expect(state.content).toEqual(testModelV1)
     expect(state.metadata.controller).toBe(authenticatedDID.id)
-    expect(state.metadata.model.equals(MODEL)).toBe(true)
+    expect(state.metadata.model).toBe(MODEL_STREAM_ID)
     expect(state.log[0]).toBe(event)
   })
 })

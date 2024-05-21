@@ -1,5 +1,9 @@
 import { SignedEvent } from '@ceramic-sdk/events'
-import { streamIDAsBytes, streamIDString } from '@ceramic-sdk/identifiers'
+import {
+  streamIDAsBytes,
+  streamIDAsString,
+  streamIDString,
+} from '@ceramic-sdk/identifiers'
 import { didString } from '@didtools/codecs'
 import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'
@@ -99,7 +103,7 @@ export const ModelMetadata = strict(
     /**
      * All Model streams have the same 'model' constant in their metadata. It is not a valid StreamID and cannot by loaded, but serves as a way to signal to indexers to index the set of all Models
      */
-    model: streamIDAsBytes,
+    model: refinement(streamIDAsString, (id) => id.equals(MODEL)),
   },
   'ModelMetadata',
 )

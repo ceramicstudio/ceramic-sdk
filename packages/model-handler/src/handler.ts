@@ -11,7 +11,6 @@ import {
   getModelStreamID,
   validateController,
 } from '@ceramic-sdk/model-protocol'
-import { decode } from 'codeco'
 import type { DID } from 'dids'
 
 import {
@@ -33,9 +32,9 @@ export async function handleInitEvent(
 ): Promise<ModelState> {
   const verified = await verifyInitEvent(context.verifier, event)
 
-  const metadata = decode(ModelMetadata, {
+  const metadata = ModelMetadata.encode({
     controller: verified.header.controllers[0],
-    model: verified.header.model.bytes,
+    model: verified.header.model,
   })
   await validateController(metadata.controller, event.cacaoBlock)
 
