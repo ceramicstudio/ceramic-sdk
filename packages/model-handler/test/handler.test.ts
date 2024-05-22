@@ -1,7 +1,7 @@
 import { EthereumDID } from '@ceramic-sdk/ethereum-did'
 import {
   type SignedEvent,
-  createSignedEvent,
+  createSignedInitEvent,
   signEvent,
 } from '@ceramic-sdk/events'
 import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
@@ -11,7 +11,7 @@ import {
   MODEL_STREAM_ID,
   type ModelDefinition,
   type ModelDefinitionV2,
-  type ModelInitEventPayload,
+  ModelInitEventPayload,
   getModelStreamID,
 } from '@ceramic-sdk/model-protocol'
 import { asDIDString } from '@didtools/codecs'
@@ -64,7 +64,7 @@ async function createModelEvent(
   did: DID,
   definition: ModelDefinition = testModelV1,
 ): Promise<SignedEvent> {
-  return await createSignedEvent(did, definition, {
+  return await createSignedInitEvent(did, definition, {
     model: MODEL,
     sep: 'model',
   })
@@ -238,7 +238,7 @@ describe('handleInitEvent()', () => {
       },
     }
     const [event, streamID] = await Promise.all([
-      signEvent(authenticatedDID, payload),
+      signEvent(authenticatedDID, ModelInitEventPayload.encode(payload)),
       getModelStreamID(payload),
     ])
 

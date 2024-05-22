@@ -3,6 +3,8 @@ import { CID } from 'multiformats/cid'
 import { decode as decodeMultiHash } from 'multiformats/hashes/digest'
 import varint from 'varint'
 
+import { STREAMID_CODEC } from './constants.js'
+
 export function readVarint(bytes: Uint8Array): [number, Uint8Array, number] {
   const value = varint.decode(bytes)
   const readLength = varint.decode.bytes
@@ -38,18 +40,16 @@ export function readCid(bytes: Uint8Array): [CID, Uint8Array] {
   ]
 }
 
-import { STREAMID_CODEC } from './constants.js'
-
 export type StreamIDComponents = {
   kind: 'stream-id'
   type: number
-  genesis: CID
+  init: CID
 }
 
 export type CommitIDComponents = {
   kind: 'commit-id'
   type: number
-  genesis: CID
+  init: CID
   commit: CID | null
 }
 
@@ -67,31 +67,17 @@ export function fromBytes(
     throw new Error(`Invalid ${title}, does not include streamid codec`)
   const [type, streamtypeRemainder] = readVarint(streamCodecRemainder)
   const cidResult = readCid(streamtypeRemainder)
-  const [genesis, genesisRemainder] = cidResult
-  if (genesisRemainder.length === 0) {
-    return {
-      kind: 'stream-id',
-      type: type,
-      genesis: genesis,
-    }
+  const [init, remainder] = cidResult
+  if (remainder.length === 0) {
+    return { kind: 'stream-id', type, init }
   }
-  if (genesisRemainder.length === 1 && genesisRemainder[0] === 0) {
+  if (remainder.length === 1 && remainder[0] === 0) {
     // Zero commit
-    return {
-      kind: 'commit-id',
-      type: type,
-      genesis: genesis,
-      commit: null,
-    }
+    return { kind: 'commit-id', type, init, commit: null }
   }
   // Commit
-  const [commit] = readCid(genesisRemainder)
-  return {
-    kind: 'commit-id',
-    type: type,
-    genesis: genesis,
-    commit: commit,
-  }
+  const [commit] = readCid(remainder)
+  return { kind: 'commit-id', type, init, commit }
 }
 
 /**
@@ -114,8 +100,8 @@ export function fromString(
     return {
       kind: 'commit-id',
       type: streamRef.type,
-      genesis: streamRef.genesis,
-      commit: parseCommit(streamRef.genesis, commit),
+      init: streamRef.init,
+      commit: parseCommit(streamRef.init, commit),
     }
   }
   return streamRef

@@ -175,5 +175,5 @@ test('instanceof', () => {
   const streamId = StreamID.fromString(STREAM_ID_STRING)
   const instanceSpy = jest.spyOn(StreamID, 'isInstance')
   expect(StreamID.isInstance(streamId)).toBeTruthy()
-  expect(instanceSpy).toBeCalledWith(streamId)
+  expect(instanceSpy).toHaveBeenCalledWith(streamId)
 })

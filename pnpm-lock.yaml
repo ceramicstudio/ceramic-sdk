@@ -45,6 +45,31 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
+  packages/document-client:
+    dependencies:
+      '@ceramic-sdk/document-protocol':
+        specifier: workspace:^
+        version: link:../document-protocol
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
+      codeco:
+        specifier: ^1.2.3
+        version: 1.2.3
+      fast-json-patch:
+        specifier: ^3.1.1
+        version: 3.1.1
+    devDependencies:
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.4.5)
+
   packages/document-protocol:
     dependencies:
       '@ceramic-sdk/identifiers':
@@ -85,8 +110,8 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.4.5)
       viem:
-        specifier: ^2.11.1
-        version: 2.11.1(typescript@5.4.5)
+        specifier: ^2.12.0
+        version: 2.12.0(typescript@5.4.5)
 
   packages/events:
     dependencies:
@@ -1421,6 +1446,9 @@ packages:
     resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==}
     engines: {node: '>=8.6.0'}
 
+  fast-json-patch@3.1.1:
+    resolution: {integrity: sha512-vf6IHUX2SBcA+5/+4883dsIjpBTqmfBjmYiWK1savxQmFk4JfBMLa7ynTYOs1Rolp/T1betJxHiGD3g1Mn8lUQ==}
+
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
 
@@ -2503,8 +2531,8 @@ packages:
       typescript:
         optional: true
 
-  viem@2.11.1:
-    resolution: {integrity: sha512-4iypXhxWkXoWO45XStxQvhj/vYZ5+3AtSEngHiOnuHOSNoiIsYfDvTMoTiAO53PeyYvExyVzJc9BFwejGHh7pg==}
+  viem@2.12.0:
+    resolution: {integrity: sha512-XBvORspE4x2/gfy7idH6IVFwkJiXirygFCU3lxUH6fttsj8zufLtgiokfvZF/LAZUEDvdxSgL08whSYgffM2fw==}
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
@@ -3872,6 +3900,8 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.5
 
+  fast-json-patch@3.1.1: {}
+
   fast-json-stable-stringify@2.1.0: {}
 
   fastq@1.17.1:
@@ -5053,7 +5083,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  viem@2.11.1(typescript@5.4.5):
+  viem@2.12.0(typescript@5.4.5):
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
       '@noble/curves': 1.2.0

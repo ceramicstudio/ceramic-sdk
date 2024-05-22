@@ -5,31 +5,37 @@ import type { DID, VerifyJWSResult } from 'dids'
 import * as Block from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 
-import { type EventHeader, EventPayload, type SignedEvent } from './codecs.js'
+import {
+  type InitEventHeader,
+  InitEventPayload,
+  type SignedEvent,
+} from './codecs.js'
 
-export type VerifiedEvent<Payload = EventPayload<unknown>> = VerifyJWSResult &
+export type VerifiedEvent<Payload = Record<string, unknown>> = VerifyJWSResult &
   Payload & {
     cacaoBlock?: Uint8Array
   }
 
 export async function signEvent(
   did: DID,
-  payload: EventPayload,
+  payload: Record<string, unknown>,
 ): Promise<SignedEvent> {
-  const encodedPayload = EventPayload.encode(payload)
-  const { linkedBlock, ...rest } = await did.createDagJWS(encodedPayload)
+  if (!did.authenticated) {
+    await did.authenticate()
+  }
+  const { linkedBlock, ...rest } = await did.createDagJWS(payload)
   return { ...rest, linkedBlock: new Uint8Array(linkedBlock) }
 }
 
 // Make controllers optional in the event header as createSignedEvent() will inject it as needed
-export type PartialEventHeader = Omit<EventHeader, 'controllers'> & {
+export type PartialInitEventHeader = Omit<InitEventHeader, 'controllers'> & {
   controllers?: [DIDString]
 }
 
-export async function createSignedEvent<T>(
+export async function createSignedInitEvent<T>(
   did: DID,
   data: T,
-  header: PartialEventHeader,
+  header: PartialInitEventHeader,
 ): Promise<SignedEvent> {
   if (!did.authenticated) {
     await did.authenticate()
@@ -37,12 +43,16 @@ export async function createSignedEvent<T>(
   const controllers = header.controllers ?? [
     asDIDString(did.hasParent ? did.parent : did.id),
   ]
-  return await signEvent(did, { data, header: { ...header, controllers } })
+  const payload = InitEventPayload.encode({
+    data,
+    header: { ...header, controllers },
+  })
+  return await signEvent(did, payload)
 }
 
-export async function getSignedEventPayload<Payload = EventPayload>(
+export async function getSignedEventPayload<Payload = Record<string, unknown>>(
+  decoder: Decoder<unknown, Payload>,
   event: SignedEvent,
-  codec: Decoder<unknown, unknown> = EventPayload,
 ): Promise<Payload> {
   const cid = event.jws.link
   if (cid == null) {
@@ -54,13 +64,13 @@ export async function getSignedEventPayload<Payload = EventPayload>(
     codec: dagCbor,
     hasher: sha256,
   })
-  return decode(codec, block.value) as Payload
+  return decode(decoder, block.value)
 }
 
-export async function verifyEvent<Payload = EventPayload>(
+export async function verifyEvent<Payload = Record<string, unknown>>(
   did: DID,
+  codec: Decoder<unknown, Payload>,
   event: SignedEvent,
-  codec?: Decoder<unknown, unknown>,
 ): Promise<VerifiedEvent<Payload>> {
   const cid = event.jws.link
   if (cid == null) {
@@ -68,7 +78,7 @@ export async function verifyEvent<Payload = EventPayload>(
   }
   const [verified, payload] = await Promise.all([
     did.verifyJWS(event.jws),
-    getSignedEventPayload<Payload>(event, codec),
+    getSignedEventPayload(codec, event),
   ])
   return { ...verified, ...payload, cacaoBlock: event.cacaoBlock }
 }

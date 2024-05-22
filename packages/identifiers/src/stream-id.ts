@@ -7,8 +7,12 @@ import { sha256 as hasher } from 'multiformats/hashes/sha2'
 import { concat as uint8ArrayConcat } from 'uint8arrays'
 import varint from 'varint'
 
-import { STREAMID_CODEC, STREAM_TYPES } from './constants.js'
-import * as parsing from './parsing.js'
+import { STREAMID_CODEC } from './constants.js'
+import {
+  fromBytes as parseFromBytes,
+  fromString as parseFromString,
+} from './parsing.js'
+import { getCodeByName, getNameByCode } from './utils.js'
 
 export class InvalidStreamIDBytesError extends Error {
   constructor(bytes: Uint8Array) {
@@ -30,9 +34,9 @@ export class InvalidStreamIDStringError extends Error {
  * @see StreamID#bytes
  */
 function fromBytes(bytes: Uint8Array): StreamID {
-  const parsed = parsing.fromBytes(bytes, 'StreamID')
+  const parsed = parseFromBytes(bytes, 'StreamID')
   if (parsed.kind === 'stream-id') {
-    return new StreamID(parsed.type, parsed.genesis)
+    return new StreamID(parsed.type, parsed.init)
   }
   throw new InvalidStreamIDBytesError(bytes)
 }
@@ -45,31 +49,14 @@ function fromBytes(bytes: Uint8Array): StreamID {
  * @see StreamID#toUrl
  */
 function fromString(input: string): StreamID {
-  const parsed = parsing.fromString(input, 'StreamID')
+  const parsed = parseFromString(input, 'StreamID')
   if (parsed.kind === 'stream-id') {
-    return new StreamID(parsed.type, parsed.genesis)
+    return new StreamID(parsed.type, parsed.init)
   }
   throw new InvalidStreamIDStringError(input)
 }
 
 const TAG = Symbol.for('@ceramic-sdk/identifiers/StreamID')
-
-function getCodeByName(name: string): number {
-  const index = STREAM_TYPES[name]
-  if (index == null) {
-    throw new Error(`No stream type registered for name ${name}`)
-  }
-  return index
-}
-
-function getNameByCode(index: number): string {
-  for (const [name, code] of Object.entries(STREAM_TYPES)) {
-    if (index === code) {
-      return name
-    }
-  }
-  throw new Error(`No stream type registered for index ${index}`)
-}
 
 /**
  * Stream identifier, no commit information included.
@@ -175,7 +162,6 @@ export class StreamID {
   get bytes(): Uint8Array {
     const codec = new Uint8Array(varint.encode(STREAMID_CODEC))
     const type = new Uint8Array(varint.encode(this.type))
-
     return uint8ArrayConcat([codec, type, this.cid.bytes])
   }
 

@@ -1,7 +1,7 @@
 import {
-  type PartialEventHeader,
+  type PartialInitEventHeader,
   type SignedEvent,
-  createSignedEvent,
+  createSignedInitEvent,
 } from '@ceramic-sdk/events'
 import {
   MODEL,
@@ -11,7 +11,7 @@ import {
 } from '@ceramic-sdk/model-protocol'
 import type { DID } from 'dids'
 
-const header: PartialEventHeader = { model: MODEL, sep: 'model' }
+const header: PartialInitEventHeader = { model: MODEL, sep: 'model' }
 
 export async function createInitEvent(
   did: DID,
@@ -22,7 +22,7 @@ export async function createInitEvent(
     await did.authenticate()
   }
   const controller = did.hasParent ? did.parent : did.id
-  const event = await createSignedEvent(did, data, header)
+  const event = await createSignedInitEvent(did, data, header)
   await validateController(controller, event.cacaoBlock)
   return event
 }

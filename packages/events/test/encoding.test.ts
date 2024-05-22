@@ -1,26 +1,25 @@
 import { randomStreamID } from '@ceramic-sdk/identifiers'
 import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import { asDIDString } from '@didtools/codecs'
-import { decode } from 'codeco'
 
 import {
-  type EventPayload,
+  InitEventPayload,
   SignedEvent,
   assertSignedEvent,
 } from '../src/codecs.js'
 import {
+  encodeEventToCAR,
   eventFromCAR,
   eventFromString,
   eventToCAR,
   eventToString,
   signedEventToCAR,
-  unsignedEventToCAR,
 } from '../src/encoding.js'
 import { signEvent } from '../src/signing.js'
 
 const did = await getAuthenticatedDID(new Uint8Array(32))
 
-const testEventPayload: EventPayload = {
+const testEventPayload: InitEventPayload = {
   data: null,
   header: {
     controllers: [asDIDString(did.id)],
@@ -29,43 +28,48 @@ const testEventPayload: EventPayload = {
   },
 }
 
-test('encode and decode unsigned event as CAR', async () => {
-  const encoded = unsignedEventToCAR(testEventPayload)
-  const decoded = eventFromCAR(encoded)
+const encodedTestPayload = InitEventPayload.encode(testEventPayload)
+
+test('encode and decode unsigned init event as CAR', async () => {
+  const encoded = encodeEventToCAR(InitEventPayload, testEventPayload)
+  const decoded = eventFromCAR(InitEventPayload, encoded)
   expect(decoded).toEqual(testEventPayload)
 })
 
 test('encode and decode signed event as CAR', async () => {
-  const event = await signEvent(did, testEventPayload)
+  const event = await signEvent(did, encodedTestPayload)
   assertSignedEvent(event)
   const encoded = signedEventToCAR(event)
-  const decoded = eventFromCAR(encoded)
+  const decoded = eventFromCAR(InitEventPayload, encoded)
   assertSignedEvent(decoded)
   expect(decoded).toEqual(event)
 })
 
 test('encode and decode any supported event as CAR', async () => {
-  const signedEvent = await signEvent(did, testEventPayload)
-  const encodedSignedEvent = eventToCAR(signedEvent)
-  const decodedSignedEvent = eventFromCAR(encodedSignedEvent)
+  const signedEvent = await signEvent(did, encodedTestPayload)
+  const encodedSignedEvent = eventToCAR(InitEventPayload, signedEvent)
+  const decodedSignedEvent = eventFromCAR(InitEventPayload, encodedSignedEvent)
   assertSignedEvent(decodedSignedEvent)
   expect(decodedSignedEvent).toEqual(signedEvent)
 
-  const encodedEvent = eventToCAR(testEventPayload)
-  const decodedEvent = eventFromCAR(encodedEvent)
+  const encodedEvent = eventToCAR(InitEventPayload, testEventPayload)
+  const decodedEvent = eventFromCAR(InitEventPayload, encodedEvent)
   expect(SignedEvent.is(decodedEvent)).toBe(false)
   expect(decodedEvent).toEqual(testEventPayload)
 })
 
 test('encode and decode any supported event as string', async () => {
-  const signedEvent = await signEvent(did, testEventPayload)
-  const encodedSignedEvent = eventToString(signedEvent)
-  const decodedSignedEvent = eventFromString(encodedSignedEvent)
+  const signedEvent = await signEvent(did, encodedTestPayload)
+  const encodedSignedEvent = eventToString(InitEventPayload, signedEvent)
+  const decodedSignedEvent = eventFromString(
+    InitEventPayload,
+    encodedSignedEvent,
+  )
   assertSignedEvent(decodedSignedEvent)
   expect(decodedSignedEvent).toEqual(signedEvent)
 
-  const encodedEvent = eventToString(testEventPayload)
-  const decodedEvent = eventFromString(encodedEvent)
+  const encodedEvent = eventToString(InitEventPayload, testEventPayload)
+  const decodedEvent = eventFromString(InitEventPayload, encodedEvent)
   expect(SignedEvent.is(decodedEvent)).toBe(false)
   expect(decodedEvent).toEqual(testEventPayload)
 })

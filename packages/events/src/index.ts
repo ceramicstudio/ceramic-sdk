@@ -1,28 +1,23 @@
 export {
-  CeramicEvent,
-  EventHeader,
-  EventPayload,
+  GenericEventHeader,
+  InitEventHeader,
   SignedEvent,
-  assertCeramicEvent,
-  assertEventHeader,
   assertSignedEvent,
-  decodeCeramicEvent,
-  decodeEventHeader,
   decodeSignedEvent,
 } from './codecs.js'
 export {
   type Base,
+  encodeEventToCAR,
   eventFromCAR,
   eventFromString,
   eventToCAR,
   eventToString,
   signedEventToCAR,
-  unsignedEventToCAR,
 } from './encoding.js'
 export {
-  type PartialEventHeader,
+  type PartialInitEventHeader,
   type VerifiedEvent,
-  createSignedEvent,
+  createSignedInitEvent,
   getSignedEventPayload,
   signEvent,
   verifyEvent,

@@ -1,13 +1,13 @@
 import { DagJWS } from '@didtools/codecs'
 import * as dagJson from '@ipld/dag-json'
 import { type CAR, CARFactory, CarBlock } from 'cartonne'
-import { decode } from 'codeco'
+import { type Codec, type Decoder, decode } from 'codeco'
 import * as dagJose from 'dag-jose'
 import { bases } from 'multiformats/basics'
 import { CID } from 'multiformats/cid'
 import { sha256 } from 'multihashes-sync/sha2'
 
-import { type CeramicEvent, EventPayload, SignedEvent } from './codecs.js'
+import { SignedEvent } from './codecs.js'
 import { base64urlToJSON, restrictBlockSize } from './utils.js'
 
 const carFactory = new CARFactory()
@@ -51,29 +51,33 @@ export function signedEventToCAR(event: SignedEvent): CAR {
   return car
 }
 
-export function unsignedEventToCAR(event: EventPayload): CAR {
+export function encodeEventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   const car = carFactory.build()
-  const cid = car.put(EventPayload.encode(event), { isRoot: true })
+  const cid = car.put(codec.encode(event), { isRoot: true })
   // biome-ignore lint/style/noNonNullAssertion: added to CAR file right before
   const cidBlock = car.blocks.get(cid)!.payload
   restrictBlockSize(cidBlock, cid)
   return car
 }
 
-export function eventToCAR(event: CeramicEvent): CAR {
+export function eventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   return SignedEvent.is(event)
     ? signedEventToCAR(event)
-    : unsignedEventToCAR(event)
+    : encodeEventToCAR(codec, event)
 }
 
 export function eventToString(
-  event: CeramicEvent,
+  codec: Codec<unknown>,
+  event: unknown,
   base: Base = DEFAULT_BASE,
 ): string {
-  return eventToCAR(event).toString(base)
+  return eventToCAR(codec, event).toString(base)
 }
 
-export function eventFromCAR(car: CAR): CeramicEvent {
+export function eventFromCAR<T = unknown>(
+  decoder: Decoder<unknown, T>,
+  car: CAR,
+): SignedEvent | T {
   const cid = car.roots[0]
   const root = car.get(cid)
 
@@ -95,17 +99,18 @@ export function eventFromCAR(car: CAR): CeramicEvent {
     return event
   }
 
-  return decode(EventPayload, root)
+  return decode(decoder, root)
 }
 
-export function eventFromString(
+export function eventFromString<T = unknown>(
+  decoder: Decoder<unknown, T>,
   value: string,
   base: Base = DEFAULT_BASE,
-): CeramicEvent {
+): SignedEvent | T {
   const codec = bases[base]
   if (codec == null) {
     throw new Error(`Unsupported base: ${base}`)
   }
   const car = carFactory.fromBytes(codec.decode(value))
-  return eventFromCAR(car)
+  return eventFromCAR(decoder, car)
 }

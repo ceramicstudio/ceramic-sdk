@@ -1,7 +1,25 @@
 import { CID } from 'multiformats/cid'
 import { create } from 'multiformats/hashes/digest'
 
+import { STREAM_TYPES } from './constants.js'
 import { StreamID } from './stream-id.js'
+
+export function getCodeByName(name: string): number {
+  const index = STREAM_TYPES[name]
+  if (index == null) {
+    throw new Error(`No stream type registered for name ${name}`)
+  }
+  return index
+}
+
+export function getNameByCode(index: number): string {
+  for (const [name, code] of Object.entries(STREAM_TYPES)) {
+    if (index === code) {
+      return name
+    }
+  }
+  throw new Error(`No stream type registered for index ${index}`)
+}
 
 export function randomCID(
   version: 0 | 1 = 1,

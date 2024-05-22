@@ -23,7 +23,7 @@ export async function verifyInitEvent(
   verifier: DID,
   event: SignedEvent,
 ): Promise<VerifiedEvent<ModelInitEventPayload>> {
-  return await verifyEvent(verifier, event, ModelInitEventPayload)
+  return await verifyEvent(verifier, ModelInitEventPayload, event)
 }
 
 export async function handleInitEvent(

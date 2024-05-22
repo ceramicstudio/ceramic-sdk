@@ -10,6 +10,7 @@ import {
   array,
   boolean,
   literal,
+  nullCodec,
   optional,
   sparse,
   strict,
@@ -97,7 +98,7 @@ export type JSONPatchOperation = TypeOf<typeof JSONPatchOperation>
  */
 export const DocumentInitEventHeader = sparse(
   {
-    controller: tuple([didString]),
+    controllers: tuple([didString]),
     model: streamIDAsBytes,
     sep: literal('model'),
     unique: optional(uint8array),
@@ -121,11 +122,42 @@ export const DocumentInitEventPayload = sparse(
 export type DocumentInitEventPayload = TypeOf<typeof DocumentInitEventPayload>
 
 /**
+ * Init event header for a deterministic ModelInstanceDocument Stream
+ */
+export const DeterministicInitEventHeader = sparse(
+  {
+    controllers: tuple([didString]),
+    model: streamIDAsBytes,
+    sep: literal('model'),
+    unique: optional(uint8array),
+  },
+  'DeterministicInitEventHeader',
+)
+export type DeterministicInitEventHeader = TypeOf<
+  typeof DeterministicInitEventHeader
+>
+
+/**
+ * Init event payload for a deterministic ModelInstanceDocument Stream
+ */
+export const DeterministicInitEventPayload = sparse(
+  {
+    data: nullCodec,
+    header: DeterministicInitEventHeader,
+  },
+  'DeterministicInitEventPayload',
+)
+export type DeterministicInitEventPayload = TypeOf<
+  typeof DeterministicInitEventPayload
+>
+
+/**
  * Data event header for a ModelInstanceDocument Stream
  */
-export const DocumentDataEventHeader = strict(
+export const DocumentDataEventHeader = sparse(
   {
-    shouldIndex: boolean,
+    context: optional(streamIDAsBytes),
+    shouldIndex: optional(boolean),
   },
   'DocumentDataEventHeader',
 )
