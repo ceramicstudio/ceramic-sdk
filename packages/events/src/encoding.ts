@@ -74,10 +74,10 @@ export function eventToString(
   return eventToCAR(codec, event).toString(base)
 }
 
-export function eventFromCAR<T = unknown>(
-  decoder: Decoder<unknown, T>,
+export function eventFromCAR<Payload = unknown>(
+  decoder: Decoder<unknown, Payload>,
   car: CAR,
-): SignedEvent | T {
+): SignedEvent | Payload {
   const cid = car.roots[0]
   const root = car.get(cid)
 
@@ -102,11 +102,11 @@ export function eventFromCAR<T = unknown>(
   return decode(decoder, root)
 }
 
-export function eventFromString<T = unknown>(
-  decoder: Decoder<unknown, T>,
+export function eventFromString<Payload = unknown>(
+  decoder: Decoder<unknown, Payload>,
   value: string,
   base: Base = DEFAULT_BASE,
-): SignedEvent | T {
+): SignedEvent | Payload {
   const codec = bases[base]
   if (codec == null) {
     throw new Error(`Unsupported base: ${base}`)

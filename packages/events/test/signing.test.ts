@@ -12,7 +12,6 @@ import {
   createSignedInitEvent,
   getSignedEventPayload,
   signEvent,
-  verifyEvent,
 } from '../src/signing.js'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
@@ -42,14 +41,6 @@ test('getSignedEventPayload() returns the EventPayload of a SignedEvent', async 
   const signed = await signEvent(authenticatedDID, encodedTestPayload)
   const event = await getSignedEventPayload(InitEventPayload, signed)
   expect(event).toEqual(testEventPayload)
-})
-
-test('verifyEvent() verifies the signed event signature and extract the payload', async () => {
-  const signed = await signEvent(authenticatedDID, encodedTestPayload)
-  const verified = await verifyEvent(authenticatedDID, InitEventPayload, signed)
-  expect(verified.didResolutionResult).toBeDefined()
-  expect(verified.kid).toBeDefined()
-  expect(verified).toMatchObject(testEventPayload)
 })
 
 describe('createSignedInitEvent()', () => {

@@ -1,7 +1,7 @@
 import { type DIDString, asDIDString } from '@didtools/codecs'
 import * as dagCbor from '@ipld/dag-cbor'
 import { type Decoder, decode } from 'codeco'
-import type { DID, VerifyJWSResult } from 'dids'
+import type { DID } from 'dids'
 import * as Block from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 
@@ -10,11 +10,6 @@ import {
   InitEventPayload,
   type SignedEvent,
 } from './codecs.js'
-
-export type VerifiedEvent<Payload = Record<string, unknown>> = VerifyJWSResult &
-  Payload & {
-    cacaoBlock?: Uint8Array
-  }
 
 export async function signEvent(
   did: DID,
@@ -65,20 +60,4 @@ export async function getSignedEventPayload<Payload = Record<string, unknown>>(
     hasher: sha256,
   })
   return decode(decoder, block.value)
-}
-
-export async function verifyEvent<Payload = Record<string, unknown>>(
-  did: DID,
-  codec: Decoder<unknown, Payload>,
-  event: SignedEvent,
-): Promise<VerifiedEvent<Payload>> {
-  const cid = event.jws.link
-  if (cid == null) {
-    throw new Error('Missing linked block CID')
-  }
-  const [verified, payload] = await Promise.all([
-    did.verifyJWS(event.jws),
-    getSignedEventPayload(codec, event),
-  ])
-  return { ...verified, ...payload, cacaoBlock: event.cacaoBlock }
 }

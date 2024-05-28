@@ -1,7 +1,7 @@
 import {
   type SignedEvent,
-  type VerifiedEvent,
-  verifyEvent,
+  type SignedEventContainer,
+  signedEventToContainer,
 } from '@ceramic-sdk/events'
 import {
   ModelInitEventPayload,
@@ -19,26 +19,26 @@ import {
 } from './interfaces-validation.js'
 import type { Context } from './types.js'
 
-export async function verifyInitEvent(
+export async function getInitEventContainer(
   verifier: DID,
   event: SignedEvent,
-): Promise<VerifiedEvent<ModelInitEventPayload>> {
-  return await verifyEvent(verifier, ModelInitEventPayload, event)
+): Promise<SignedEventContainer<ModelInitEventPayload>> {
+  return await signedEventToContainer(verifier, ModelInitEventPayload, event)
 }
 
 export async function handleInitEvent(
   event: SignedEvent,
   context: Context,
 ): Promise<ModelState> {
-  const verified = await verifyInitEvent(context.verifier, event)
+  const { payload } = await getInitEventContainer(context.verifier, event)
 
   const metadata = ModelMetadata.encode({
-    controller: verified.header.controllers[0],
-    model: verified.header.model,
+    controller: payload.header.controllers[0],
+    model: payload.header.model,
   })
   await validateController(metadata.controller, event.cacaoBlock)
 
-  const content = verified.data
+  const content = payload.data
   assertValidModelContent(content)
   if (content.version !== '1.0') {
     if (content.interface) {
@@ -48,8 +48,8 @@ export async function handleInitEvent(
   }
 
   const streamID = await getModelStreamID({
-    data: verified.data,
-    header: verified.header,
+    data: payload.data,
+    header: payload.header,
   })
 
   return { id: streamID.toString(), content, metadata, log: [event] }

@@ -6,6 +6,14 @@ export {
   decodeSignedEvent,
 } from './codecs.js'
 export {
+  type EventContainer,
+  type SignedEventContainer,
+  type UnsignedEventContainer,
+  eventToContainer,
+  signedEventToContainer,
+  unsignedEventToContainer,
+} from './container.js'
+export {
   type Base,
   encodeEventToCAR,
   eventFromCAR,
@@ -16,9 +24,7 @@ export {
 } from './encoding.js'
 export {
   type PartialInitEventHeader,
-  type VerifiedEvent,
   createSignedInitEvent,
   getSignedEventPayload,
   signEvent,
-  verifyEvent,
 } from './signing.js'
