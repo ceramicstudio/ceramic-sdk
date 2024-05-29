@@ -4,7 +4,12 @@ import { CID } from 'multiformats/cid'
 import { concat as uint8ArrayConcat } from 'uint8arrays'
 import varint from 'varint'
 
-import { STREAMID_CODEC } from './constants.js'
+import {
+  STREAMID_CODEC,
+  type StreamType,
+  type StreamTypeCode,
+  type StreamTypeName,
+} from './constants.js'
 import {
   parseCommit,
   fromBytes as parseFromBytes,
@@ -73,7 +78,7 @@ const TAG = Symbol.for('@ceramic-sdk/identifiers/CommitID')
 export class CommitID {
   protected readonly _tag = TAG
 
-  readonly #type: number
+  readonly #type: StreamTypeCode
   readonly #cid: CID
   readonly #commit: CID | null // null = init commit
 
@@ -114,7 +119,7 @@ export class CommitID {
    * new StreamID(<type>, <CID>|<cidStr>, <CommitCID>|<CommitCidStr>)
    */
   constructor(
-    type: string | number,
+    type: StreamType,
     cid: CID | string,
     commit: CID | string | number | null = null,
   ) {
@@ -136,7 +141,7 @@ export class CommitID {
   /**
    * Stream type code
    */
-  get type(): number {
+  get type(): StreamTypeCode {
     return this.#type
   }
 
@@ -144,7 +149,7 @@ export class CommitID {
    * Stream type name
    */
   @Memoize()
-  get typeName(): string {
+  get typeName(): StreamTypeName {
     return getNameByCode(this.#type)
   }
 

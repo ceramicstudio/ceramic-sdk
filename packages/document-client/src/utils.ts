@@ -1,7 +1,13 @@
-import { DocumentInitEventHeader } from '@ceramic-sdk/document-protocol'
+import {
+  DocumentInitEventHeader,
+  type JSONPatchOperation,
+} from '@ceramic-sdk/document-protocol'
 import type { StreamID } from '@ceramic-sdk/identifiers'
 import { type DIDString, asDIDString } from '@didtools/codecs'
 import { decode } from 'codeco'
+import jsonpatch from 'fast-json-patch'
+
+import type { UnknowContent } from './types.js'
 
 export function randomBytes(length: number): Uint8Array {
   const bytes = new Uint8Array(length)
@@ -45,4 +51,14 @@ export function createInitHeader(
 
   // Validate header before returning
   return decode(DocumentInitEventHeader, header)
+}
+
+export function getPatchOperations<T extends UnknowContent = UnknowContent>(
+  fromContent?: T,
+  toContent?: T,
+): Array<JSONPatchOperation> {
+  return jsonpatch.compare(
+    fromContent ?? {},
+    toContent ?? {},
+  ) as Array<JSONPatchOperation>
 }

@@ -1,18 +1,20 @@
-import * as codec from '@ipld/dag-cbor'
 import { Memoize } from 'mapmoize'
 import { base36 } from 'multiformats/bases/base36'
-import * as Block from 'multiformats/block'
 import { CID } from 'multiformats/cid'
-import { sha256 as hasher } from 'multiformats/hashes/sha2'
 import { concat as uint8ArrayConcat } from 'uint8arrays'
 import varint from 'varint'
 
-import { STREAMID_CODEC } from './constants.js'
+import {
+  STREAMID_CODEC,
+  type StreamType,
+  type StreamTypeCode,
+  type StreamTypeName,
+} from './constants.js'
 import {
   fromBytes as parseFromBytes,
   fromString as parseFromString,
 } from './parsing.js'
-import { getCodeByName, getNameByCode } from './utils.js'
+import { createBlock, getCodeByName, getNameByCode } from './utils.js'
 
 export class InvalidStreamIDBytesError extends Error {
   constructor(bytes: Uint8Array) {
@@ -70,7 +72,7 @@ const TAG = Symbol.for('@ceramic-sdk/identifiers/StreamID')
 export class StreamID {
   protected readonly _tag = TAG
 
-  private readonly _type: number
+  private readonly _type: StreamTypeCode
   private readonly _cid: CID
 
   static fromBytes = fromBytes
@@ -96,12 +98,12 @@ export class StreamID {
    *
    * @example
    * ```typescript
-   * new StreamID('tile', 'bagcqcerakszw2vsovxznyp5gfnpdj4cqm2xiv76yd24wkjewhhykovorwo6a');
-   * new StreamID('tile', cid);
-   * new StreamID(0, cid);
+   * new StreamID('MID', 'bagcqcerakszw2vsovxznyp5gfnpdj4cqm2xiv76yd24wkjewhhykovorwo6a');
+   * new StreamID('MID', cid);
+   * new StreamID(3, cid);
    * ```
    */
-  constructor(type: string | number, cid: CID | string) {
+  constructor(type: StreamType, cid: CID | string) {
     if (!(type || type === 0))
       throw new Error('StreamID constructor: type required')
     if (!cid) throw new Error('StreamID constructor: cid required')
@@ -110,33 +112,30 @@ export class StreamID {
   }
 
   /**
-   * Create a streamId from a genesis commit.
+   * Create a streamId from an init event.
    *
-   * @param {string|number}         type       the stream type
-   * @param {Record<string, any>}   genesis    a genesis commit
+   * @param {string|number}         type     the stream type
+   * @param {Record<string, any>}   value    the init event payload
    *
    * @example
    * ```typescript
-   * const streamId = StreamID.fromGenesis('tile', {
+   * const streamId = StreamID.fromInitEventPayload('MID', {
    *   header: {
-   *     controllers:['did:3:kjz...'],
-   *     family: 'IDX'
+   *     controllers: ['did:3:kjz...'],
+   *     model: '...',
    *   }
    * });
    * ```
    */
-  static async fromGenesis(
-    type: string | number,
-    genesis: unknown,
-  ): Promise<StreamID> {
-    const block = await Block.encode({ value: genesis, codec, hasher })
+  static fromInitEventPayload(type: StreamType, value: unknown): StreamID {
+    const block = createBlock(value)
     return new StreamID(type, block.cid)
   }
 
   /**
    * Stream type code
    */
-  get type(): number {
+  get type(): StreamTypeCode {
     return this._type
   }
 
@@ -144,7 +143,7 @@ export class StreamID {
    * Stream type name
    */
   @Memoize()
-  get typeName(): string {
+  get typeName(): StreamTypeName {
     return getNameByCode(this._type)
   }
 

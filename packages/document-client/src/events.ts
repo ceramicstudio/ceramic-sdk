@@ -15,11 +15,9 @@ import type { CommitID, StreamID } from '@ceramic-sdk/identifiers'
 import type { DIDString } from '@didtools/codecs'
 import { decode } from 'codeco'
 import type { DID } from 'dids'
-import jsonpatch from 'fast-json-patch'
 
-import { createInitHeader } from './utils.js'
-
-type UnknowContent = Record<string, unknown>
+import type { UnknowContent } from './types.js'
+import { createInitHeader, getPatchOperations } from './utils.js'
 
 export type CreateInitEventParams<T extends UnknowContent = UnknowContent> = {
   content: T
@@ -86,22 +84,11 @@ export type CreateDataEventParams<T extends UnknowContent = UnknowContent> = {
 export async function createDataEvent<T extends UnknowContent = UnknowContent>(
   params: CreateDataEventParams<T>,
 ): Promise<SignedEvent> {
-  const operations = jsonpatch.compare(
-    params.currentContent ?? {},
-    params.content ?? {},
-  ) as Array<JSONPatchOperation>
+  const operations = getPatchOperations(params.currentContent, params.content)
   // Header must only be provided if there are values
   // CBOR encoding doesn't support undefined values
-  let header: DocumentDataEventHeader | undefined = undefined
-  if (params.context != null || params.shouldIndex != null) {
-    header = {}
-    if (params.context != null) {
-      header.context = params.context
-    }
-    if (params.shouldIndex != null) {
-      header.shouldIndex = params.shouldIndex
-    }
-  }
+  const header =
+    params.shouldIndex == null ? undefined : { shouldIndex: params.shouldIndex }
   const payload = createDataEventPayload(params.currentID, operations, header)
   return await signEvent(params.controller, payload)
 }

@@ -47,7 +47,7 @@ export async function handleInitEvent(
     await validateImplementedInterfaces(content, context)
   }
 
-  const streamID = await getModelStreamID({
+  const streamID = getModelStreamID({
     data: payload.data,
     header: payload.header,
   })

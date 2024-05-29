@@ -156,7 +156,6 @@ export type DeterministicInitEventPayload = TypeOf<
  */
 export const DocumentDataEventHeader = sparse(
   {
-    context: optional(streamIDAsBytes),
     shouldIndex: optional(boolean),
   },
   'DocumentDataEventHeader',

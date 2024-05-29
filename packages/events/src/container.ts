@@ -1,11 +1,13 @@
 import { type Decoder, decode } from 'codeco'
 import type { DID, VerifyJWSResult } from 'dids'
+import type { CID } from 'multiformats/cid'
 
 import { SignedEvent } from './codecs.js'
 import { getSignedEventPayload } from './signing.js'
 
 export type SignedEventContainer<Payload> = {
   signed: true
+  cid: CID
   payload: Payload
   verified: VerifyJWSResult
   cacaoBlock?: Uint8Array
@@ -40,7 +42,7 @@ export async function signedEventToContainer<Payload>(
     did.verifyJWS(event.jws),
     getSignedEventPayload(codec, event),
   ])
-  return { signed: true, verified, payload, cacaoBlock: event.cacaoBlock }
+  return { signed: true, cid, verified, payload, cacaoBlock: event.cacaoBlock }
 }
 
 export async function eventToContainer<Payload>(

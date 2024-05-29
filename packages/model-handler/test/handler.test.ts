@@ -237,13 +237,13 @@ describe('handleInitEvent()', () => {
         sep: 'model',
       },
     }
-    const [event, streamID] = await Promise.all([
-      signEvent(authenticatedDID, ModelInitEventPayload.encode(payload)),
-      getModelStreamID(payload),
-    ])
 
+    const event = await signEvent(
+      authenticatedDID,
+      ModelInitEventPayload.encode(payload),
+    )
     const state = await handleInitEvent(event, defaultContext)
-    expect(state.id).toBe(streamID.toString())
+    expect(state.id).toBe(getModelStreamID(payload).toString())
     expect(state.content).toEqual(testModelV1)
     expect(state.metadata.controller).toBe(authenticatedDID.id)
     expect(state.metadata.model).toBe(MODEL_STREAM_ID)

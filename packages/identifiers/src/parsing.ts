@@ -3,7 +3,7 @@ import { CID } from 'multiformats/cid'
 import { decode as decodeMultiHash } from 'multiformats/hashes/digest'
 import varint from 'varint'
 
-import { STREAMID_CODEC } from './constants.js'
+import { STREAMID_CODEC, type StreamTypeCode } from './constants.js'
 
 export function readVarint(bytes: Uint8Array): [number, Uint8Array, number] {
   const value = varint.decode(bytes)
@@ -42,13 +42,13 @@ export function readCid(bytes: Uint8Array): [CID, Uint8Array] {
 
 export type StreamIDComponents = {
   kind: 'stream-id'
-  type: number
+  type: StreamTypeCode
   init: CID
 }
 
 export type CommitIDComponents = {
   kind: 'commit-id'
-  type: number
+  type: StreamTypeCode
   init: CID
   commit: CID | null
 }
@@ -65,7 +65,8 @@ export function fromBytes(
   const [streamCodec, streamCodecRemainder] = readVarint(input)
   if (streamCodec !== STREAMID_CODEC)
     throw new Error(`Invalid ${title}, does not include streamid codec`)
-  const [type, streamtypeRemainder] = readVarint(streamCodecRemainder)
+  const [code, streamtypeRemainder] = readVarint(streamCodecRemainder)
+  const type = code as StreamTypeCode
   const cidResult = readCid(streamtypeRemainder)
   const [init, remainder] = cidResult
   if (remainder.length === 0) {

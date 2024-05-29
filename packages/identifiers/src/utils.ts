@@ -1,10 +1,31 @@
+import * as codec from '@ipld/dag-cbor'
+import { Block } from 'multiformats/block'
 import { CID } from 'multiformats/cid'
-import { create } from 'multiformats/hashes/digest'
+import { type Digest, create } from 'multiformats/hashes/digest'
+import { sha256 } from 'multiformats/hashes/sha2'
 
-import { STREAM_TYPES } from './constants.js'
+import {
+  STREAM_TYPES,
+  type StreamType,
+  type StreamTypeCode,
+  type StreamTypeName,
+} from './constants.js'
 import { StreamID } from './stream-id.js'
 
-export function getCodeByName(name: string): number {
+type CodecCode = typeof codec.code
+type DigestCode = typeof sha256.code
+
+export function createBlock<T = unknown>(
+  value: T,
+): Block<T, CodecCode, DigestCode, 1> {
+  const bytes = codec.encode(value)
+  // digest call is synchronous, no need to await
+  const hash = sha256.digest(bytes) as Digest<DigestCode, number>
+  const cid = CID.createV1(codec.code, hash) as CID<T, CodecCode, DigestCode, 1>
+  return new Block({ value, bytes, cid })
+}
+
+export function getCodeByName(name: StreamTypeName): StreamTypeCode {
   const index = STREAM_TYPES[name]
   if (index == null) {
     throw new Error(`No stream type registered for name ${name}`)
@@ -12,24 +33,20 @@ export function getCodeByName(name: string): number {
   return index
 }
 
-export function getNameByCode(index: number): string {
-  for (const [name, code] of Object.entries(STREAM_TYPES)) {
-    if (index === code) {
-      return name
+export function getNameByCode(code: StreamTypeCode): StreamTypeName {
+  for (const [name, value] of Object.entries(STREAM_TYPES)) {
+    if (value === code) {
+      return name as StreamTypeName
     }
   }
-  throw new Error(`No stream type registered for index ${index}`)
+  throw new Error(`No stream type registered for code ${code}`)
 }
 
-export function randomCID(
-  version: 0 | 1 = 1,
-  codec = 0x71, // 0x71 is DAG-CBOR codec identifier
-  hasher = 0x12, // 0x12 is SHA-256 hashing algorithm
-): CID {
+export function randomCID(): CID {
   const randomBytes = globalThis.crypto.getRandomValues(new Uint8Array(32))
-  return CID.create(version, codec, create(hasher, randomBytes))
+  return CID.createV1(codec.code, create(sha256.code, randomBytes))
 }
 
-export function randomStreamID(type: number | string = 0): StreamID {
+export function randomStreamID(type: StreamType = 0): StreamID {
   return new StreamID(type, randomCID())
 }
