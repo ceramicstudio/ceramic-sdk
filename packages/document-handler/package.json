@@ -35,7 +35,7 @@
     "@ceramic-sdk/document-protocol": "workspace:^",
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
-    "ajv": "^8.14.0",
+    "ajv": "^8.16.0",
     "ajv-formats": "^3.0.1",
     "uint8arrays": "^5.1.0"
   },

@@ -17,7 +17,7 @@ export function getDeterministicStreamID(
     sep: header.sep,
     unique: header.unique,
   })
-  return StreamID.fromInitEventPayload(STREAM_TYPE_ID, {
+  return StreamID.fromPayload(STREAM_TYPE_ID, {
     data: null,
     header: initHeader,
   })

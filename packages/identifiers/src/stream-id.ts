@@ -14,7 +14,7 @@ import {
   fromBytes as parseFromBytes,
   fromString as parseFromString,
 } from './parsing.js'
-import { createBlock, getCodeByName, getNameByCode } from './utils.js'
+import { createCID, getCodeByName, getNameByCode } from './utils.js'
 
 export class InvalidStreamIDBytesError extends Error {
   constructor(bytes: Uint8Array) {
@@ -112,14 +112,14 @@ export class StreamID {
   }
 
   /**
-   * Create a streamId from an init event.
+   * Create a streamId from an init event payload.
    *
    * @param {string|number}         type     the stream type
    * @param {Record<string, any>}   value    the init event payload
    *
    * @example
    * ```typescript
-   * const streamId = StreamID.fromInitEventPayload('MID', {
+   * const streamId = StreamID.fromPayload('MID', {
    *   header: {
    *     controllers: ['did:3:kjz...'],
    *     model: '...',
@@ -127,9 +127,8 @@ export class StreamID {
    * });
    * ```
    */
-  static fromInitEventPayload(type: StreamType, value: unknown): StreamID {
-    const block = createBlock(value)
-    return new StreamID(type, block.cid)
+  static fromPayload(type: StreamType, value: unknown): StreamID {
+    return new StreamID(type, createCID(value))
   }
 
   /**

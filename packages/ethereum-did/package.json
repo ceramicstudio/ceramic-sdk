@@ -37,7 +37,7 @@
     "caip": "^1.1.1",
     "did-session": "^3.1.0",
     "dids": "^5.0.2",
-    "viem": "^2.13.1"
+    "viem": "^2.13.8"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

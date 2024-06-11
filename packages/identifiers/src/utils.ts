@@ -1,5 +1,4 @@
 import * as codec from '@ipld/dag-cbor'
-import { Block } from 'multiformats/block'
 import { CID } from 'multiformats/cid'
 import { type Digest, create } from 'multiformats/hashes/digest'
 import { sha256 } from 'multiformats/hashes/sha2'
@@ -15,14 +14,13 @@ import { StreamID } from './stream-id.js'
 type CodecCode = typeof codec.code
 type DigestCode = typeof sha256.code
 
-export function createBlock<T = unknown>(
+export function createCID<T = unknown>(
   value: T,
-): Block<T, CodecCode, DigestCode, 1> {
+): CID<T, CodecCode, DigestCode, 1> {
   const bytes = codec.encode(value)
   // digest call is synchronous, no need to await
   const hash = sha256.digest(bytes) as Digest<DigestCode, number>
-  const cid = CID.createV1(codec.code, hash) as CID<T, CodecCode, DigestCode, 1>
-  return new Block({ value, bytes, cid })
+  return CID.createV1(codec.code, hash) as CID<T, CodecCode, DigestCode, 1>
 }
 
 export function getCodeByName(name: StreamTypeName): StreamTypeCode {
