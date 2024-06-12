@@ -13,13 +13,12 @@ import {
 } from '@ceramic-sdk/events'
 import type { CommitID, StreamID } from '@ceramic-sdk/identifiers'
 import type { DIDString } from '@didtools/codecs'
-import { decode } from 'codeco'
 import type { DID } from 'dids'
 
-import type { UnknowContent } from './types.js'
+import type { UnknownContent } from './types.js'
 import { createInitHeader, getPatchOperations } from './utils.js'
 
-export type CreateInitEventParams<T extends UnknowContent = UnknowContent> = {
+export type CreateInitEventParams<T extends UnknownContent = UnknownContent> = {
   content: T
   controller: DID
   model: StreamID
@@ -27,9 +26,9 @@ export type CreateInitEventParams<T extends UnknowContent = UnknowContent> = {
   shouldIndex?: boolean
 }
 
-export async function createInitEvent<T extends UnknowContent = UnknowContent>(
-  params: CreateInitEventParams<T>,
-): Promise<SignedEvent> {
+export async function createInitEvent<
+  T extends UnknownContent = UnknownContent,
+>(params: CreateInitEventParams<T>): Promise<SignedEvent> {
   const { content, controller, ...headerParams } = params
   assertValidContentLength(content)
   const header = createInitHeader({
@@ -69,10 +68,13 @@ export function createDataEventPayload(
   if (header != null) {
     payload.header = header
   }
-  return decode(DocumentDataEventPayload, payload)
+  if (!DocumentDataEventPayload.is(payload)) {
+    throw new Error('Invalid payload')
+  }
+  return payload
 }
 
-export type CreateDataEventParams<T extends UnknowContent = UnknowContent> = {
+export type CreateDataEventParams<T extends UnknownContent = UnknownContent> = {
   controller: DID
   currentID: CommitID
   content?: T
@@ -81,9 +83,9 @@ export type CreateDataEventParams<T extends UnknowContent = UnknowContent> = {
   shouldIndex?: boolean
 }
 
-export async function createDataEvent<T extends UnknowContent = UnknowContent>(
-  params: CreateDataEventParams<T>,
-): Promise<SignedEvent> {
+export async function createDataEvent<
+  T extends UnknownContent = UnknownContent,
+>(params: CreateDataEventParams<T>): Promise<SignedEvent> {
   const operations = getPatchOperations(params.currentContent, params.content)
   // Header must only be provided if there are values
   // CBOR encoding doesn't support undefined values

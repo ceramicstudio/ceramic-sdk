@@ -1,1 +1,1 @@
-export type UnknowContent = Record<string, unknown>
+export type UnknownContent = Record<string, unknown>

@@ -1,0 +1,115 @@
+import {
+  DocumentDataEventPayload,
+  DocumentInitEventPayload,
+} from '@ceramic-sdk/document-protocol'
+import { assertSignedEvent, getSignedEventPayload } from '@ceramic-sdk/events'
+import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
+import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
+
+import {
+  createDataEvent,
+  createInitEvent,
+  getDeterministicInitEvent,
+} from '../src/index.js'
+
+const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
+
+describe('getDeterministicInitEvent()', () => {
+  test('returns the deterministic event payload without unique value by default', () => {
+    const model = randomStreamID()
+    const event = getDeterministicInitEvent(model, 'did:key:123')
+    expect(event.data).toBeNull()
+    expect(event.header.controllers).toEqual(['did:key:123'])
+    expect(event.header.model).toBe(model)
+    expect(event.header.unique).toBeUndefined()
+  })
+
+  test('returns the deterministic event payload with the provided unique value', () => {
+    const model = randomStreamID()
+    const unique = new Uint8Array([0, 1, 2])
+    const event = getDeterministicInitEvent(model, 'did:key:123', unique)
+    expect(event.data).toBeNull()
+    expect(event.header.controllers).toEqual(['did:key:123'])
+    expect(event.header.model).toBe(model)
+    expect(event.header.unique).toBe(unique)
+  })
+})
+
+describe('createInitEvent()', () => {
+  test('creates unique events by adding a random unique value', async () => {
+    const model = randomStreamID()
+    const event1 = await createInitEvent({
+      content: { hello: 'world' },
+      controller: authenticatedDID,
+      model,
+    })
+    assertSignedEvent(event1)
+
+    const event2 = await createInitEvent({
+      content: { hello: 'world' },
+      controller: authenticatedDID,
+      model,
+    })
+    expect(event2).not.toEqual(event1)
+  })
+
+  test('adds the context and shouldIndex when if provided', async () => {
+    const model = randomStreamID()
+    const event1 = await createInitEvent({
+      content: { hello: 'world' },
+      controller: authenticatedDID,
+      model,
+    })
+    const payload1 = await getSignedEventPayload(
+      DocumentInitEventPayload,
+      event1,
+    )
+    expect(payload1.header.context).toBeUndefined()
+    expect(payload1.header.shouldIndex).toBeUndefined()
+
+    const context = randomStreamID()
+    const event2 = await createInitEvent({
+      content: { hello: 'world' },
+      controller: authenticatedDID,
+      model,
+      context,
+      shouldIndex: true,
+    })
+    const payload2 = await getSignedEventPayload(
+      DocumentInitEventPayload,
+      event2,
+    )
+    expect(payload2.header.context?.equals(context)).toBe(true)
+    expect(payload2.header.shouldIndex).toBe(true)
+  })
+})
+
+describe('createDataEvent()', () => {
+  const commitID = CommitID.fromStream(randomStreamID(), randomCID())
+
+  test('creates the JSON patch payload', async () => {
+    const event = await createDataEvent({
+      currentID: commitID,
+      currentContent: { hello: 'test' },
+      content: { hello: 'world', test: true },
+      controller: authenticatedDID,
+    })
+    const payload = await getSignedEventPayload(DocumentDataEventPayload, event)
+    expect(payload.data).toEqual([
+      { op: 'replace', path: '/hello', value: 'world' },
+      { op: 'add', path: '/test', value: true },
+    ])
+    expect(payload.header).toBeUndefined()
+  })
+
+  test('adds the shouldIndex header when provided', async () => {
+    const event = await createDataEvent({
+      currentID: commitID,
+      content: { hello: 'world' },
+      controller: authenticatedDID,
+      shouldIndex: true,
+    })
+    const payload = await getSignedEventPayload(DocumentDataEventPayload, event)
+    expect(payload.header).toEqual({ shouldIndex: true })
+  })
+})

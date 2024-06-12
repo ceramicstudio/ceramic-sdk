@@ -35,12 +35,13 @@
     "@ceramic-sdk/document-protocol": "workspace:^",
     "@ceramic-sdk/events": "workspace:^",
     "@didtools/codecs": "^3.0.0",
-    "codeco": "^1.2.3",
     "fast-json-patch": "^3.1.1"
   },
   "devDependencies": {
     "@ceramic-sdk/identifiers": "workspace:^",
-    "dids": "^5.0.2"
+    "@ceramic-sdk/key-did": "workspace:^",
+    "dids": "^5.0.2",
+    "uint8arrays": "^5.1.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

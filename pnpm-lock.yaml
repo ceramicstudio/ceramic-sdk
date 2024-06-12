@@ -56,9 +56,6 @@ importers:
       '@didtools/codecs':
         specifier: ^3.0.0
         version: 3.0.0
-      codeco:
-        specifier: ^1.2.3
-        version: 1.2.3
       fast-json-patch:
         specifier: ^3.1.1
         version: 3.1.1
@@ -66,9 +63,15 @@ importers:
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../identifiers
+      '@ceramic-sdk/key-did':
+        specifier: workspace:^
+        version: link:../key-did
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.4.5)
+      uint8arrays:
+        specifier: ^5.1.0
+        version: 5.1.0
 
   packages/document-handler:
     dependencies:
