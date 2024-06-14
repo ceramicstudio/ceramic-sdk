@@ -6,6 +6,7 @@ import {
   uint8array,
 } from '@didtools/codecs'
 import {
+  type OutputOf,
   type TypeOf,
   array,
   boolean,
@@ -110,16 +111,16 @@ export const DocumentInitEventHeader = sparse(
 export type DocumentInitEventHeader = TypeOf<typeof DocumentInitEventHeader>
 
 /**
- * Init event payload for a ModelInstanceDocument Stream
+ * Init event payload for a non-deterministic ModelInstanceDocument Stream
  */
-export const DocumentInitEventPayload = sparse(
+export const DataInitEventPayload = sparse(
   {
     data: unknownRecord,
     header: DocumentInitEventHeader,
   },
-  'DocumentInitEventPayload',
+  'DataInitEventPayload',
 )
-export type DocumentInitEventPayload = TypeOf<typeof DocumentInitEventPayload>
+export type DataInitEventPayload = TypeOf<typeof DataInitEventPayload>
 
 /**
  * Init event header for a deterministic ModelInstanceDocument Stream
@@ -150,6 +151,18 @@ export const DeterministicInitEventPayload = sparse(
 export type DeterministicInitEventPayload = TypeOf<
   typeof DeterministicInitEventPayload
 >
+export type EncodedDeterministicInitEventPayload = OutputOf<
+  typeof DeterministicInitEventPayload
+>
+
+/**
+ * Init event payload for a ModelInstanceDocument Stream
+ */
+export const DocumentInitEventPayload = union(
+  [DeterministicInitEventPayload, DataInitEventPayload],
+  'DocumentInitEventPayload',
+)
+export type DocumentInitEventPayload = TypeOf<typeof DocumentInitEventPayload>
 
 /**
  * Data event header for a ModelInstanceDocument Stream
@@ -205,3 +218,4 @@ export const DocumentMetadata = sparse(
   'DocumentMetadata',
 )
 export type DocumentMetadata = TypeOf<typeof DocumentMetadata>
+export type EncodedDocumentMetadata = OutputOf<typeof DocumentMetadata>

@@ -2,11 +2,13 @@ import {
   type DeterministicInitEventPayload,
   type DocumentDataEventHeader,
   DocumentDataEventPayload,
+  type EncodedDeterministicInitEventPayload,
   type JSONPatchOperation,
   assertValidContentLength,
   assertValidPatchOperations,
 } from '@ceramic-sdk/document-protocol'
 import {
+  InitEventHeader,
   type SignedEvent,
   createSignedInitEvent,
   signEvent,
@@ -39,7 +41,7 @@ export async function createInitEvent<
   return await createSignedInitEvent(controller, content, header)
 }
 
-export function getDeterministicInitEvent(
+export function getDeterministicInitEventPayload(
   model: StreamID,
   controller: DIDString | string,
   uniqueValue?: Uint8Array,
@@ -52,6 +54,20 @@ export function getDeterministicInitEvent(
       unique: uniqueValue ?? true,
     }),
   }
+}
+
+export function getDeterministicInitEvent(
+  model: StreamID,
+  controller: DIDString | string,
+  uniqueValue?: Uint8Array,
+): EncodedDeterministicInitEventPayload {
+  const { header } = getDeterministicInitEventPayload(
+    model,
+    controller,
+    uniqueValue,
+  )
+  // @ts-ignore: "sep" value is typed as string rather than "model" literal
+  return { data: null, header: InitEventHeader.encode(header) }
 }
 
 export function createDataEventPayload(

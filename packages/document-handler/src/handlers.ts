@@ -1,6 +1,7 @@
 import {
   DocumentInitEventPayload,
   DocumentMetadata,
+  type EncodedDocumentMetadata,
   assertValidContentLength,
   getDeterministicStreamID,
   getStreamID,
@@ -27,21 +28,21 @@ export async function handleInitEvent(
   const definition = await context.loadModelDefinition(modelID)
   assertValidInitHeader(definition, header)
 
-  const metadata = DocumentMetadata.encode({
-    controller: header.controllers[0],
-    model: header.model,
-    unique: header.unique,
-    context: header.context,
-    shouldIndex: header.shouldIndex,
-  })
-
   let streamID: StreamID
+  let metadata: EncodedDocumentMetadata
   if (container.signed) {
     // Handle non-deterministic event - should have content
     assertValidContentLength(data)
     assertValidContent(modelID, definition.schema, data)
     await validateRelationsContent(context, definition, data)
     streamID = getStreamID(container.cid)
+    metadata = DocumentMetadata.encode({
+      controller: header.controllers[0],
+      model: header.model,
+      unique: header.unique,
+      context: header.context,
+      shouldIndex: header.shouldIndex,
+    })
   } else {
     // Handle deterministic event - no content
     if (data !== null) {
@@ -50,6 +51,11 @@ export async function handleInitEvent(
       )
     }
     streamID = getDeterministicStreamID(header)
+    metadata = DocumentMetadata.encode({
+      controller: header.controllers[0],
+      model: header.model,
+      unique: header.unique,
+    })
   }
 
   return {

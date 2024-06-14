@@ -40,6 +40,8 @@
     "uint8arrays": "^5.1.0"
   },
   "devDependencies": {
+    "@ceramic-sdk/document-client": "workspace:^",
+    "@ceramic-sdk/key-did": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
     "dids": "^5.0.2"
   },

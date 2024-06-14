@@ -1,14 +1,12 @@
-import type { DocumentMetadata } from '@ceramic-sdk/document-protocol'
+import type { EncodedDocumentMetadata } from '@ceramic-sdk/document-protocol'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import type { DID } from 'dids'
 
 export type UnknowContent = Record<string, unknown>
 
-export type EncodedMetadata = ReturnType<typeof DocumentMetadata.encode>
-
 export type DocumentSnapshot = {
   content: UnknowContent | null
-  metadata: EncodedMetadata
+  metadata: EncodedDocumentMetadata
 }
 
 export type DocumentState = DocumentSnapshot & {
