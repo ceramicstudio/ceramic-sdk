@@ -1,10 +1,10 @@
-import { SignedEvent } from '@ceramic-sdk/events'
+import { SignedEvent, TimeEvent } from '@ceramic-sdk/events'
 import {
   streamIDAsBytes,
   streamIDAsString,
   streamIDString,
 } from '@ceramic-sdk/identifiers'
-import { didString } from '@didtools/codecs'
+import { cidAsString, didString } from '@didtools/codecs'
 import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'
 import {
@@ -389,14 +389,20 @@ export const ModelInitEventPayload = strict(
 export type ModelInitEventPayload = TypeOf<typeof ModelInitEventPayload>
 
 /**
- * Model state, extending the model snapshot with stream ID and events log
+ * Model event: either a signed event or a time event.
+ */
+export const ModelEvent = union([SignedEvent, TimeEvent], 'ModelEvent')
+export type ModelEvent = TypeOf<typeof ModelEvent>
+
+/**
+ * Model state, extending the model snapshot with init CID and events log
  */
 export const ModelState = strict(
   {
-    id: streamIDString,
+    cid: cidAsString,
     metadata: ModelMetadata,
     content: ModelDefinition,
-    log: array(SignedEvent),
+    log: array(ModelEvent),
   },
   'ModelState',
 )

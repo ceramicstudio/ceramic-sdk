@@ -8,7 +8,7 @@ import { JsonReference } from 'json-ptr'
 import type { JSONSchema } from 'json-schema-typed/draft-2020-12'
 import isMatch from 'lodash.ismatch'
 
-import type { Context } from './types.js'
+import type { InitContext } from './types.js'
 
 export type Schema = Exclude<JSONSchema, boolean>
 
@@ -740,7 +740,7 @@ export function validateInterfaceImplementation(
 
 export async function validateImplementedInterfaces(
   model: ModelDefinition,
-  context: Context,
+  context: InitContext,
 ): Promise<void> {
   const errors: Array<Error> = []
 
@@ -748,7 +748,7 @@ export async function validateImplementedInterfaces(
     async (interfaceID) => {
       try {
         const interfaceDefinition =
-          await context.loadModelDefinition(interfaceID)
+          await context.getModelDefinition(interfaceID)
         validateInterfaceImplementation(interfaceID, interfaceDefinition, model)
       } catch (error) {
         errors.push(error as Error)

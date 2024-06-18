@@ -2,8 +2,11 @@ export {
   GenericEventHeader,
   InitEventHeader,
   SignedEvent,
+  TimeEvent,
   assertSignedEvent,
+  assertTimeEvent,
   decodeSignedEvent,
+  decodeTimeEvent,
 } from './codecs.js'
 export {
   type EventContainer,

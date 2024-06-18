@@ -7,6 +7,7 @@ import {
   decode,
   optional,
   sparse,
+  strict,
   string,
   tuple,
   unknown,
@@ -77,4 +78,22 @@ export function assertSignedEvent(
   input: unknown,
 ): asserts input is SignedEvent {
   decodeSignedEvent(input)
+}
+
+export const TimeEvent = strict(
+  {
+    id: cid,
+    prev: cid,
+    proof: cid,
+    path: string,
+  },
+  'TimeEvent',
+)
+export type TimeEvent = TypeOf<typeof TimeEvent>
+
+export function decodeTimeEvent(input: unknown): TimeEvent {
+  return decode(TimeEvent, input)
+}
+export function assertTimeEvent(input: unknown): asserts input is TimeEvent {
+  decodeTimeEvent(input)
 }

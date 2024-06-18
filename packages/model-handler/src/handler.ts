@@ -1,23 +1,25 @@
 import {
-  type SignedEvent,
+  SignedEvent,
   type SignedEventContainer,
+  TimeEvent,
   signedEventToContainer,
 } from '@ceramic-sdk/events'
 import {
+  type ModelEvent,
   ModelInitEventPayload,
   ModelMetadata,
   type ModelState,
   assertValidModelContent,
-  getModelStreamID,
   validateController,
 } from '@ceramic-sdk/model-protocol'
 import type { DID } from 'dids'
+import type { CID } from 'multiformats/cid'
 
 import {
   validateImplementedInterfaces,
   validateInterface,
 } from './interfaces-validation.js'
-import type { Context } from './types.js'
+import type { Context, InitContext, TimeContext } from './types.js'
 
 export async function getInitEventContainer(
   verifier: DID,
@@ -27,8 +29,9 @@ export async function getInitEventContainer(
 }
 
 export async function handleInitEvent(
+  cid: CID,
   event: SignedEvent,
-  context: Context,
+  context: InitContext,
 ): Promise<ModelState> {
   const { payload } = await getInitEventContainer(context.verifier, event)
 
@@ -47,10 +50,46 @@ export async function handleInitEvent(
     await validateImplementedInterfaces(content, context)
   }
 
-  const streamID = getModelStreamID({
-    data: payload.data,
-    header: payload.header,
-  })
+  return {
+    cid,
+    content,
+    metadata,
+    log: [event],
+  }
+}
 
-  return { id: streamID.toString(), content, metadata, log: [event] }
+export async function handleTimeEvent(
+  cid: CID,
+  event: TimeEvent,
+  context: TimeContext,
+): Promise<ModelState> {
+  const state = await context.getModelState(event.id)
+  if (!state.cid.equals(event.id)) {
+    throw new Error(
+      `Invalid state with model ${state.cid} provided for time event ${cid}: expected model ${event.id}`,
+    )
+  }
+
+  const init = state.log[0]
+  if (init == null) {
+    throw new Error(
+      `Invalid state for model ${state.cid} provided for time event ${cid}: no events in log`,
+    )
+  }
+
+  return { ...state, log: [...state.log, event] }
+}
+
+export async function handleEvent(
+  cid: CID,
+  event: ModelEvent,
+  context: Context,
+): Promise<ModelState> {
+  if (SignedEvent.is(event)) {
+    return await handleInitEvent(cid, event, context)
+  }
+  if (TimeEvent.is(event)) {
+    return await handleTimeEvent(cid, event, context)
+  }
+  throw new Error(`Unsupported event: ${cid}`)
 }

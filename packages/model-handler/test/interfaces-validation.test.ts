@@ -19,7 +19,7 @@ import {
   validateSchemaType,
   validateStringSchema,
 } from '../src/interfaces-validation.js'
-import type { Context } from '../src/types.js'
+import type { InitContext } from '../src/types.js'
 
 test('getErrorMessage', () => {
   expect(
@@ -1022,8 +1022,8 @@ describe('interfaces validation', () => {
       immutableFields: ['foo'],
     }
 
-    const loadModelDefinition = jest.fn(() => Promise.resolve(interfaceModel))
-    const context = { loadModelDefinition } as unknown as Context
+    const getModelDefinition = jest.fn(() => Promise.resolve(interfaceModel))
+    const context = { getModelDefinition } as unknown as InitContext
 
     try {
       await validateImplementedInterfaces(
@@ -1055,7 +1055,7 @@ describe('interfaces validation', () => {
         `Error: Invalid immutable fields implementation of interface ${MODEL_ID_1}`,
       )
     }
-    expect(loadModelDefinition).toHaveBeenCalledTimes(2)
+    expect(getModelDefinition).toHaveBeenCalledTimes(2)
 
     await expect(
       validateImplementedInterfaces(

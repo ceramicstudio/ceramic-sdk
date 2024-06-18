@@ -1,9 +1,11 @@
 import { EthereumDID } from '@ceramic-sdk/ethereum-did'
 import {
   type SignedEvent,
+  type TimeEvent,
   createSignedInitEvent,
   signEvent,
 } from '@ceramic-sdk/events'
+import { randomCID } from '@ceramic-sdk/identifiers'
 import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import {
   MODEL,
@@ -11,24 +13,22 @@ import {
   MODEL_STREAM_ID,
   type ModelDefinition,
   type ModelDefinitionV2,
+  type ModelEvent,
   ModelInitEventPayload,
-  getModelStreamID,
+  type ModelState,
 } from '@ceramic-sdk/model-protocol'
 import { asDIDString } from '@didtools/codecs'
 import { jest } from '@jest/globals'
 import type { DID } from 'dids'
 
-import { handleInitEvent } from '../src/handler.js'
-import type { Context } from '../src/types.js'
+import {
+  handleEvent,
+  handleInitEvent,
+  handleTimeEvent,
+} from '../src/handler.js'
+import type { Context, InitContext } from '../src/types.js'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
-
-const defaultContext: Context = {
-  loadModelDefinition: () => {
-    throw new Error('Not implemented')
-  },
-  verifier: createDID(),
-}
 
 const testModelV1: ModelDefinition = {
   version: '1.0',
@@ -73,9 +73,18 @@ async function createModelEvent(
 const validEvent = await createModelEvent(authenticatedDID)
 
 describe('handleInitEvent()', () => {
+  const cid = randomCID()
+
+  const defaultContext: InitContext = {
+    getModelDefinition: () => {
+      throw new Error('Not implemented')
+    },
+    verifier: createDID(),
+  }
+
   test('verifies the signed event', async () => {
     await expect(
-      handleInitEvent(validEvent, defaultContext),
+      handleInitEvent(cid, validEvent, defaultContext),
     ).resolves.not.toThrow()
 
     // Chaning the event payload should make the signature check fail
@@ -84,7 +93,7 @@ describe('handleInitEvent()', () => {
       jws: { ...validEvent.jws, payload: 'changed' },
     }
     await expect(async () => {
-      await handleInitEvent(invalidEvent, defaultContext)
+      await handleInitEvent(cid, invalidEvent, defaultContext)
     }).rejects.toThrow('invalid_signature: Signature invalid for JWT')
   })
 
@@ -92,7 +101,7 @@ describe('handleInitEvent()', () => {
     test('supports did:key', async () => {
       expect(authenticatedDID.id.startsWith('did:key')).toBe(true)
       await expect(
-        handleInitEvent(validEvent, defaultContext),
+        handleInitEvent(cid, validEvent, defaultContext),
       ).resolves.not.toThrow()
     })
 
@@ -112,13 +121,13 @@ describe('handleInitEvent()', () => {
       ])
 
       await expect(async () => {
-        await handleInitEvent(invalidEvent, defaultContext)
+        await handleInitEvent(cid, invalidEvent, defaultContext)
       }).rejects.toThrow(
         'Invalid CACAO: Model Streams do not support CACAOs with expiration times',
       )
 
       await expect(
-        handleInitEvent(validEvent, defaultContext),
+        handleInitEvent(cid, validEvent, defaultContext),
       ).resolves.not.toThrow()
     })
   })
@@ -128,7 +137,7 @@ describe('handleInitEvent()', () => {
     const invalidDefinition: ModelDefinition = { ...testModelV1, version: '0' }
     const event = await createModelEvent(authenticatedDID, invalidDefinition)
     await expect(async () => {
-      await handleInitEvent(event, defaultContext)
+      await handleInitEvent(cid, event, defaultContext)
     }).rejects.toThrow('Invalid value "0"')
   })
 
@@ -140,7 +149,7 @@ describe('handleInitEvent()', () => {
     // @ts-expect-error
     const event = await createModelEvent(authenticatedDID, invalidInterface)
     await expect(async () => {
-      await handleInitEvent(event, defaultContext)
+      await handleInitEvent(cid, event, defaultContext)
     }).rejects.toThrow(
       'Invalid interface: a least one propery or view must be present',
     )
@@ -172,8 +181,8 @@ describe('handleInitEvent()', () => {
       immutableFields: ['foo'],
     }
 
-    const loadModelDefinition = jest.fn(() => Promise.resolve(interfaceModel))
-    const context = { loadModelDefinition, verifier: authenticatedDID }
+    const getModelDefinition = jest.fn(() => Promise.resolve(interfaceModel))
+    const context = { getModelDefinition, verifier: authenticatedDID }
 
     try {
       const event = await createModelEvent(authenticatedDID, {
@@ -189,7 +198,7 @@ describe('handleInitEvent()', () => {
         },
         immutableFields: [],
       })
-      await handleInitEvent(event, context)
+      await handleInitEvent(cid, event, context)
     } catch (error) {
       expect(error.errors).toHaveLength(2)
       const model1Errors = error.errors[0].errors
@@ -204,7 +213,7 @@ describe('handleInitEvent()', () => {
         `Error: Invalid immutable fields implementation of interface ${MODEL_ID_1}`,
       )
     }
-    expect(loadModelDefinition).toHaveBeenCalledTimes(2)
+    expect(getModelDefinition).toHaveBeenCalledTimes(2)
 
     const event = await createModelEvent(authenticatedDID, {
       version: '2.0',
@@ -225,7 +234,7 @@ describe('handleInitEvent()', () => {
       },
       immutableFields: ['foo'],
     })
-    await expect(handleInitEvent(event, context)).resolves.not.toThrow()
+    await expect(handleInitEvent(cid, event, context)).resolves.not.toThrow()
   })
 
   test('returns the created stream state', async () => {
@@ -242,11 +251,111 @@ describe('handleInitEvent()', () => {
       authenticatedDID,
       ModelInitEventPayload.encode(payload),
     )
-    const state = await handleInitEvent(event, defaultContext)
-    expect(state.id).toBe(getModelStreamID(payload).toString())
+    const state = await handleInitEvent(cid, event, defaultContext)
+    expect(state.cid).toBe(cid)
     expect(state.content).toEqual(testModelV1)
     expect(state.metadata.controller).toBe(authenticatedDID.id)
     expect(state.metadata.model).toBe(MODEL_STREAM_ID)
     expect(state.log[0]).toBe(event)
+  })
+})
+
+describe('handleTimeEvent()', () => {
+  const eventCID = randomCID()
+  const modelCID = randomCID()
+  const modelInitEvent = {}
+
+  test('throws if the loaded state does not match the expected model', async () => {
+    const otherModelCID = randomCID()
+    const getModelState = jest.fn(() => {
+      return Promise.resolve({
+        cid: otherModelCID,
+        log: [modelInitEvent],
+      } as ModelState)
+    })
+    const context = { getModelState }
+    const event = { id: modelCID } as unknown as TimeEvent
+    await expect(async () => {
+      await handleTimeEvent(eventCID, event, context)
+    }).rejects.toThrow(
+      `Invalid state with model ${otherModelCID} provided for time event ${eventCID}: expected model ${modelCID}`,
+    )
+  })
+
+  test('throws if the existing state log is empty', async () => {
+    const getModelState = jest.fn(() => {
+      return Promise.resolve({
+        cid: modelCID,
+        log: [],
+      } as unknown as ModelState)
+    })
+    const context = { getModelState }
+    const event = { id: modelCID } as unknown as TimeEvent
+    await expect(async () => {
+      await handleTimeEvent(eventCID, event, context)
+    }).rejects.toThrow(
+      `Invalid state for model ${modelCID} provided for time event ${eventCID}: no events in log`,
+    )
+  })
+
+  test('adds the time event to the log', async () => {
+    const getModelState = jest.fn(() => {
+      return Promise.resolve({
+        cid: modelCID,
+        log: [modelInitEvent],
+      } as ModelState)
+    })
+    const context = { getModelState }
+    const event = { id: modelCID } as unknown as TimeEvent
+    await expect(handleTimeEvent(eventCID, event, context)).resolves.toEqual({
+      cid: modelCID,
+      log: [modelInitEvent, event],
+    })
+  })
+})
+
+describe('handleEvent()', () => {
+  const eventCID = randomCID()
+  const modelCID = randomCID()
+
+  test('handles signed and time events', async () => {
+    let state: ModelState = {} as ModelState
+    const getModelState = jest.fn(() => {
+      return Promise.resolve(state)
+    })
+    const context = {
+      getModelDefinition: () => {
+        throw new Error('Not implemented')
+      },
+      getModelState,
+      verifier: createDID(),
+    }
+
+    // Handle init event first to get state
+    state = await handleEvent(modelCID, validEvent, context)
+
+    // Handle time event
+    const timeEvent = {
+      id: modelCID,
+      prev: randomCID(),
+      proof: randomCID(),
+      path: '/',
+    }
+    const updatedState = await handleEvent(eventCID, timeEvent, context)
+
+    expect(updatedState.cid).toBe(modelCID)
+    expect(updatedState.content).toBe(state.content)
+    expect(updatedState.metadata).toBe(state.metadata)
+    expect(updatedState.log).toEqual([validEvent, timeEvent])
+  })
+
+  test('throws if the event is not supported', async () => {
+    await expect(async () => {
+      await handleEvent(
+        eventCID,
+        {} as unknown as ModelEvent,
+        {} as unknown as Context,
+      )
+    }).rejects.toThrow(`Unsupported event: ${eventCID}`)
   })
 })

@@ -1,11 +1,8 @@
 import { StreamID } from '@ceramic-sdk/identifiers'
+import type { CID } from 'multiformats/cid'
 
-import { ModelInitEventPayload } from './codecs.js'
 import { STREAM_TYPE_ID } from './constants.js'
 
-export function getModelStreamID(event: ModelInitEventPayload): StreamID {
-  return StreamID.fromPayload(
-    STREAM_TYPE_ID,
-    ModelInitEventPayload.encode(event),
-  )
+export function getModelStreamID(cid: CID): StreamID {
+  return new StreamID(STREAM_TYPE_ID, cid)
 }
