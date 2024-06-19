@@ -10,63 +10,69 @@ import {
 
 describe('validateRelation()', () => {
   test('validates with exact model match', async () => {
-    const loadDocument = jest.fn(() => {
+    const getDocumentSnapshot = jest.fn(() => {
       return {
         content: {},
         metadata: { model: 'modelID' },
       } as unknown as DocumentSnapshot
     })
-    const context = { loadDocument } as unknown as Context
+    const context = { getDocumentSnapshot } as unknown as Context
 
     await expect(
       validateRelation(context, 'docID', 'modelID', 'foo'),
     ).resolves.not.toThrow()
-    expect(loadDocument).toHaveBeenCalledWith('docID')
+    expect(getDocumentSnapshot).toHaveBeenCalledWith('docID')
   })
 
   test('validates with model implementing the expected interface', async () => {
-    const loadDocument = jest.fn(() => {
+    const getDocumentSnapshot = jest.fn(() => {
       return {
         content: {},
         metadata: { model: 'modelID' },
       } as unknown as DocumentSnapshot
     })
-    const loadModelDefinition = jest.fn(() => {
+    const getModelDefinition = jest.fn(() => {
       return {
         implements: ['interfaceID'],
       } as unknown as ModelDefinitionV2
     })
-    const context = { loadDocument, loadModelDefinition } as unknown as Context
+    const context = {
+      getDocumentSnapshot,
+      getModelDefinition,
+    } as unknown as Context
 
     await expect(
       validateRelation(context, 'docID', 'interfaceID', 'foo'),
     ).resolves.not.toThrow()
-    expect(loadDocument).toHaveBeenCalledWith('docID')
-    expect(loadModelDefinition).toHaveBeenCalledWith('modelID')
+    expect(getDocumentSnapshot).toHaveBeenCalledWith('docID')
+    expect(getModelDefinition).toHaveBeenCalledWith('modelID')
   })
 
   test('throws if the relation does not match the expected model', async () => {
-    const loadDocument = jest.fn(() => {
+    const getDocumentSnapshot = jest.fn(() => {
       return {
         content: {},
         metadata: { model: 'modelID' },
       } as unknown as DocumentSnapshot
     })
-    const loadModelDefinition = jest.fn(() => {
+    const getModelDefinition = jest.fn(() => {
       return {
         name: 'TestModel',
         implements: [],
       } as unknown as ModelDefinitionV2
     })
-    const context = { loadDocument, loadModelDefinition } as unknown as Context
+    const context = {
+      getDocumentSnapshot,
+      getModelDefinition,
+    } as unknown as Context
 
     await expect(
       validateRelation(context, 'docID', 'interfaceID', 'foo'),
     ).rejects.toThrow(
       "Relation on field foo points to Stream docID, which belongs to Model modelID, but this Stream's Model (TestModel) specifies that this relation must be to a Stream in the Model interfaceID",
     )
-    expect(loadDocument).toHaveBeenCalledWith('docID')
-    expect(loadModelDefinition).toHaveBeenCalledWith('modelID')
+    expect(getDocumentSnapshot).toHaveBeenCalledWith('docID')
+    expect(getModelDefinition).toHaveBeenCalledWith('modelID')
   })
 })
 
@@ -125,18 +131,21 @@ describe('validateRelationsContent()', () => {
     const modelID = randomStreamID().toString()
     const interfaceID = randomStreamID().toString()
 
-    const loadDocument = jest.fn(() => {
+    const getDocumentSnapshot = jest.fn(() => {
       return {
         content: {},
         metadata: { model: modelID },
       } as unknown as DocumentSnapshot
     })
-    const loadModelDefinition = jest.fn(() => {
+    const getModelDefinition = jest.fn(() => {
       return {
         implements: [interfaceID],
       } as unknown as ModelDefinitionV2
     })
-    const context = { loadDocument, loadModelDefinition } as unknown as Context
+    const context = {
+      getDocumentSnapshot,
+      getModelDefinition,
+    } as unknown as Context
 
     const model = {
       name: 'TestModel',
@@ -152,7 +161,7 @@ describe('validateRelationsContent()', () => {
         bar: docID,
       }),
     ).resolves.not.toThrow()
-    expect(loadDocument).toHaveBeenCalledTimes(2)
-    expect(loadModelDefinition).toHaveBeenCalledTimes(1)
+    expect(getDocumentSnapshot).toHaveBeenCalledTimes(2)
+    expect(getModelDefinition).toHaveBeenCalledTimes(1)
   })
 })

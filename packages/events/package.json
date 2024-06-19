@@ -46,7 +46,7 @@
   "devDependencies": {
     "@ceramic-sdk/key-did": "workspace:^",
     "dids": "^5.0.2",
-    "ts-essentials": "^10.0.0"
+    "ts-essentials": "^10.0.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

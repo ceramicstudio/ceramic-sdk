@@ -45,7 +45,7 @@
     "@ceramic-sdk/ethereum-did": "workspace:^",
     "json-schema-typed": "^8.0.1",
     "multiformats": "^13.1.1",
-    "ts-essentials": "^10.0.0"
+    "ts-essentials": "^10.0.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

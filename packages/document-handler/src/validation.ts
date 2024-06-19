@@ -10,7 +10,7 @@ export async function validateRelation(
   fieldName: string,
 ): Promise<void> {
   // Ensure linked stream can be loaded and is a MID
-  const doc = await context.loadDocument(docID)
+  const doc = await context.getDocumentSnapshot(docID)
 
   const modelID = doc.metadata.model.toString()
   if (modelID === expectedModelID) {
@@ -19,7 +19,7 @@ export async function validateRelation(
   }
 
   // Other model used, check if it implements the expected interface
-  const definition = await context.loadModelDefinition(modelID)
+  const definition = await context.getModelDefinition(modelID)
   if (
     definition.version !== '1.0' &&
     definition.implements.includes(expectedModelID)

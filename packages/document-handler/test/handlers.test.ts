@@ -1,77 +1,77 @@
 import {
-  createInitEvent,
-  getDeterministicInitEvent,
+  createInitHeader,
+  getDeterministicInitEventPayload,
 } from '@ceramic-sdk/document-client'
-import { randomStreamID } from '@ceramic-sdk/identifiers'
+import { randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
 import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import type { ModelDefinitionV2 } from '@ceramic-sdk/model-protocol'
 import { jest } from '@jest/globals'
 
-import { handleInitEvent } from '../src/handlers.js'
+import {
+  handleDeterministicInitPayload,
+  handleInitPayload,
+} from '../src/handlers.js'
 import type { Context } from '../src/types.js'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
-describe('handleInitEvent()', () => {
-  test('handles signed events', async () => {
-    const modelID = randomStreamID()
+test('handleDeterministicInitPayload()', async () => {
+  const cid = randomCID()
+  const modelID = randomStreamID()
 
-    const loadModelDefinition = jest.fn(() => {
-      return {
-        accountRelation: { type: 'list' },
-        schema: {
-          type: 'object',
-          properties: { hello: { type: 'string' } },
-          required: ['hello'],
-        },
-      } as unknown as ModelDefinitionV2
-    })
-    const context = {
-      loadModelDefinition,
-      verifier: authenticatedDID,
-    } as unknown as Context
+  const getModelDefinition = jest.fn(() => {
+    return {
+      accountRelation: { type: 'single' },
+      schema: {
+        type: 'object',
+        properties: { hello: { type: 'string' } },
+        required: ['hello'],
+      },
+    } as unknown as ModelDefinitionV2
+  })
+  const context = { getModelDefinition } as unknown as Context
 
-    const event = await createInitEvent({
-      controller: authenticatedDID,
-      model: modelID,
-      content: { hello: 'world' },
-    })
-    const handled = await handleInitEvent(event, context)
+  const event = getDeterministicInitEventPayload(modelID, 'did:key:123')
+  const handled = await handleDeterministicInitPayload(cid, event, context)
 
-    expect(handled.id).toBeDefined()
-    expect(handled.content).toStrictEqual({ hello: 'world' })
-    expect(handled.metadata).toStrictEqual({
+  expect(handled.cid).toBe(cid)
+  expect(handled.content).toBeNull()
+  expect(handled.metadata.controller).toBe('did:key:123')
+  expect(handled.metadata.model.equals(modelID)).toBe(true)
+  expect(handled.log).toEqual([event])
+})
+
+test('handleInitPayload()', async () => {
+  const cid = randomCID()
+  const modelID = randomStreamID()
+
+  const getModelDefinition = jest.fn(() => {
+    return {
+      accountRelation: { type: 'list' },
+      schema: {
+        type: 'object',
+        properties: { hello: { type: 'string' } },
+        required: ['hello'],
+      },
+    } as unknown as ModelDefinitionV2
+  })
+  const context = {
+    getModelDefinition,
+    verifier: authenticatedDID,
+  } as unknown as Context
+
+  const payload = {
+    data: { hello: 'world' },
+    header: createInitHeader({
       controller: authenticatedDID.id,
-      model: modelID.toString(),
-      unique: expect.any(String),
-    })
-    expect(handled.log).toEqual([event])
-  })
-
-  test('handles deterministic events', async () => {
-    const modelID = randomStreamID()
-
-    const loadModelDefinition = jest.fn(() => {
-      return {
-        accountRelation: { type: 'single' },
-        schema: {
-          type: 'object',
-          properties: { hello: { type: 'string' } },
-          required: ['hello'],
-        },
-      } as unknown as ModelDefinitionV2
-    })
-    const context = { loadModelDefinition } as unknown as Context
-
-    const event = getDeterministicInitEvent(modelID, 'did:key:123')
-    const handled = await handleInitEvent(event, context)
-
-    expect(handled.id).toBeDefined()
-    expect(handled.content).toBeNull()
-    expect(handled.metadata).toStrictEqual({
-      controller: 'did:key:123',
-      model: modelID.toString(),
-    })
-    expect(handled.log).toEqual([event])
-  })
+      model: modelID,
+    }),
+  }
+  const handled = await handleInitPayload(cid, payload, context)
+  expect(handled.cid).toBe(cid)
+  expect(handled.content).toStrictEqual({ hello: 'world' })
+  expect(handled.metadata.controller).toBe(authenticatedDID.id)
+  expect(handled.metadata.model.equals(modelID)).toBe(true)
+  expect(handled.metadata.unique).toBeInstanceOf(Uint8Array)
+  expect(handled.log).toEqual([payload])
 })

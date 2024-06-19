@@ -8,4 +8,4 @@ export {
   getDeterministicInitEventPayload,
 } from './events.js'
 export type { UnknownContent } from './types.js'
-export { getPatchOperations } from './utils.js'
+export { createInitHeader, getPatchOperations } from './utils.js'

@@ -1,14 +1,17 @@
-import type {
-  DocumentInitEventHeader,
-  DocumentMetadata,
-  JSONPatchOperation,
+import {
+  type DocumentDataEventPayload,
+  type DocumentInitEventHeader,
+  type DocumentMetadata,
+  type JSONPatchOperation,
+  getStreamID,
 } from '@ceramic-sdk/document-protocol'
+import type { TimeEvent } from '@ceramic-sdk/events'
 import type { JSONSchema, ModelDefinition } from '@ceramic-sdk/model-protocol'
 import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'
-import { toString as bytesToString } from 'uint8arrays'
+import { equals } from 'uint8arrays'
 
-import type { UnknowContent } from './types.js'
+import type { DocumentState, UnknowContent } from './types.js'
 import { getUniqueFieldsValue } from './utils.js'
 
 const validator = new Ajv({
@@ -127,9 +130,48 @@ export function assertValidUniqueValue(
     definition.accountRelation.fields,
     content,
   )
-  if (unique !== bytesToString(metadata.unique)) {
+  if (!equals(unique, metadata.unique)) {
     throw new Error(
       'Unique content fields value does not match metadata. If you are trying to change the value of these fields, this is causing this error: these fields values are not mutable.',
+    )
+  }
+}
+
+/**
+ * Asserts that the 'id' and 'prev' properties of the given event properly link to the tip of
+ * the given document state.
+ *
+ * By the time the code gets into a StreamtypeHandler's applyCommit function the link to the state
+ * should already have been established by the stream loading and conflict resolution code, so
+ * if this check were to fail as part of a StreamtypeHandler's applyCommit function, that would
+ * indicate a programming error.
+ */
+export function assertEventLinksToState(
+  payload: DocumentDataEventPayload | TimeEvent,
+  state: DocumentState,
+) {
+  // Older versions of the CAS created time events without an 'id' field, so only check
+  // the event payload 'id' field if it is present.
+  if (payload.id != null && !payload.id.equals(state.cid)) {
+    throw new Error(
+      `Invalid genesis CID in event payload for document ${getStreamID(state.cid)}. Found: ${
+        payload.id
+      }, expected ${state.cid}`,
+    )
+  }
+
+  const [init, ...changes] = state.log
+  if (init == null) {
+    throw new Error(
+      `Invalid state for document ${getStreamID(state.cid)}: log is empty`,
+    )
+  }
+
+  const expectedPrev =
+    changes.length === 0 ? state.cid : changes[changes.length - 1].id
+  if (!payload.prev.equals(expectedPrev)) {
+    throw new Error(
+      `Commit doesn't properly point to previous event payload in log for document ${getStreamID(state.cid)}. Expected ${expectedPrev}, found 'prev' ${payload.prev}`,
     )
   }
 }
