@@ -2,7 +2,7 @@ import { randomStreamID } from '@ceramic-sdk/identifiers'
 import type { ModelDefinitionV2 } from '@ceramic-sdk/model-protocol'
 import { jest } from '@jest/globals'
 
-import type { Context, DocumentSnapshot } from '../src/types.js'
+import type { Context } from '../src/types.js'
 import {
   validateRelation,
   validateRelationsContent,
@@ -10,51 +10,36 @@ import {
 
 describe('validateRelation()', () => {
   test('validates with exact model match', async () => {
-    const getDocumentSnapshot = jest.fn(() => {
-      return {
-        content: {},
-        metadata: { model: 'modelID' },
-      } as unknown as DocumentSnapshot
-    })
-    const context = { getDocumentSnapshot } as unknown as Context
+    const getDocumentModel = jest.fn(() => 'modelID')
+    const context = { getDocumentModel } as unknown as Context
 
     await expect(
       validateRelation(context, 'docID', 'modelID', 'foo'),
     ).resolves.not.toThrow()
-    expect(getDocumentSnapshot).toHaveBeenCalledWith('docID')
+    expect(getDocumentModel).toHaveBeenCalledWith('docID')
   })
 
   test('validates with model implementing the expected interface', async () => {
-    const getDocumentSnapshot = jest.fn(() => {
-      return {
-        content: {},
-        metadata: { model: 'modelID' },
-      } as unknown as DocumentSnapshot
-    })
+    const getDocumentModel = jest.fn(() => 'modelID')
     const getModelDefinition = jest.fn(() => {
       return {
         implements: ['interfaceID'],
       } as unknown as ModelDefinitionV2
     })
     const context = {
-      getDocumentSnapshot,
+      getDocumentModel,
       getModelDefinition,
     } as unknown as Context
 
     await expect(
       validateRelation(context, 'docID', 'interfaceID', 'foo'),
     ).resolves.not.toThrow()
-    expect(getDocumentSnapshot).toHaveBeenCalledWith('docID')
+    expect(getDocumentModel).toHaveBeenCalledWith('docID')
     expect(getModelDefinition).toHaveBeenCalledWith('modelID')
   })
 
   test('throws if the relation does not match the expected model', async () => {
-    const getDocumentSnapshot = jest.fn(() => {
-      return {
-        content: {},
-        metadata: { model: 'modelID' },
-      } as unknown as DocumentSnapshot
-    })
+    const getDocumentModel = jest.fn(() => 'modelID')
     const getModelDefinition = jest.fn(() => {
       return {
         name: 'TestModel',
@@ -62,7 +47,7 @@ describe('validateRelation()', () => {
       } as unknown as ModelDefinitionV2
     })
     const context = {
-      getDocumentSnapshot,
+      getDocumentModel,
       getModelDefinition,
     } as unknown as Context
 
@@ -71,7 +56,7 @@ describe('validateRelation()', () => {
     ).rejects.toThrow(
       "Relation on field foo points to Stream docID, which belongs to Model modelID, but this Stream's Model (TestModel) specifies that this relation must be to a Stream in the Model interfaceID",
     )
-    expect(getDocumentSnapshot).toHaveBeenCalledWith('docID')
+    expect(getDocumentModel).toHaveBeenCalledWith('docID')
     expect(getModelDefinition).toHaveBeenCalledWith('modelID')
   })
 })
@@ -131,19 +116,14 @@ describe('validateRelationsContent()', () => {
     const modelID = randomStreamID().toString()
     const interfaceID = randomStreamID().toString()
 
-    const getDocumentSnapshot = jest.fn(() => {
-      return {
-        content: {},
-        metadata: { model: modelID },
-      } as unknown as DocumentSnapshot
-    })
+    const getDocumentModel = jest.fn(() => modelID)
     const getModelDefinition = jest.fn(() => {
       return {
         implements: [interfaceID],
       } as unknown as ModelDefinitionV2
     })
     const context = {
-      getDocumentSnapshot,
+      getDocumentModel,
       getModelDefinition,
     } as unknown as Context
 
@@ -161,7 +141,7 @@ describe('validateRelationsContent()', () => {
         bar: docID,
       }),
     ).resolves.not.toThrow()
-    expect(getDocumentSnapshot).toHaveBeenCalledTimes(2)
+    expect(getDocumentModel).toHaveBeenCalledTimes(2)
     expect(getModelDefinition).toHaveBeenCalledTimes(1)
   })
 })

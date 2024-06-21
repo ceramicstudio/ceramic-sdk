@@ -150,28 +150,26 @@ export function assertEventLinksToState(
   payload: DocumentDataEventPayload | TimeEvent,
   state: DocumentState,
 ) {
+  if (state.log.length === 0) {
+    throw new Error('Invalid document state: log is empty')
+  }
+
+  const initCID = state.log[0]
+
   // Older versions of the CAS created time events without an 'id' field, so only check
   // the event payload 'id' field if it is present.
-  if (payload.id != null && !payload.id.equals(state.cid)) {
+  if (payload.id != null && !payload.id.equals(initCID)) {
     throw new Error(
-      `Invalid genesis CID in event payload for document ${getStreamID(state.cid)}. Found: ${
+      `Invalid init CID in event payload for document ${getStreamID(initCID)}. Found: ${
         payload.id
-      }, expected ${state.cid}`,
+      }, expected ${initCID}`,
     )
   }
 
-  const [init, ...changes] = state.log
-  if (init == null) {
-    throw new Error(
-      `Invalid state for document ${getStreamID(state.cid)}: log is empty`,
-    )
-  }
-
-  const expectedPrev =
-    changes.length === 0 ? state.cid : changes[changes.length - 1].id
+  const expectedPrev = state.log[state.log.length - 1]
   if (!payload.prev.equals(expectedPrev)) {
     throw new Error(
-      `Commit doesn't properly point to previous event payload in log for document ${getStreamID(state.cid)}. Expected ${expectedPrev}, found 'prev' ${payload.prev}`,
+      `Commit doesn't properly point to previous event payload in log for document ${getStreamID(initCID)}. Expected ${expectedPrev}, found 'prev' ${payload.prev}`,
     )
   }
 }

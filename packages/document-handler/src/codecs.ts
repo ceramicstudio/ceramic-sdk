@@ -4,7 +4,7 @@ import {
   DocumentInitEventPayload,
 } from '@ceramic-sdk/document-protocol'
 import { SignedEvent, TimeEvent } from '@ceramic-sdk/events'
-import { type TypeOf, union } from 'codeco'
+import { type OutputOf, type TypeOf, union } from 'codeco'
 import 'ts-essentials' // Import needed for TS reference
 
 export const DocumentEvent = union(
@@ -15,7 +15,7 @@ export const DocumentEvent = union(
   ],
   'DocumentEvent',
 )
-export type DocumentEvent = TypeOf<typeof DocumentEvent>
+export type DocumentEvent = OutputOf<typeof DocumentEvent>
 
 export const DocumentEventPayload = union(
   [

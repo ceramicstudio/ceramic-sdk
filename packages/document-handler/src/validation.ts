@@ -9,10 +9,7 @@ export async function validateRelation(
   expectedModelID: string,
   fieldName: string,
 ): Promise<void> {
-  // Ensure linked stream can be loaded and is a MID
-  const doc = await context.getDocumentSnapshot(docID)
-
-  const modelID = doc.metadata.model.toString()
+  const modelID = await context.getDocumentModel(docID)
   if (modelID === expectedModelID) {
     // Exact model used, relation is valid
     return

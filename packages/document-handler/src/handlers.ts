@@ -29,7 +29,7 @@ export async function handleDeterministicInitPayload(
   const { data, header } = payload
   if (data !== null) {
     throw new Error(
-      'Deterministic init commits for ModelInstanceDocuments must not have content',
+      'Deterministic init events for ModelInstanceDocuments must not have content',
     )
   }
 
@@ -38,14 +38,13 @@ export async function handleDeterministicInitPayload(
   assertValidInitHeader(definition, header)
 
   return {
-    cid,
     content: null,
     metadata: {
       controller: header.controllers[0],
       model: header.model,
       unique: header.unique,
     },
-    log: [payload],
+    log: [cid],
   }
 }
 
@@ -55,6 +54,11 @@ export async function handleInitPayload(
   context: Context,
 ): Promise<DocumentState> {
   const { data, header } = payload
+  if (data == null) {
+    throw new Error(
+      'Signed init events for ModelInstanceDocuments must have content',
+    )
+  }
   assertValidContentLength(data)
 
   const modelID = header.model.toString()
@@ -65,7 +69,6 @@ export async function handleInitPayload(
   await validateRelationsContent(context, definition, data)
 
   return {
-    cid,
     content: data,
     metadata: {
       controller: header.controllers[0],
@@ -74,16 +77,19 @@ export async function handleInitPayload(
       context: header.context,
       shouldIndex: header.shouldIndex,
     },
-    log: [payload],
+    log: [cid],
   }
 }
 
 export async function handleDataPayload(
+  cid: CID,
   payload: DocumentDataEventPayload,
   context: Context,
 ): Promise<DocumentState> {
   const state = await context.getDocumentState(payload.id)
   assertEventLinksToState(payload, state)
+
+  const metadata = { ...state.metadata }
 
   // Check the header is valid when provided
   if (payload.header != null) {
@@ -98,7 +104,7 @@ export async function handleDataPayload(
     }
     // Update metadata if needed
     if (shouldIndex != null) {
-      state.metadata.shouldIndex = shouldIndex
+      metadata.shouldIndex = shouldIndex
     }
   }
 
@@ -124,16 +130,17 @@ export async function handleDataPayload(
   // Validate relations
   await validateRelationsContent(context, definition, content)
 
-  return { ...state, log: [...state.log, payload] }
+  return { content, metadata, log: [...state.log, cid] }
 }
 
 export async function handleTimeEvent(
+  cid: CID,
   event: TimeEvent,
   context: Context,
 ): Promise<DocumentState> {
   const state = await context.getDocumentState(event.id)
   assertEventLinksToState(event, state)
-  return { ...state, log: [...state.log, event] }
+  return { ...state, log: [...state.log, cid] }
 }
 
 export async function handleEvent(
@@ -149,7 +156,7 @@ export async function handleEvent(
   if (container.signed) {
     // Signed event is either non-deterministic init or data
     if (DocumentDataEventPayload.is(container.payload)) {
-      return await handleDataPayload(container.payload, context)
+      return await handleDataPayload(cid, container.payload, context)
     }
     if (DocumentInitEventPayload.is(container.payload)) {
       return await handleInitPayload(cid, container.payload, context)
@@ -157,7 +164,7 @@ export async function handleEvent(
   }
   // Unsigned event is either deterministic init or time
   if (TimeEvent.is(container.payload)) {
-    return await handleTimeEvent(container.payload as TimeEvent, context)
+    return await handleTimeEvent(cid, container.payload as TimeEvent, context)
   }
   return await handleDeterministicInitPayload(cid, container.payload, context)
 }
