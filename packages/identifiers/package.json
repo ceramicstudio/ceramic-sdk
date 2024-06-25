@@ -32,7 +32,7 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@ipld/dag-cbor": "^9.2.0",
+    "@ipld/dag-cbor": "^9.2.1",
     "codeco": "^1.2.3",
     "mapmoize": "^1.2.1",
     "multiformats": "^13.1.1",

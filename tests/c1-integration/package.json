@@ -1,0 +1,42 @@
+{
+  "name": "@ceramic-sdk/test-c1-integration",
+  "version": "0.1.0",
+  "author": "3Box Labs",
+  "private": true,
+  "license": "(Apache-2.0 OR MIT)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "lint": "eslint src --fix",
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
+    "test:ci": "pnpm run test --ci --coverage"
+  },
+  "dependencies": {
+    "@ceramic-sdk/events": "workspace:^",
+    "@ceramic-sdk/http-client": "workspace:^",
+    "@ceramic-sdk/key-did": "workspace:^",
+    "@ceramic-sdk/model-client": "workspace:^",
+    "@ceramic-sdk/model-protocol": "workspace:^"
+  },
+  "jest": {
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "transform": {
+      "^.+\\.(t|j)s$": [
+        "@swc/jest",
+        {
+          "root": "../.."
+        }
+      ]
+    }
+  }
+}

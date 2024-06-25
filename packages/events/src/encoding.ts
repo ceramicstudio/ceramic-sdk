@@ -17,7 +17,19 @@ carFactory.hashers.add(sha256)
 
 export type Base = keyof typeof bases
 
-export const DEFAULT_BASE: Base = 'base64url'
+export const DEFAULT_BASE: Base = 'base64'
+
+export function carToString(car: CAR, base: Base = DEFAULT_BASE): string {
+  return car.toString(base)
+}
+
+export function carFromString(value: string, base: Base = DEFAULT_BASE): CAR {
+  const codec = bases[base]
+  if (codec == null) {
+    throw new Error(`Unsupported base: ${base}`)
+  }
+  return carFactory.fromBytes(codec.decode(value))
+}
 
 export function signedEventToCAR(event: SignedEvent): CAR {
   const { jws, linkedBlock, cacaoBlock } = event
@@ -69,9 +81,9 @@ export function eventToCAR(codec: Codec<unknown>, event: unknown): CAR {
 export function eventToString(
   codec: Codec<unknown>,
   event: unknown,
-  base: Base = DEFAULT_BASE,
+  base?: Base,
 ): string {
-  return eventToCAR(codec, event).toString(base)
+  return carToString(eventToCAR(codec, event), base)
 }
 
 export function eventFromCAR<Payload = unknown>(
@@ -105,12 +117,7 @@ export function eventFromCAR<Payload = unknown>(
 export function eventFromString<Payload = unknown>(
   decoder: Decoder<unknown, Payload>,
   value: string,
-  base: Base = DEFAULT_BASE,
+  base?: Base,
 ): SignedEvent | Payload {
-  const codec = bases[base]
-  if (codec == null) {
-    throw new Error(`Unsupported base: ${base}`)
-  }
-  const car = carFactory.fromBytes(codec.decode(value))
-  return eventFromCAR(decoder, car)
+  return eventFromCAR(decoder, carFromString(value, base))
 }

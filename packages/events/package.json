@@ -34,8 +34,8 @@
   "dependencies": {
     "@ceramic-sdk/identifiers": "workspace:^",
     "@didtools/codecs": "^3.0.0",
-    "@ipld/dag-cbor": "^9.2.0",
-    "@ipld/dag-json": "^10.2.1",
+    "@ipld/dag-cbor": "^9.2.1",
+    "@ipld/dag-json": "^10.2.2",
     "cartonne": "^3.0.1",
     "codeco": "^1.2.3",
     "dag-jose": "^5.1.0",

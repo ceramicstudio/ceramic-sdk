@@ -33,10 +33,13 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "openapi-fetch": "^0.9.7"
+    "@ceramic-sdk/events": "workspace:^",
+    "openapi-fetch": "^0.10.2"
   },
   "devDependencies": {
-    "openapi-typescript": "^6.7.6"
+    "cartonne": "^3.0.1",
+    "codeco": "^1.2.3",
+    "openapi-typescript": "^7.0.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
