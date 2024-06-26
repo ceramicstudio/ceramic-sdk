@@ -10,8 +10,6 @@ jobs:
     services:
       ceramic:
         image: public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest
-        options: >-
-          daemon 
         ports:
           - 5001:5001
 
