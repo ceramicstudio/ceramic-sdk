@@ -13,8 +13,7 @@
   "sideEffects": false,
   "scripts": {
     "lint": "eslint src --fix",
-    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
-    "test:ci": "pnpm run test --ci --coverage"
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
@@ -24,9 +23,7 @@
     "@ceramic-sdk/model-protocol": "workspace:^"
   },
   "jest": {
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
+    "extensionsToTreatAsEsm": [".ts"],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
