@@ -3,11 +3,9 @@ import {
   DocumentDataEventPayload,
   DocumentInitEventPayload,
   assertValidContentLength,
-  getStreamID,
 } from '@ceramic-sdk/document-protocol'
 import { TimeEvent, eventToContainer } from '@ceramic-sdk/events'
 import jsonpatch from 'fast-json-patch'
-import type { CID } from 'multiformats/cid'
 
 import {
   assertEventLinksToState,
@@ -22,7 +20,7 @@ import { getImmutableFieldsToCheck } from './utils.js'
 import { validateRelationsContent } from './validation.js'
 
 export async function handleDeterministicInitPayload(
-  cid: CID,
+  cid: string,
   payload: DeterministicInitEventPayload,
   context: Context,
 ): Promise<DocumentState> {
@@ -49,7 +47,7 @@ export async function handleDeterministicInitPayload(
 }
 
 export async function handleInitPayload(
-  cid: CID,
+  cid: string,
   payload: DocumentInitEventPayload,
   context: Context,
 ): Promise<DocumentState> {
@@ -82,7 +80,7 @@ export async function handleInitPayload(
 }
 
 export async function handleDataPayload(
-  cid: CID,
+  cid: string,
   payload: DocumentDataEventPayload,
   context: Context,
 ): Promise<DocumentState> {
@@ -97,7 +95,7 @@ export async function handleDataPayload(
     const otherKeys = Object.keys(others)
     if (otherKeys.length) {
       throw new Error(
-        `Updating metadata for ModelInstanceDocument Streams is not allowed.  Tried to change metadata for Stream ${getStreamID(payload.id)} from ${JSON.stringify(
+        `Updating metadata for ModelInstanceDocument Streams is not allowed.  Tried to change metadata for ${payload.id} from ${JSON.stringify(
           state.metadata,
         )} to ${JSON.stringify(payload.header)}`,
       )
@@ -134,17 +132,17 @@ export async function handleDataPayload(
 }
 
 export async function handleTimeEvent(
-  cid: CID,
+  cid: string,
   event: TimeEvent,
   context: Context,
 ): Promise<DocumentState> {
-  const state = await context.getDocumentState(event.id)
+  const state = await context.getDocumentState(event.id.toString())
   assertEventLinksToState(event, state)
   return { ...state, log: [...state.log, cid] }
 }
 
 export async function handleEvent(
-  cid: CID,
+  cid: string,
   event: DocumentEvent,
   context: Context,
 ): Promise<DocumentState> {

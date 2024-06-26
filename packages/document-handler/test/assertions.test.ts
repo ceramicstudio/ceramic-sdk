@@ -1,8 +1,7 @@
-import {
-  type DocumentDataEventPayload,
-  type DocumentInitEventHeader,
-  type DocumentMetadata,
-  getStreamID,
+import type {
+  DocumentDataEventPayload,
+  DocumentInitEventHeader,
+  DocumentMetadata,
 } from '@ceramic-sdk/document-protocol'
 import { randomCID } from '@ceramic-sdk/identifiers'
 import type { ModelDefinitionV2 } from '@ceramic-sdk/model-protocol'
@@ -23,13 +22,13 @@ describe('assertEventLinksToState()', () => {
     expect(() => {
       assertEventLinksToState(
         { id: cid } as unknown as DocumentDataEventPayload,
-        { cid, log: [] } as unknown as DocumentState,
+        { log: [] } as unknown as DocumentState,
       )
     }).toThrow('Invalid document state: log is empty')
   })
 
   test('throws if the event id does not match the init event cid', () => {
-    const expectedID = randomCID()
+    const expectedID = randomCID().toString()
     const invalidID = randomCID()
     expect(() => {
       assertEventLinksToState(
@@ -37,7 +36,7 @@ describe('assertEventLinksToState()', () => {
         { log: [expectedID] } as unknown as DocumentState,
       )
     }).toThrow(
-      `Invalid init CID in event payload for document ${getStreamID(expectedID)}. Found: ${invalidID}, expected ${expectedID}`,
+      `Invalid init CID in event payload for document, expected ${expectedID} but got ${invalidID}`,
     )
   })
 
@@ -48,10 +47,12 @@ describe('assertEventLinksToState()', () => {
     expect(() => {
       assertEventLinksToState(
         { id: initID, prev: invalidID } as unknown as DocumentDataEventPayload,
-        { log: [initID, expectedID] } as unknown as DocumentState,
+        {
+          log: [initID.toString(), expectedID.toString()],
+        } as unknown as DocumentState,
       )
     }).toThrow(
-      `Commit doesn't properly point to previous event payload in log for document ${getStreamID(initID)}. Expected ${expectedID}, found 'prev' ${invalidID}`,
+      `Commit doesn't properly point to previous event payload in log for document ${initID}. Expected ${expectedID}, found 'prev' ${invalidID}`,
     )
   })
 })

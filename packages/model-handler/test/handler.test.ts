@@ -15,7 +15,6 @@ import {
   type ModelDefinitionV2,
   type ModelEvent,
   ModelInitEventPayload,
-  type ModelState,
 } from '@ceramic-sdk/model-protocol'
 import { asDIDString } from '@didtools/codecs'
 import { jest } from '@jest/globals'
@@ -26,7 +25,7 @@ import {
   handleInitEvent,
   handleTimeEvent,
 } from '../src/handler.js'
-import type { Context, InitContext } from '../src/types.js'
+import type { Context, InitContext, ModelState } from '../src/types.js'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -73,7 +72,7 @@ async function createModelEvent(
 const validEvent = await createModelEvent(authenticatedDID)
 
 describe('handleInitEvent()', () => {
-  const cid = randomCID()
+  const cid = randomCID().toString()
 
   const defaultContext: InitContext = {
     getModelDefinition: () => {
@@ -252,26 +251,35 @@ describe('handleInitEvent()', () => {
       ModelInitEventPayload.encode(payload),
     )
     const state = await handleInitEvent(cid, event, defaultContext)
-    expect(state.cid).toBe(cid)
     expect(state.content).toEqual(testModelV1)
     expect(state.metadata.controller).toBe(authenticatedDID.id)
     expect(state.metadata.model).toBe(MODEL_STREAM_ID)
-    expect(state.log[0]).toBe(event)
+    expect(state.log).toEqual([cid])
   })
 })
 
 describe('handleTimeEvent()', () => {
-  const eventCID = randomCID()
+  const eventCID = randomCID().toString()
   const modelCID = randomCID()
-  const modelInitEvent = {}
+  const modelCIDString = modelCID.toString()
+
+  test('throws if the existing state log is empty', async () => {
+    const getModelState = jest.fn(() => {
+      return Promise.resolve({ log: [] } as unknown as ModelState)
+    })
+    const context = { getModelState }
+    const event = { id: modelCID } as unknown as TimeEvent
+    await expect(async () => {
+      await handleTimeEvent(eventCID, event, context)
+    }).rejects.toThrow(
+      `Invalid model state provided for time event ${eventCID}: log is empty`,
+    )
+  })
 
   test('throws if the loaded state does not match the expected model', async () => {
-    const otherModelCID = randomCID()
+    const otherModelCID = randomCID().toString()
     const getModelState = jest.fn(() => {
-      return Promise.resolve({
-        cid: otherModelCID,
-        log: [modelInitEvent],
-      } as ModelState)
+      return Promise.resolve({ log: [otherModelCID] } as unknown as ModelState)
     })
     const context = { getModelState }
     const event = { id: modelCID } as unknown as TimeEvent
@@ -282,40 +290,20 @@ describe('handleTimeEvent()', () => {
     )
   })
 
-  test('throws if the existing state log is empty', async () => {
-    const getModelState = jest.fn(() => {
-      return Promise.resolve({
-        cid: modelCID,
-        log: [],
-      } as unknown as ModelState)
-    })
-    const context = { getModelState }
-    const event = { id: modelCID } as unknown as TimeEvent
-    await expect(async () => {
-      await handleTimeEvent(eventCID, event, context)
-    }).rejects.toThrow(
-      `Invalid state for model ${modelCID} provided for time event ${eventCID}: no events in log`,
-    )
-  })
-
   test('adds the time event to the log', async () => {
     const getModelState = jest.fn(() => {
-      return Promise.resolve({
-        cid: modelCID,
-        log: [modelInitEvent],
-      } as ModelState)
+      return Promise.resolve({ log: [modelCIDString] } as unknown as ModelState)
     })
     const context = { getModelState }
     const event = { id: modelCID } as unknown as TimeEvent
     await expect(handleTimeEvent(eventCID, event, context)).resolves.toEqual({
-      cid: modelCID,
-      log: [modelInitEvent, event],
+      log: [modelCIDString, eventCID],
     })
   })
 })
 
 describe('handleEvent()', () => {
-  const eventCID = randomCID()
+  const eventCID = randomCID().toString()
   const modelCID = randomCID()
 
   test('handles signed and time events', async () => {
@@ -332,7 +320,7 @@ describe('handleEvent()', () => {
     }
 
     // Handle init event first to get state
-    state = await handleEvent(modelCID, validEvent, context)
+    state = await handleEvent(modelCID.toString(), validEvent, context)
 
     // Handle time event
     const timeEvent = {
@@ -343,10 +331,9 @@ describe('handleEvent()', () => {
     }
     const updatedState = await handleEvent(eventCID, timeEvent, context)
 
-    expect(updatedState.cid).toBe(modelCID)
     expect(updatedState.content).toBe(state.content)
     expect(updatedState.metadata).toBe(state.metadata)
-    expect(updatedState.log).toEqual([validEvent, timeEvent])
+    expect(updatedState.log).toEqual([modelCID.toString(), eventCID])
   })
 
   test('throws if the event is not supported', async () => {

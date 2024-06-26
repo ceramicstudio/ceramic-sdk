@@ -10,6 +10,8 @@ jobs:
     services:
       ceramic:
         image: public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest
+        env:
+          CERAMIC_ONE_STORE_DIR: /
         options: --user root
         ports:
           - 5001:5001

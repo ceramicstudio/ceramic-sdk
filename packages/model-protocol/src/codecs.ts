@@ -4,7 +4,7 @@ import {
   streamIDAsString,
   streamIDString,
 } from '@ceramic-sdk/identifiers'
-import { cidAsString, didString } from '@didtools/codecs'
+import { didString } from '@didtools/codecs'
 import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'
 import {
@@ -393,17 +393,3 @@ export type ModelInitEventPayload = TypeOf<typeof ModelInitEventPayload>
  */
 export const ModelEvent = union([SignedEvent, TimeEvent], 'ModelEvent')
 export type ModelEvent = TypeOf<typeof ModelEvent>
-
-/**
- * Model state, extending the model snapshot with init CID and events log
- */
-export const ModelState = strict(
-  {
-    cid: cidAsString,
-    metadata: ModelMetadata,
-    content: ModelDefinition,
-    log: array(ModelEvent),
-  },
-  'ModelState',
-)
-export type ModelState = TypeOf<typeof ModelState>

@@ -30,7 +30,7 @@ import { encodeUniqueFieldsValue } from '../src/utils.js'
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
 describe('handleDeterministicInitPayload()', () => {
-  const cid = randomCID()
+  const cid = randomCID().toString()
   const modelID = randomStreamID()
 
   test('throws if content is provided', async () => {
@@ -92,7 +92,7 @@ describe('handleDeterministicInitPayload()', () => {
 })
 
 describe('handleInitPayload()', () => {
-  const cid = randomCID()
+  const cid = randomCID().toString()
   const modelID = randomStreamID()
 
   test('throws if no content is provided', async () => {
@@ -248,7 +248,7 @@ describe('handleInitPayload()', () => {
 })
 
 describe('handleDataPayload()', () => {
-  const eventID = randomCID()
+  const eventID = randomCID().toString()
   const initID = randomCID()
   const modelID = randomStreamID()
 
@@ -269,7 +269,10 @@ describe('handleDataPayload()', () => {
 
   test('throws if the event header contains other fields than "shouldIndex"', async () => {
     const getDocumentState = jest.fn(() => {
-      return { log: [initID], metadata: { unique: new Uint8Array() } }
+      return {
+        log: [initID.toString()],
+        metadata: { unique: new Uint8Array() },
+      }
     })
     const context = { getDocumentState } as unknown as Context
 
@@ -284,7 +287,7 @@ describe('handleDataPayload()', () => {
         context,
       )
     }).rejects.toThrow(
-      `Updating metadata for ModelInstanceDocument Streams is not allowed.  Tried to change metadata for Stream ${getStreamID(initID)} from {"unique":{}} to {"unique":{}}`,
+      `Updating metadata for ModelInstanceDocument Streams is not allowed.  Tried to change metadata for ${initID} from {"unique":{}} to {"unique":{}}`,
     )
   })
 
@@ -292,7 +295,7 @@ describe('handleDataPayload()', () => {
     const longString = 'a'.repeat(MAX_DOCUMENT_SIZE - 20)
 
     const getDocumentState = jest.fn(() => {
-      return { log: [initID], content: { a: longString } }
+      return { log: [initID.toString()], content: { a: longString } }
     })
     const context = { getDocumentState } as unknown as Context
 
@@ -314,7 +317,7 @@ describe('handleDataPayload()', () => {
   test('throws if the content does not match the model schema', async () => {
     const getDocumentState = jest.fn(() => {
       return {
-        log: [initID],
+        log: [initID.toString()],
         content: { hello: 'world' },
         metadata: { model: modelID },
       }
@@ -352,7 +355,7 @@ describe('handleDataPayload()', () => {
   test('throws if the "unique" value is invalid', async () => {
     const getDocumentState = jest.fn(() => {
       return {
-        log: [initID],
+        log: [initID.toString()],
         content: { hello: 'world', foo: 'one', bar: 'two' },
         metadata: {
           model: modelID,
@@ -397,7 +400,7 @@ describe('handleDataPayload()', () => {
   test('throws if an immutable field is changed', async () => {
     const getDocumentState = jest.fn(() => {
       return {
-        log: [initID],
+        log: [initID.toString()],
         content: { hello: 'world' },
         metadata: { model: modelID },
       }
@@ -438,7 +441,7 @@ describe('handleDataPayload()', () => {
 
     const getDocumentState = jest.fn(() => {
       return {
-        log: [initID],
+        log: [initID.toString()],
         content: {},
         metadata: { model: randomStreamID() },
       }
@@ -484,7 +487,7 @@ describe('handleDataPayload()', () => {
   test('returns the updated DocumentState', async () => {
     const getDocumentState = jest.fn(() => {
       return {
-        log: [initID],
+        log: [initID.toString()],
         content: { hello: 'world' },
         metadata: { model: modelID, shouldIndex: false },
       }
@@ -513,13 +516,13 @@ describe('handleDataPayload()', () => {
 
     const newState = await handleDataPayload(eventID, payload, context)
     expect(newState.content).toEqual({ hello: 'test' })
-    expect(newState.log).toEqual([initID, eventID])
+    expect(newState.log).toEqual([initID.toString(), eventID])
     expect(newState.metadata.shouldIndex).toBe(true)
   })
 })
 
 describe('handleTimeEvent()', () => {
-  const eventID = randomCID()
+  const eventID = randomCID().toString()
   const initID = randomCID()
 
   test('throws if the event cannot be linked to the state', async () => {
@@ -539,13 +542,13 @@ describe('handleTimeEvent()', () => {
 
   test('returns the updated DocumentState', async () => {
     const getDocumentState = jest.fn(() => {
-      return { log: [initID], content: { test: true } }
+      return { log: [initID.toString()], content: { test: true } }
     })
     const context = { getDocumentState } as unknown as Context
     const event = { id: initID, prev: initID } as unknown as TimeEvent
     const newState = await handleTimeEvent(eventID, event, context)
     expect(newState.content).toEqual({ test: true })
-    expect(newState.log).toEqual([initID, eventID])
+    expect(newState.log).toEqual([initID.toString(), eventID])
   })
 })
 
@@ -584,10 +587,10 @@ describe('handleEvent()', () => {
       authenticatedDID.id,
       unique,
     )
-    state = await handleEvent(initCID, initEvent, context)
+    state = await handleEvent(initCID.toString(), initEvent, context)
     const streamID = getStreamID(initCID)
 
-    const timeCID = randomCID()
+    const timeCID = randomCID().toString()
     const timeEvent: TimeEvent = {
       id: initCID,
       prev: initCID,
@@ -596,7 +599,7 @@ describe('handleEvent()', () => {
     }
     state = await handleEvent(timeCID, timeEvent, context)
 
-    const dataCID = randomCID()
+    const dataCID = randomCID().toString()
     const dataEvent = await createDataEvent({
       controller: authenticatedDID,
       currentID: CommitID.fromStream(streamID, timeCID),
@@ -610,7 +613,7 @@ describe('handleEvent()', () => {
     expect(state.metadata.model.equals(modelID)).toBe(true)
     expect(state.metadata.shouldIndex).toBe(true)
     expect(state.metadata.unique).toBe(unique)
-    expect(state.log).toEqual([initCID, timeCID, dataCID])
+    expect(state.log).toEqual([initCID.toString(), timeCID, dataCID])
   })
 
   test('with non-deterministic init event', async () => {
@@ -642,7 +645,7 @@ describe('handleEvent()', () => {
       content: { hello: 'world' },
       model: modelID,
     })
-    state = await handleEvent(initCID, initEvent, context)
+    state = await handleEvent(initCID.toString(), initEvent, context)
     const streamID = getStreamID(initCID)
 
     const dataCID = randomCID()
@@ -652,9 +655,9 @@ describe('handleEvent()', () => {
       content: { hello: 'test' },
       shouldIndex: true,
     })
-    state = await handleEvent(dataCID, dataEvent, context)
+    state = await handleEvent(dataCID.toString(), dataEvent, context)
 
-    const timeCID = randomCID()
+    const timeCID = randomCID().toString()
     const timeEvent: TimeEvent = {
       id: initCID,
       prev: dataCID,
@@ -668,6 +671,6 @@ describe('handleEvent()', () => {
     expect(state.metadata.model.equals(modelID)).toBe(true)
     expect(state.metadata.shouldIndex).toBe(true)
     expect(state.metadata.unique).toBeInstanceOf(Uint8Array)
-    expect(state.log).toEqual([initCID, dataCID, timeCID])
+    expect(state.log).toEqual([initCID.toString(), dataCID.toString(), timeCID])
   })
 })

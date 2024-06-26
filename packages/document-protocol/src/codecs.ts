@@ -1,3 +1,4 @@
+import { SignedEvent, TimeEvent } from '@ceramic-sdk/events'
 import { streamIDAsBytes, streamIDAsString } from '@ceramic-sdk/identifiers'
 import {
   cid,
@@ -219,3 +220,16 @@ export const DocumentMetadata = sparse(
 )
 export type DocumentMetadata = TypeOf<typeof DocumentMetadata>
 export type EncodedDocumentMetadata = OutputOf<typeof DocumentMetadata>
+
+/**
+ * Document event: either a deterministic init event payload, a signed event or a time event.
+ */
+export const DocumentEvent = union(
+  [
+    DeterministicInitEventPayload,
+    SignedEvent, // non-deterministic init or data payload
+    TimeEvent,
+  ],
+  'DocumentEvent',
+)
+export type DocumentEvent = OutputOf<typeof DocumentEvent>

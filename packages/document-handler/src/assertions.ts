@@ -1,9 +1,8 @@
-import {
-  type DocumentDataEventPayload,
-  type DocumentInitEventHeader,
-  type DocumentMetadata,
-  type JSONPatchOperation,
-  getStreamID,
+import type {
+  DocumentDataEventPayload,
+  DocumentInitEventHeader,
+  DocumentMetadata,
+  JSONPatchOperation,
 } from '@ceramic-sdk/document-protocol'
 import type { TimeEvent } from '@ceramic-sdk/events'
 import type { JSONSchema, ModelDefinition } from '@ceramic-sdk/model-protocol'
@@ -158,18 +157,17 @@ export function assertEventLinksToState(
 
   // Older versions of the CAS created time events without an 'id' field, so only check
   // the event payload 'id' field if it is present.
-  if (payload.id != null && !payload.id.equals(initCID)) {
+  if (payload.id != null && payload.id.toString() !== initCID) {
     throw new Error(
-      `Invalid init CID in event payload for document ${getStreamID(initCID)}. Found: ${
-        payload.id
-      }, expected ${initCID}`,
+      `Invalid init CID in event payload for document, expected ${initCID} but got ${payload.id}`,
     )
   }
 
+  const prev = payload.prev.toString()
   const expectedPrev = state.log[state.log.length - 1]
-  if (!payload.prev.equals(expectedPrev)) {
+  if (prev !== expectedPrev) {
     throw new Error(
-      `Commit doesn't properly point to previous event payload in log for document ${getStreamID(initCID)}. Expected ${expectedPrev}, found 'prev' ${payload.prev}`,
+      `Commit doesn't properly point to previous event payload in log for document ${initCID}. Expected ${expectedPrev}, found 'prev' ${prev}`,
     )
   }
 }

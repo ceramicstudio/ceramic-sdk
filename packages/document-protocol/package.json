@@ -32,6 +32,7 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
+    "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
     "@didtools/codecs": "^3.0.0",
     "codeco": "^1.2.3",

@@ -8,18 +8,16 @@ import {
   type ModelEvent,
   ModelInitEventPayload,
   ModelMetadata,
-  type ModelState,
   assertValidModelContent,
   validateController,
 } from '@ceramic-sdk/model-protocol'
 import type { DID } from 'dids'
-import type { CID } from 'multiformats/cid'
 
 import {
   validateImplementedInterfaces,
   validateInterface,
 } from './interfaces-validation.js'
-import type { Context, InitContext, TimeContext } from './types.js'
+import type { Context, InitContext, ModelState, TimeContext } from './types.js'
 
 export async function getInitEventContainer(
   verifier: DID,
@@ -29,7 +27,7 @@ export async function getInitEventContainer(
 }
 
 export async function handleInitEvent(
-  cid: CID,
+  cid: string,
   event: SignedEvent,
   context: InitContext,
 ): Promise<ModelState> {
@@ -51,37 +49,37 @@ export async function handleInitEvent(
   }
 
   return {
-    cid,
     content,
     metadata,
-    log: [event],
+    log: [cid],
   }
 }
 
 export async function handleTimeEvent(
-  cid: CID,
+  cid: string,
   event: TimeEvent,
   context: TimeContext,
 ): Promise<ModelState> {
-  const state = await context.getModelState(event.id)
-  if (!state.cid.equals(event.id)) {
+  const initID = event.id.toString()
+  const state = await context.getModelState(initID)
+  if (state.log.length === 0) {
     throw new Error(
-      `Invalid state with model ${state.cid} provided for time event ${cid}: expected model ${event.id}`,
+      `Invalid model state provided for time event ${cid}: log is empty`,
     )
   }
 
-  const init = state.log[0]
-  if (init == null) {
+  const stateInitID = state.log[0]
+  if (stateInitID !== initID) {
     throw new Error(
-      `Invalid state for model ${state.cid} provided for time event ${cid}: no events in log`,
+      `Invalid state with model ${stateInitID} provided for time event ${cid}: expected model ${initID}`,
     )
   }
 
-  return { ...state, log: [...state.log, event] }
+  return { ...state, log: [...state.log, cid] }
 }
 
 export async function handleEvent(
-  cid: CID,
+  cid: string,
   event: ModelEvent,
   context: Context,
 ): Promise<ModelState> {
