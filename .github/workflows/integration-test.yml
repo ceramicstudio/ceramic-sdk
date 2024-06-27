@@ -11,8 +11,9 @@ jobs:
       ceramic:
         image: public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest
         env:
+          CERAMIC_ONE_BIND_ADDRESS: 0.0.0.0:5001
+          CERAMIC_ONE_NETWORK: in-memory
           CERAMIC_ONE_STORE_DIR: /
-        options: --user root
         ports:
           - 5001:5001
 

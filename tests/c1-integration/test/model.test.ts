@@ -8,7 +8,6 @@ import {
   type ModelDefinition,
   ModelEvent,
 } from '@ceramic-sdk/model-protocol'
-import { CID } from 'multiformats/cid'
 
 const client = new CeramicClient({ url: 'http://localhost:5001' })
 
@@ -27,6 +26,13 @@ const testModel: ModelDefinition = {
     additionalProperties: false,
   },
 }
+
+test.only('connect to ceramic-one', async () => {
+  const res = await fetch('http://localhost:5001/ceramic/version')
+  expect(res.ok)
+  const data = await res.json()
+  console.log('version', data.version)
+})
 
 test('create model', async () => {
   await client.registerInterestModel(MODEL_STREAM_ID)
