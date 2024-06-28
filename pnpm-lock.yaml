@@ -184,6 +184,46 @@ importers:
         specifier: workspace:^
         version: link:../key-did
 
+  packages/model-handler:
+    dependencies:
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
+      '@ceramic-sdk/model-protocol':
+        specifier: workspace:^
+        version: link:../model-protocol
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.5.2)
+      json-ptr:
+        specifier: ^3.1.1
+        version: 3.1.1
+      lodash.ismatch:
+        specifier: ^4.4.0
+        version: 4.4.0
+    devDependencies:
+      '@ceramic-sdk/ethereum-did':
+        specifier: workspace:^
+        version: link:../ethereum-did
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      '@ceramic-sdk/key-did':
+        specifier: workspace:^
+        version: link:../key-did
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
+      '@types/lodash.ismatch':
+        specifier: ^4.4.9
+        version: 4.4.9
+      json-schema-typed:
+        specifier: ^8.0.1
+        version: 8.0.1
+      multiformats:
+        specifier: ^13.1.1
+        version: 13.1.1
+
   packages/model-protocol:
     dependencies:
       '@ceramic-sdk/events':
@@ -941,6 +981,12 @@ packages:
 
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
+
+  '@types/lodash.ismatch@4.4.9':
+    resolution: {integrity: sha512-qWihnStOPKH8urljLGm6ZOEdN/5Bt4vxKR81tL3L4ArUNLvcf9RW3QSnPs21eix5BiqioSWq4aAXD4Iep+d0fw==}
+
+  '@types/lodash@4.17.6':
+    resolution: {integrity: sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==}
 
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
@@ -1846,6 +1892,9 @@ packages:
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+
+  lodash.ismatch@4.4.0:
+    resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==}
 
   lowercase-keys@2.0.0:
     resolution: {integrity: sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==}
@@ -3419,6 +3468,12 @@ snapshots:
     dependencies:
       '@types/node': 20.14.9
 
+  '@types/lodash.ismatch@4.4.9':
+    dependencies:
+      '@types/lodash': 4.17.6
+
+  '@types/lodash@4.17.6': {}
+
   '@types/minimist@1.2.5': {}
 
   '@types/node@20.14.9':
@@ -4560,6 +4615,8 @@ snapshots:
       p-locate: 5.0.0
 
   lodash.isequal@4.5.0: {}
+
+  lodash.ismatch@4.4.0: {}
 
   lowercase-keys@2.0.0: {}
 
