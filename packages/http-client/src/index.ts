@@ -1,7 +1,100 @@
-import createAPIClient, { type ClientOptions } from 'openapi-fetch'
+import {
+  type SignedEvent,
+  carFromString,
+  carToString,
+  eventFromString,
+  eventToString,
+} from '@ceramic-sdk/events'
+import type { CAR } from 'cartonne'
+import type { Codec, Decoder } from 'codeco'
+import createAPIClient, { type HeadersOptions } from 'openapi-fetch'
 
-import type { paths } from './__generated__/api'
+import type { components, paths } from './__generated__/api'
 
-export function createClient(options?: ClientOptions) {
-  return createAPIClient<paths>(options)
+export type CeramicAPI = ReturnType<typeof createAPIClient<paths>>
+
+export type ClientParams = {
+  url: string
+  fetch?: (request: Request) => ReturnType<typeof fetch>
+  headers?: HeadersOptions
+}
+
+export type EventsFeedParams = {
+  resumeAt?: string
+  limit?: number
+}
+
+export class CeramicClient {
+  #api: CeramicAPI
+
+  constructor(params: ClientParams) {
+    const { url, ...options } = params
+    this.#api = createAPIClient<paths>({
+      baseUrl: `${url}/ceramic`,
+      ...options,
+    })
+  }
+
+  get api(): CeramicAPI {
+    return this.#api
+  }
+
+  async getEvent(id: string): Promise<components['schemas']['Event']> {
+    const { data, error } = await this.#api.GET('/events/{event_id}', {
+      params: { path: { event_id: id } },
+    })
+    if (error != null) {
+      throw new Error(error.message)
+    }
+    return data
+  }
+
+  async getEventCAR(id: string): Promise<CAR> {
+    const event = await this.getEvent(id)
+    return carFromString(event.data)
+  }
+
+  async getEventType<Payload>(
+    decoder: Decoder<unknown, Payload>,
+    id: string,
+  ): Promise<SignedEvent | Payload> {
+    const event = await this.getEvent(id)
+    return eventFromString(decoder, event.data)
+  }
+
+  async getEventsFeed(
+    params: EventsFeedParams = {},
+  ): Promise<components['schemas']['EventFeed']> {
+    const { data, error } = await this.#api.GET('/feed/events', {
+      query: params,
+    })
+    if (error != null) {
+      throw new Error(error.message)
+    }
+    return data
+  }
+
+  async postEvent(data: string): Promise<void> {
+    const { error } = await this.#api.POST('/events', { body: { data } })
+    if (error != null) {
+      throw new Error(error.message)
+    }
+  }
+
+  async postEventCAR(car: CAR): Promise<void> {
+    await this.postEvent(carToString(car))
+  }
+
+  async postEventType(codec: Codec<unknown>, event: unknown) {
+    await this.postEvent(eventToString(codec, event))
+  }
+
+  async registerInterestModel(model: string): Promise<void> {
+    const { error } = await this.#api.POST('/interests', {
+      body: { sep: 'model', sepValue: model },
+    })
+    if (error != null) {
+      throw new Error(error.message)
+    }
+  }
 }

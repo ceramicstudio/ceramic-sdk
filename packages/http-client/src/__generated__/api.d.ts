@@ -5,128 +5,303 @@
 
 export interface paths {
   '/liveness': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Test the liveness of the Ceramic node */
     get: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
       responses: {
         /** @description success */
         200: {
-          content: never
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/debug/heap': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get the heap statistics of the Ceramic node */
     get: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
       responses: {
         /** @description success */
         200: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/octet-stream': string
           }
         }
         /** @description bad request */
         400: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['BadRequestResponse']
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/version': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get the version of the Ceramic node */
-    post: {
+    get: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
       responses: {
         /** @description success */
         200: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['Version']
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    put?: never
+    /** Get the version of the Ceramic node */
+    post: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description success */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['Version']
+          }
+        }
+        /** @description Internal server error */
+        500: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['ErrorResponse']
+          }
+        }
+      }
+    }
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Creates a new event */
     post: {
-      requestBody: components['requestBodies']['Event']
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody: components['requestBodies']['EventData']
       responses: {
         /** @description success */
         204: {
-          content: never
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
         }
         /** @description bad request */
         400: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['BadRequestResponse']
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/events/{event_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get event data */
     get: {
       parameters: {
+        query?: never
+        header?: never
         path: {
-          /** @description identifier of the event */
+          /** @description CID of the root block of the event, used to identify of the event */
           event_id: string
         }
+        cookie?: never
       }
+      requestBody?: never
       responses: {
         /** @description success */
         200: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['Event']
           }
         }
         /** @description bad request */
         400: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['BadRequestResponse']
           }
         }
         /** @description Event not found */
         404: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'text/plain': string
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/interests/{sort_key}/{sort_value}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Register interest for a sort key */
     post: {
       parameters: {
@@ -136,58 +311,163 @@ export interface paths {
           /** @description the stream to register interest for */
           streamId?: string
         }
+        header?: never
         path: {
           /** @description name of the sort_key */
           sort_key: string
           /** @description value associated with the sort key */
           sort_value: string
         }
+        cookie?: never
       }
+      requestBody?: never
       responses: {
         /** @description success */
         204: {
-          content: never
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
         }
         /** @description bad request */
         400: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['BadRequestResponse']
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/interests': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Register interest for a sort key */
     post: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
       requestBody: components['requestBodies']['Interest']
       responses: {
         /** @description success */
         204: {
-          content: never
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
         }
         /** @description bad request */
         400: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['BadRequestResponse']
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/experimental/interests': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get the interests stored on the node */
+    get: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description success */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['InterestsGet']
+          }
+        }
+        /** @description bad request */
+        400: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['BadRequestResponse']
+          }
+        }
+        /** @description Internal server error */
+        500: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['ErrorResponse']
+          }
+        }
+      }
+    }
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/experimental/events/{sep}/{sepValue}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get events matching the interest stored on the node */
     get: {
       parameters: {
@@ -201,82 +481,61 @@ export interface paths {
           /** @description the maximum number of events to return, default is 10000. */
           limit?: number
         }
+        header?: never
         path: {
           /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
           sep: string
-          /** @description The value of the field in the Events header indicated by the separator key me.g. multibase encoded model ID */
+          /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
           sepValue: string
         }
+        cookie?: never
       }
+      requestBody?: never
       responses: {
         /** @description success */
         200: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['EventsGet']
           }
         }
         /** @description bad request */
         400: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['BadRequestResponse']
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
-  }
-  '/events/{sort_key}/{sort_value}': {
-    /**
-     * Get events matching the interest stored on the node
-     * @deprecated
-     */
-    get: {
-      parameters: {
-        query?: {
-          /** @description the controller to filter */
-          controller?: string
-          /** @description the stream to filter */
-          streamId?: string
-          /** @description token that designates the point to resume from, that is find keys added after this point */
-          offset?: number
-          /** @description the maximum number of events to return, default is 10000. */
-          limit?: number
-        }
-        path: {
-          /** @description name of the sort_key e.g. 'model' */
-          sort_key: string
-          /** @description value associated with the sort key e.g. model ID */
-          sort_value: string
-        }
-      }
-      responses: {
-        /** @description success */
-        200: {
-          content: {
-            'application/json': components['schemas']['EventsGet']
-          }
-        }
-        /** @description bad request */
-        400: {
-          content: {
-            'application/json': components['schemas']['BadRequestResponse']
-          }
-        }
-        /** @description Internal server error */
-        500: {
-          content: {
-            'application/json': components['schemas']['ErrorResponse']
-          }
-        }
-      }
-    }
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/feed/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get all new event keys since resume token */
     get: {
       parameters: {
@@ -286,40 +545,112 @@ export interface paths {
           /** @description the maximum number of events to return, default is 10000. */
           limit?: number
         }
+        header?: never
+        path?: never
+        cookie?: never
       }
+      requestBody?: never
       responses: {
         /** @description success */
         200: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['EventFeed']
           }
         }
         /** @description bad request */
         400: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['BadRequestResponse']
           }
         }
         /** @description Internal server error */
         500: {
+          headers: {
+            [name: string]: unknown
+          }
           content: {
             'application/json': components['schemas']['ErrorResponse']
           }
         }
       }
     }
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/feed/resumeToken': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get the current (maximum) highwater mark/continuation token of the feed. Allows starting `feed/events` from 'now'. */
+    get: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description success */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['_feed_resumeToken_get_200_response']
+          }
+        }
+        /** @description bad request */
+        400: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['BadRequestResponse']
+          }
+        }
+        /** @description Internal server error */
+        500: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['ErrorResponse']
+          }
+        }
+      }
+    }
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /**
      * @description Version of the Ceramic node in semver format, e.g. 2.1.0
      * @example {
-     *   "version": "version"
-     * }
+     *       "version": "version"
+     *     }
      */
     Version: {
       /** @description Version of the Ceramic node */
@@ -335,15 +666,26 @@ export interface components {
     }
     /**
      * A Ceramic Event
-     * @description A Ceramic event as part of a Ceramic Stream
+     * @description A Ceramic event as part of a Ceramic Stream. Contains both the root CID used to identify the Event as well as the Event payload data.
      * @example {
-     *   "data": "data",
-     *   "id": "id"
-     * }
+     *       "data": "data",
+     *       "id": "id"
+     *     }
      */
     Event: {
-      /** @description Multibase encoding of event id bytes. */
+      /** @description Multibase encoding of event root CID bytes. */
       id: string
+      /** @description Multibase encoding of event data. */
+      data: string
+    }
+    /**
+     * A Ceramic Event Data Payload
+     * @description The data for a Ceramic event that is part of a Ceramic Stream
+     * @example {
+     *       "data": "data"
+     *     }
+     */
+    EventData: {
       /** @description Multibase encoding of event data. */
       data: string
     }
@@ -351,21 +693,21 @@ export interface components {
      * Ceramic Event feed data
      * @description Ceramic event keys as part of a Ceramic Stream
      * @example {
-     *   "resumeToken": "resumeToken",
-     *   "events": [
-     *     {
-     *       "data": "data",
-     *       "id": "id"
-     *     },
-     *     {
-     *       "data": "data",
-     *       "id": "id"
+     *       "resumeToken": "resumeToken",
+     *       "events": [
+     *         {
+     *           "data": "data",
+     *           "id": "id"
+     *         },
+     *         {
+     *           "data": "data",
+     *           "id": "id"
+     *         }
+     *       ]
      *     }
-     *   ]
-     * }
      */
     EventFeed: {
-      /** @description An array of events. For now, the value is empty. */
+      /** @description An array of events. For now, the event data payload is empty. */
       events: components['schemas']['Event'][]
       /** @description The token/highwater mark to used as resumeAt on a future request */
       resumeToken: string
@@ -374,19 +716,19 @@ export interface components {
      * Information about multiple events.
      * @description Ceramic event keys as part of a Ceramic Stream
      * @example {
-     *   "resumeOffset": 0,
-     *   "events": [
-     *     {
-     *       "data": "data",
-     *       "id": "id"
-     *     },
-     *     {
-     *       "data": "data",
-     *       "id": "id"
+     *       "resumeOffset": 0,
+     *       "events": [
+     *         {
+     *           "data": "data",
+     *           "id": "id"
+     *         },
+     *         {
+     *           "data": "data",
+     *           "id": "id"
+     *         }
+     *       ],
+     *       "isComplete": true
      *     }
-     *   ],
-     *   "isComplete": true
-     * }
      */
     EventsGet: {
       /** @description An array of events */
@@ -395,6 +737,24 @@ export interface components {
       resumeOffset: number
       /** @description A boolean specifying if there are more events to be fetched. Repeat with the resumeOffset to get next set. */
       isComplete: boolean
+    }
+    /**
+     * Information about multiple interests.
+     * @description Ceramic interest keys
+     * @example {
+     *       "interests": [
+     *         {
+     *           "data": "data"
+     *         },
+     *         {
+     *           "data": "data"
+     *         }
+     *       ]
+     *     }
+     */
+    InterestsGet: {
+      /** @description An array of interests */
+      interests: components['schemas']['InterestsGet_interests_inner'][]
     }
     /**
      * Error response
@@ -408,11 +768,11 @@ export interface components {
      * A recon interest
      * @description Describes a recon interest range to store and synchronize
      * @example {
-     *   "controller": "controller",
-     *   "streamId": "streamId",
-     *   "sepValue": "sepValue",
-     *   "sep": "sep"
-     * }
+     *       "controller": "controller",
+     *       "streamId": "streamId",
+     *       "sepValue": "sepValue",
+     *       "sep": "sep"
+     *     }
      */
     Interest: {
       /** @description Separator key, typically 'model' (sometimes called sort_key) */
@@ -424,14 +784,28 @@ export interface components {
       /** @description Multibase encoded stream ID. */
       streamId?: string
     }
+    /** @example {
+     *       "resumeToken": "resumeToken"
+     *     } */
+    _feed_resumeToken_get_200_response: {
+      /** @description The highwater mark/resume token to use with the event/feed endpoint. */
+      resumeToken: string
+    }
+    /** @example {
+     *       "data": "data"
+     *     } */
+    InterestsGet_interests_inner: {
+      /** @description The multbase encoded bytes of the interest. */
+      data: string
+    }
   }
   responses: never
   parameters: never
   requestBodies: {
     /** @description Event to add to the node */
-    Event: {
+    EventData: {
       content: {
-        'application/json': components['schemas']['Event']
+        'application/json': components['schemas']['EventData']
       }
     }
     /** @description Recon message to send */
@@ -450,9 +824,5 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export type operations = Record<string, never>
