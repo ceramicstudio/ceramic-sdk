@@ -27,13 +27,6 @@ const testModel: ModelDefinition = {
   },
 }
 
-test.only('connect to ceramic-one', async () => {
-  const res = await fetch('http://localhost:5001/ceramic/version')
-  expect(res.ok)
-  const data = await res.json()
-  console.log('version', data.version)
-})
-
 test('create model', async () => {
   await client.registerInterestModel(MODEL_STREAM_ID)
 
