@@ -73,6 +73,52 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
 
+  packages/document-handler:
+    dependencies:
+      '@ceramic-sdk/document-protocol':
+        specifier: workspace:^
+        version: link:../document-protocol
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      ajv:
+        specifier: ^8.16.0
+        version: 8.16.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.16.0)
+      codeco:
+        specifier: ^1.2.3
+        version: 1.2.3
+      fast-json-patch:
+        specifier: ^3.1.1
+        version: 3.1.1
+      uint8arrays:
+        specifier: ^5.1.0
+        version: 5.1.0
+    devDependencies:
+      '@ceramic-sdk/document-client':
+        specifier: workspace:^
+        version: link:../document-client
+      '@ceramic-sdk/key-did':
+        specifier: workspace:^
+        version: link:../key-did
+      '@ceramic-sdk/model-protocol':
+        specifier: workspace:^
+        version: link:../model-protocol
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.5.2)
+      multiformats:
+        specifier: ^13.1.1
+        version: 13.1.1
+      ts-essentials:
+        specifier: ^10.0.1
+        version: 10.0.1(typescript@5.5.2)
+
   packages/document-protocol:
     dependencies:
       '@ceramic-sdk/events':
