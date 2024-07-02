@@ -252,6 +252,22 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
+  packages/jest-environment:
+    dependencies:
+      '@ceramic-sdk/http-client':
+        specifier: workspace:^
+        version: link:../http-client
+      '@databases/with-container':
+        specifier: ^2.1.1
+        version: 2.1.1
+      jest-environment-node:
+        specifier: ^29.7.0
+        version: 29.7.0
+    devDependencies:
+      '@jest/environment':
+        specifier: ^29.7.0
+        version: 29.7.0
+
   packages/key-did:
     dependencies:
       dids:
@@ -377,9 +393,6 @@ importers:
       '@ceramic-sdk/events':
         specifier: workspace:^
         version: link:../../packages/events
-      '@ceramic-sdk/http-client':
-        specifier: workspace:^
-        version: link:../../packages/http-client
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../../packages/identifiers
@@ -396,9 +409,9 @@ importers:
         specifier: workspace:^
         version: link:../../packages/model-protocol
     devDependencies:
-      '@databases/with-container':
-        specifier: ^2.1.1
-        version: 2.1.1
+      jest-environment-ceramic:
+        specifier: workspace:^
+        version: link:../../packages/jest-environment
 
 packages:
 
