@@ -8,8 +8,9 @@ import {
   type ModelDefinition,
   ModelEvent,
 } from '@ceramic-sdk/model-protocol'
+import withContainer from '@databases/with-container'
 
-const client = new CeramicClient({ url: 'http://localhost:5001' })
+const startContainer = withContainer.default as typeof withContainer
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))
 
@@ -26,6 +27,33 @@ const testModel: ModelDefinition = {
     additionalProperties: false,
   },
 }
+
+let client: CeramicClient
+let runningContainer: Awaited<ReturnType<typeof startContainer>>
+
+beforeAll(async () => {
+  runningContainer = await startContainer({
+    debug: true,
+    image: 'public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest',
+    containerName: 'ceramic-one-model',
+    internalPort: 5001,
+    defaultExternalPort: 5001,
+    connectTimeoutSeconds: 10,
+    environment: {
+      CERAMIC_ONE_BIND_ADDRESS: '0.0.0.0:5001',
+      CERAMIC_ONE_LOG_FORMAT: 'single-line',
+      CERAMIC_ONE_NETWORK: 'in-memory',
+      CERAMIC_ONE_STORE_DIR: '/',
+    },
+  })
+  client = new CeramicClient({
+    url: `http://localhost:${runningContainer.externalPort}`,
+  })
+}, 60000)
+
+afterAll(async () => {
+  await runningContainer?.kill()
+})
 
 test('create model', async () => {
   await client.registerInterestModel(MODEL_STREAM_ID)

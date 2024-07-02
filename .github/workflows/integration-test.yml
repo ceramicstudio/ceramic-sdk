@@ -7,15 +7,15 @@ jobs:
     name: Run integration tests
     runs-on: ubuntu-latest
 
-    services:
-      ceramic:
-        image: public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest
-        env:
-          CERAMIC_ONE_BIND_ADDRESS: 0.0.0.0:5001
-          CERAMIC_ONE_NETWORK: in-memory
-          CERAMIC_ONE_STORE_DIR: /
-        ports:
-          - 5001:5001
+    # services:
+    #   ceramic:
+    #     image: public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest
+    #     env:
+    #       CERAMIC_ONE_BIND_ADDRESS: 0.0.0.0:5001
+    #       CERAMIC_ONE_NETWORK: in-memory
+    #       CERAMIC_ONE_STORE_DIR: /
+    #     ports:
+    #       - 5001:5001
 
     steps:
       - name: Checkout repository
