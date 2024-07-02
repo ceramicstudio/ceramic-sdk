@@ -363,6 +363,43 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(typescript@5.5.3)
 
+  tests/c1-integration:
+    dependencies:
+      '@ceramic-sdk/document-client':
+        specifier: workspace:^
+        version: link:../../packages/document-client
+      '@ceramic-sdk/document-handler':
+        specifier: workspace:^
+        version: link:../../packages/document-handler
+      '@ceramic-sdk/document-protocol':
+        specifier: workspace:^
+        version: link:../../packages/document-protocol
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../../packages/events
+      '@ceramic-sdk/http-client':
+        specifier: workspace:^
+        version: link:../../packages/http-client
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../../packages/identifiers
+      '@ceramic-sdk/key-did':
+        specifier: workspace:^
+        version: link:../../packages/key-did
+      '@ceramic-sdk/model-client':
+        specifier: workspace:^
+        version: link:../../packages/model-client
+      '@ceramic-sdk/model-handler':
+        specifier: workspace:^
+        version: link:../../packages/model-handler
+      '@ceramic-sdk/model-protocol':
+        specifier: workspace:^
+        version: link:../../packages/model-protocol
+    devDependencies:
+      '@databases/with-container':
+        specifier: ^2.1.1
+        version: 2.1.1
+
 packages:
 
   '@adraffy/ens-normalize@1.10.0':
@@ -591,6 +628,9 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@databases/with-container@2.1.1':
+    resolution: {integrity: sha512-iHsOn/6ElWuGpcytgNh9ZAvFd78G0ikOMWj0DtMTB4fXVqRA5uYZpLpLv/fvwL895xT7VTbVA6HV3YoY0yuQUg==}
 
   '@didtools/cacao@3.0.1':
     resolution: {integrity: sha512-vV1JirxqVsBf2dqdvoS/msNN8fabvMfseZB0kf1FG8TbosrHd81+hgDOlQMZit7zJbTk5g3CGkZg3b7iYKkynw==}
@@ -1057,6 +1097,9 @@ packages:
   '@types/cacheable-request@6.0.3':
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
 
+  '@types/cross-spawn@6.0.6':
+    resolution: {integrity: sha512-fXRhhUkG4H3TQk5dBhQ7m/JDdSNHKwR2BBia62lhwEIq9xGiQKLxd6LymNhn47SjXhsUEPmxi+PKw2OkW4LLjA==}
+
   '@types/graceful-fs@4.1.9':
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
 
@@ -1129,6 +1172,10 @@ packages:
         optional: true
       zod:
         optional: true
+
+  address@1.2.2:
+    resolution: {integrity: sha512-4B/qKCfeE/ODUaAUpSwfzazo5x29WD4r3vXiWsB7I2mSDAihwEqKO+g8GELZUQSSAo5e1XTYh3ZVfLyxBc12nA==}
+    engines: {node: '>= 10.0.0'}
 
   agent-base@7.1.1:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
@@ -1375,6 +1422,10 @@ packages:
   cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
 
+  cross-spawn@6.0.5:
+    resolution: {integrity: sha512-eTVLrBSt7fjbDygz805pMnstIs2VTBNkRm0qxZd+M7A5XDdxVRWO5MxGBXZhjY4cqLYLdtrGqRf8mBPmzwSpWQ==}
+    engines: {node: '>=4.8'}
+
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -1438,6 +1489,11 @@ packages:
   detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
+
+  detect-port@1.6.1:
+    resolution: {integrity: sha512-CmnVc+Hek2egPx1PeTFVta2W78xy2K/9Rkf6cC4T59S50tVnzKj+tnx5mmx5lwvCkujZ4uRrpRSuV+IVs3f90Q==}
+    engines: {node: '>= 4.0.0'}
+    hasBin: true
 
   did-jwt@7.4.7:
     resolution: {integrity: sha512-Apz7nIfIHSKWIMaEP5L/K8xkwByvjezjTG0xiqwKdnNj1x8M0+Yasury5Dm/KPltxi2PlGfRPf3IejRKZrT8mQ==}
@@ -2087,6 +2143,9 @@ packages:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
 
+  modern-spawn@1.0.0:
+    resolution: {integrity: sha512-VYCaPqxfHcbUndhf3ucm8ntIPqTbVDgcF5QRtZyB4AUYVx+y5ZfU5wRBiYyjzPW6vLvOHm3mdW/X9boZPnSLlQ==}
+
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
@@ -2115,6 +2174,9 @@ packages:
   nice-napi@1.0.2:
     resolution: {integrity: sha512-px/KnJAJZf5RuBGcfD+Sp2pAKq0ytz8j+1NehvgIGFkvtvFrDM3T8E4x/JJODXK9WZow8RRGrbA9QQ3hs+pDhA==}
     os: ['!win32']
+
+  nice-try@1.0.5:
+    resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
 
   node-addon-api@3.2.1:
     resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
@@ -2387,6 +2449,10 @@ packages:
   semver-truncate@3.0.0:
     resolution: {integrity: sha512-LJWA9kSvMolR51oDE6PN3kALBNaUdkxzAGcexw8gjMA8xr5zUqK0JiR3CgARSqanYF3Z1YHvsErb1KDgh+v7Rg==}
     engines: {node: '>=12'}
+
+  semver@5.7.2:
+    resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
+    hasBin: true
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -3012,6 +3078,15 @@ snapshots:
   '@biomejs/cli-win32-x64@1.8.3':
     optional: true
 
+  '@databases/with-container@2.1.1':
+    dependencies:
+      '@types/cross-spawn': 6.0.6
+      cross-spawn: 6.0.5
+      detect-port: 1.6.1
+      modern-spawn: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@didtools/cacao@3.0.1(typescript@5.5.3)':
     dependencies:
       '@didtools/codecs': 3.0.0
@@ -3553,6 +3628,10 @@ snapshots:
       '@types/node': 20.14.9
       '@types/responselike': 1.0.3
 
+  '@types/cross-spawn@6.0.6':
+    dependencies:
+      '@types/node': 20.14.9
+
   '@types/graceful-fs@4.1.9':
     dependencies:
       '@types/node': 20.14.9
@@ -3615,6 +3694,8 @@ snapshots:
   abitype@1.0.5(typescript@5.5.3):
     optionalDependencies:
       typescript: 5.5.3
+
+  address@1.2.2: {}
 
   agent-base@7.1.1(supports-color@9.4.0):
     dependencies:
@@ -3896,6 +3977,14 @@ snapshots:
       shebang-command: 1.2.0
       which: 1.3.1
 
+  cross-spawn@6.0.5:
+    dependencies:
+      nice-try: 1.0.5
+      path-key: 2.0.1
+      semver: 5.7.2
+      shebang-command: 1.2.0
+      which: 1.3.1
+
   cross-spawn@7.0.3:
     dependencies:
       path-key: 3.1.1
@@ -3954,6 +4043,13 @@ snapshots:
       slash: 4.0.0
 
   detect-newline@3.1.0: {}
+
+  detect-port@1.6.1:
+    dependencies:
+      address: 1.2.2
+      debug: 4.3.5(supports-color@9.4.0)
+    transitivePeerDependencies:
+      - supports-color
 
   did-jwt@7.4.7:
     dependencies:
@@ -4818,6 +4914,10 @@ snapshots:
       is-plain-obj: 1.1.0
       kind-of: 6.0.3
 
+  modern-spawn@1.0.0:
+    dependencies:
+      cross-spawn: 7.0.3
+
   ms@2.1.2: {}
 
   multibase@4.0.6:
@@ -4842,6 +4942,8 @@ snapshots:
       node-addon-api: 3.2.1
       node-gyp-build: 4.8.1
     optional: true
+
+  nice-try@1.0.5: {}
 
   node-addon-api@3.2.1:
     optional: true
@@ -5083,6 +5185,8 @@ snapshots:
   semver-truncate@3.0.0:
     dependencies:
       semver: 7.6.2
+
+  semver@5.7.2: {}
 
   semver@6.3.1: {}
 
