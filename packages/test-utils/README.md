@@ -1,4 +1,4 @@
-# Ceramic key DID
+# Ceramic test utilities
 
 ## License
 
