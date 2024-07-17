@@ -45,6 +45,27 @@ importers:
         specifier: ^5.5.2
         version: 5.5.3
 
+  packages/ethereum-did:
+    dependencies:
+      '@didtools/cacao':
+        specifier: ^3.0.1
+        version: 3.0.1(typescript@5.5.3)
+      '@noble/hashes':
+        specifier: ^1.4.0
+        version: 1.4.0
+      caip:
+        specifier: ^1.1.1
+        version: 1.1.1
+      did-session:
+        specifier: ^3.1.0
+        version: 3.1.0(typescript@5.5.3)
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.5.3)
+      viem:
+        specifier: ^2.16.2
+        version: 2.16.5(typescript@5.5.3)
+
   packages/http-client:
     dependencies:
       openapi-fetch:
@@ -54,6 +75,31 @@ importers:
       openapi-typescript:
         specifier: ^6.7.5
         version: 6.7.6
+
+  packages/identifiers:
+    dependencies:
+      '@ipld/dag-cbor':
+        specifier: ^9.2.1
+        version: 9.2.1
+      codeco:
+        specifier: ^1.2.3
+        version: 1.2.3
+      mapmoize:
+        specifier: ^1.2.1
+        version: 1.2.1
+      multiformats:
+        specifier: ^13.1.1
+        version: 13.1.3
+      uint8arrays:
+        specifier: ^5.1.0
+        version: 5.1.0
+      varint:
+        specifier: ^6.0.0
+        version: 6.0.0
+    devDependencies:
+      '@types/varint':
+        specifier: ^6.0.3
+        version: 6.0.3
 
   packages/test-utils:
     dependencies:
@@ -795,6 +841,9 @@ packages:
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
+
+  '@types/varint@6.0.3':
+    resolution: {integrity: sha512-DHukoGWdJ2aYkveZJTB2rN2lp6m7APzVsoJQ7j/qy1fQxyamJTPD5xQzCMoJ2Qtgn0mE3wWeNOpbTyBFvF+dyA==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -1663,6 +1712,10 @@ packages:
   map-obj@4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
+
+  mapmoize@1.2.1:
+    resolution: {integrity: sha512-LK8ArSM1wbfRPTnl+LpdxW1pwkfY6GxtM9p+STr6aDtM7ImR8jLuf4ekei43/AN0f7XDSrohzwwK57eGHSDAuA==}
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
 
   meow@10.1.5:
     resolution: {integrity: sha512-/d+PQ4GKmGvM9Bee/DPa8z3mXs/pkvJE2KEThngVNOqtmljC6K7NMPxtc2JeZYTmpWb9k/TmxjeL18ez3h7vCw==}
@@ -3127,6 +3180,10 @@ snapshots:
 
   '@types/stack-utils@2.0.3': {}
 
+  '@types/varint@6.0.3':
+    dependencies:
+      '@types/node': 20.14.9
+
   '@types/yargs-parser@21.0.3': {}
 
   '@types/yargs@17.0.32':
@@ -4223,6 +4280,8 @@ snapshots:
   map-obj@1.0.1: {}
 
   map-obj@4.3.0: {}
+
+  mapmoize@1.2.1: {}
 
   meow@10.1.5:
     dependencies:
