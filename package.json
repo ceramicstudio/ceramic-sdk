@@ -1,7 +1,7 @@
 {
   "name": "ceramic-sdk",
   "private": true,
-  "packageManager": "pnpm@9.3.0",
+  "packageManager": "pnpm@9.5.0",
   "scripts": {
     "build": "pnpm --filter \"@ceramic-sdk/*\" build:types && turbo run build:js",
     "lint": "biome check --write packages/* tests/*",
