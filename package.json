@@ -4,7 +4,7 @@
   "packageManager": "pnpm@9.3.0",
   "scripts": {
     "build": "pnpm --filter \"@ceramic-sdk/*\" build:types && turbo run build:js",
-    "lint": "biome check --write packages/* tests/*",
+    "lint": "biome check --write apps/* packages/* tests/*",
     "lint:ci": "biome ci packages/* tests/*",
     "test": "turbo run test -- --passWithNoTests",
     "test:ci": "turbo run test:ci -- --passWithNoTests"
