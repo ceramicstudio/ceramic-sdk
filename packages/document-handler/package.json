@@ -35,7 +35,7 @@
     "@ceramic-sdk/document-protocol": "workspace:^",
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
-    "ajv": "^8.16.0",
+    "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "codeco": "^1.2.3",
     "fast-json-patch": "^3.1.1",
@@ -43,10 +43,11 @@
   },
   "devDependencies": {
     "@ceramic-sdk/document-client": "workspace:^",
+    "@ceramic-sdk/http-client": "workspace:^",
     "@ceramic-sdk/key-did": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
     "dids": "^5.0.2",
-    "multiformats": "^13.1.3",
+    "multiformats": "^13.2.1",
     "ts-essentials": "^10.0.1"
   },
   "jest": {

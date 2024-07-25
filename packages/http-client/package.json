@@ -39,7 +39,7 @@
   "devDependencies": {
     "cartonne": "^3.0.1",
     "codeco": "^1.2.3",
-    "openapi-typescript": "^7.0.0"
+    "openapi-typescript": "^7.1.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

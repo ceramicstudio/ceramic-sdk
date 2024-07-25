@@ -15,6 +15,7 @@ import {
   assertValidUniqueValue,
 } from './assertions.js'
 import { type DocumentEvent, DocumentEventPayload } from './codecs.js'
+import { isEventHandled } from './state.js'
 import type { Context, DocumentState } from './types.js'
 import { getImmutableFieldsToCheck } from './utils.js'
 import { validateRelationsContent } from './validation.js'
@@ -85,6 +86,10 @@ export async function handleDataPayload(
   context: Context,
 ): Promise<DocumentState> {
   const state = await context.getDocumentState(payload.id)
+  if (isEventHandled(payload.id, state)) {
+    return state
+  }
+
   assertEventLinksToState(payload, state)
 
   const metadata = { ...state.metadata }
@@ -136,9 +141,31 @@ export async function handleTimeEvent(
   event: TimeEvent,
   context: Context,
 ): Promise<DocumentState> {
-  const state = await context.getDocumentState(event.id.toString())
+  const eventID = event.id.toString()
+  const state = await context.getDocumentState(eventID)
+  if (isEventHandled(eventID, state)) {
+    return state
+  }
+
   assertEventLinksToState(event, state)
   return { ...state, log: [...state.log, cid] }
+}
+
+export async function handleEventPayload(
+  cid: string,
+  payload: DocumentEventPayload,
+  context: Context,
+): Promise<DocumentState> {
+  if (DocumentDataEventPayload.is(payload)) {
+    return await handleDataPayload(cid, payload, context)
+  }
+  if (DocumentInitEventPayload.is(payload)) {
+    return await handleInitPayload(cid, payload, context)
+  }
+  if (TimeEvent.is(payload)) {
+    return await handleTimeEvent(cid, payload, context)
+  }
+  return await handleDeterministicInitPayload(cid, payload, context)
 }
 
 export async function handleEvent(
@@ -151,18 +178,5 @@ export async function handleEvent(
     DocumentEventPayload,
     event,
   )
-  if (container.signed) {
-    // Signed event is either non-deterministic init or data
-    if (DocumentDataEventPayload.is(container.payload)) {
-      return await handleDataPayload(cid, container.payload, context)
-    }
-    if (DocumentInitEventPayload.is(container.payload)) {
-      return await handleInitPayload(cid, container.payload, context)
-    }
-  }
-  // Unsigned event is either deterministic init or time
-  if (TimeEvent.is(container.payload)) {
-    return await handleTimeEvent(cid, container.payload as TimeEvent, context)
-  }
-  return await handleDeterministicInitPayload(cid, container.payload, context)
+  return await handleEventPayload(cid, container.payload, context)
 }
