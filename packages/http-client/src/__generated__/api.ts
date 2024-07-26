@@ -42,7 +42,25 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -96,7 +114,25 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -170,7 +206,25 @@ export interface paths {
       }
     }
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -222,7 +276,25 @@ export interface paths {
       }
     }
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -288,7 +360,28 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path: {
+          /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
+          event_id: string
+        }
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -350,7 +443,30 @@ export interface paths {
       }
     }
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path: {
+          /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
+          sort_key: string
+          /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
+          sort_value: string
+        }
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -402,7 +518,25 @@ export interface paths {
       }
     }
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -456,7 +590,25 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -524,7 +676,30 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path: {
+          /** @description Name of the field in the Events header that holds the separator value e.g. 'model' */
+          sep: string
+          /** @description The value of the field in the Events header indicated by the separator key e.g. multibase encoded model ID */
+          sepValue: string
+        }
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -583,7 +758,25 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never
@@ -637,7 +830,25 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
     head?: never
     patch?: never
     trace?: never

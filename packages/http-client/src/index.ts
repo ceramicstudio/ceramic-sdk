@@ -8,10 +8,14 @@ import {
 import type { CAR } from 'cartonne'
 import type { Codec, Decoder } from 'codeco'
 import createAPIClient, { type HeadersOptions } from 'openapi-fetch'
+import type { SimplifyDeep } from 'type-fest'
 
 import type { components, paths } from './__generated__/api'
 
 export type CeramicAPI = ReturnType<typeof createAPIClient<paths>>
+
+export type Schemas = SimplifyDeep<components['schemas']>
+export type Schema<Name extends keyof Schemas> = SimplifyDeep<Schemas[Name]>
 
 export type ClientParams = {
   url: string
@@ -39,7 +43,7 @@ export class CeramicClient {
     return this.#api
   }
 
-  async getEvent(id: string): Promise<components['schemas']['Event']> {
+  async getEvent(id: string): Promise<Schema<'Event'>> {
     const { data, error } = await this.#api.GET('/events/{event_id}', {
       params: { path: { event_id: id } },
     })
@@ -64,10 +68,18 @@ export class CeramicClient {
 
   async getEventsFeed(
     params: EventsFeedParams = {},
-  ): Promise<components['schemas']['EventFeed']> {
+  ): Promise<Schema<'EventFeed'>> {
     const { data, error } = await this.#api.GET('/feed/events', {
       query: params,
     })
+    if (error != null) {
+      throw new Error(error.message)
+    }
+    return data
+  }
+
+  async getVersion(): Promise<Schema<'Version'>> {
+    const { data, error } = await this.#api.GET('/version')
     if (error != null) {
       throw new Error(error.message)
     }
