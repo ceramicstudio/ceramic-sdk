@@ -22,19 +22,6 @@ export const DagJWS = sparse({
 })
 export type DagJWS = TypeOf<typeof DagJWS>
 
-export const GenericEventHeader = sparse(
-  {
-    controllers: optional(tuple([didString])),
-    model: optional(streamIDAsBytes),
-    sep: optional(string),
-    unique: optional(uint8array),
-    context: optional(streamIDAsBytes),
-    shouldIndex: optional(boolean),
-  },
-  'GenericEventHeader',
-)
-export type GenericEventHeader = TypeOf<typeof GenericEventHeader>
-
 export const InitEventHeader = sparse(
   {
     controllers: tuple([didString]),
