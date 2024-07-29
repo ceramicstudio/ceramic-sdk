@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "ipfs add -r --cid-version=1 --pin=true ./dist"
   },
   "dependencies": {
     "@ceramic-sdk/http-client": "workspace:^",
