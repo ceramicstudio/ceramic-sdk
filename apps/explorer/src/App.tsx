@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 
 import DisplayVersion from './components/DisplayVersion.tsx'
 import Header from './components/Header.tsx'
+import ServerConnectedContainer from './components/ServerConnectedContainer.tsx'
 
 const queryClient = new QueryClient()
 
@@ -28,7 +29,9 @@ export default function App() {
     <Providers>
       <Header />
       <Container size="md">
-        <DisplayVersion />
+        <ServerConnectedContainer>
+          <DisplayVersion />
+        </ServerConnectedContainer>
       </Container>
     </Providers>
   )

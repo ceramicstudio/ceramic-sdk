@@ -9,5 +9,17 @@ export function useClientQuery<T>(
   executeQuery: (client: CeramicClient) => Promise<T>,
 ) {
   const client = useAtomValue(ceramicClientAtom)
-  return useQuery({ queryKey: key, queryFn: () => executeQuery(client) })
+  return useQuery({
+    queryKey: key,
+    queryFn: (): Promise<T> => executeQuery(client),
+  })
+}
+
+export function useServerVersion() {
+  const client = useAtomValue(ceramicClientAtom)
+  const { data, ...result } = useQuery({
+    queryKey: ['version'],
+    queryFn: () => client.getVersion(),
+  })
+  return data ? { ...result, data: data.version } : result
 }

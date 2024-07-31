@@ -1,34 +1,17 @@
-import { Alert, Loader } from '@mantine/core'
-import { IconCircleCheck, IconExclamationCircle } from '@tabler/icons-react'
+import { Alert } from '@mantine/core'
+import { IconCircleCheck } from '@tabler/icons-react'
 
-import { useClientQuery } from '../hooks.ts'
+import { useServerVersion } from '../hooks.ts'
 
 export default function DisplayVersion() {
-  const versionQuery = useClientQuery(['version'], (client) => {
-    return client.getVersion()
-  })
+  const result = useServerVersion()
 
-  return versionQuery.data ? (
+  return result.data ? (
     <Alert
       color="green"
       title="Ceramic server is accessible"
-      icon={<IconCircleCheck />}
-    >
-      Server version: {versionQuery.data.version}
+      icon={<IconCircleCheck />}>
+      Server version: {result.data}
     </Alert>
-  ) : versionQuery.error ? (
-    <Alert
-      color="red"
-      title="Failed to access Ceramic server"
-      icon={<IconExclamationCircle />}
-    >
-      {versionQuery.error.message}
-    </Alert>
-  ) : (
-    <Alert
-      color="blue"
-      title="Loading Ceramic server version..."
-      icon={<Loader size="sm" color="blue" />}
-    />
-  )
+  ) : null
 }

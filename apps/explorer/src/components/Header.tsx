@@ -1,6 +1,6 @@
 import { Container, Group, Image, Title } from '@mantine/core'
 
-import ceramicLogo from '../../public/ceramic.svg'
+import ceramicLogo from '../../assets/ceramic.svg'
 
 import classes from './Header.module.css'
 
