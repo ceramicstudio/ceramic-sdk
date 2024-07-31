@@ -39,7 +39,7 @@
     "object-sizeof": "^2.6.5"
   },
   "devDependencies": {
-    "multiformats": "^13.2.1",
+    "multiformats": "^13.2.2",
     "ts-essentials": "^10.0.1"
   },
   "jest": {

@@ -46,7 +46,7 @@
     "@ceramic-sdk/key-did": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
     "dids": "^5.0.2",
-    "multiformats": "^13.2.1",
+    "multiformats": "^13.2.2",
     "ts-essentials": "^10.0.1"
   },
   "jest": {

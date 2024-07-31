@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider as JotaiProvider } from 'jotai'
 import type { ReactNode } from 'react'
 
-import DisplayVersion from './components/DisplayVersion.tsx'
+import { EventsFeed } from './components/EventsFeed.tsx'
 import Header from './components/Header.tsx'
 import ServerConnectedContainer from './components/ServerConnectedContainer.tsx'
 
@@ -30,7 +30,7 @@ export default function App() {
       <Header />
       <Container size="md">
         <ServerConnectedContainer>
-          <DisplayVersion />
+          <EventsFeed />
         </ServerConnectedContainer>
       </Container>
     </Providers>
