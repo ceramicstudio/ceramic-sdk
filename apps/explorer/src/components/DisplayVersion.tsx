@@ -9,9 +9,9 @@ export default function DisplayVersion() {
   return result.data ? (
     <Alert
       color="green"
-      title="Ceramic server is accessible"
+      title="Ceramic node is accessible"
       icon={<IconCircleCheck />}>
-      Server version: {result.data}
+      Ceramic One version: {result.data}
     </Alert>
   ) : null
 }

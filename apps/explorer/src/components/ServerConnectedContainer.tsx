@@ -29,7 +29,7 @@ export default function ServerConnectedContainer(props: Props) {
     return (
       <Alert
         color="blue"
-        title="Loading Ceramic server version..."
+        title="Loading Ceramic node version..."
         icon={<Loader size="sm" color="blue" />}
       />
     )
@@ -40,11 +40,11 @@ export default function ServerConnectedContainer(props: Props) {
       <>
         <Alert
           color="red"
-          title="Failed to access Ceramic server"
+          title="Failed to access Ceramic node"
           icon={<IconExclamationCircle />}>
           <Text>
             Make sure Ceramic One is running on{' '}
-            <Code>http//localhost:5101</Code>. If Ceramic One is not installed
+            <Code>http://localhost:5101</Code>. If Ceramic One is not installed
             yet, please follow the instructions below.
           </Text>
           <Button onClick={() => result.refetch()}>Retry</Button>
