@@ -8,7 +8,11 @@ import {
   ModelRelationsDefinitionV2,
   ObjectSchema,
 } from './codecs.js'
-import { MODEL_RESOURCE_URI, VERSION } from './constants.js'
+import {
+  CACAO_MODEL_RESOURCES,
+  MODEL_RESOURCE_URI,
+  VERSION,
+} from './constants.js'
 
 type Schema = Exclude<JSONSchema, boolean>
 
@@ -88,7 +92,11 @@ export function assertValidCacao(cacao: Cacao, controller: string): void {
       'Invalid CACAO: Model Streams do not support CACAOs with expiration times',
     )
   }
-  if (!cacao.p.resources?.includes(MODEL_RESOURCE_URI)) {
+
+  const foundResource = (cacao.p.resources ?? []).find((resource) => {
+    return CACAO_MODEL_RESOURCES.includes(resource)
+  })
+  if (foundResource == null) {
     throw new Error(`Invalid CACAO: missing resource "${MODEL_RESOURCE_URI}"`)
   }
 }
