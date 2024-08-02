@@ -5,7 +5,7 @@ import ceramicLogo from '../../assets/ceramic.svg'
 export default function Header() {
   return (
     <AppShell.Header>
-      <Container p="sm" size="md">
+      <Container p="sm" size="lg">
         <Group>
           <Image src={ceramicLogo} h="45px" w="45px" />
           <Title>Ceramic Explorer</Title>

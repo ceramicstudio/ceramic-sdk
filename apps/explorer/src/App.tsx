@@ -35,7 +35,7 @@ export default function App() {
       <AppShell header={{ height: 70 }} padding="md">
         <Header />
         <AppShell.Main>
-          <Container size="md">
+          <Container size="lg">
             <ServerConnectedContainer>
               <EventsFeed />
             </ServerConnectedContainer>

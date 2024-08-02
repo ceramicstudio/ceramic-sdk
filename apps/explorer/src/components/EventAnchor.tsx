@@ -5,7 +5,7 @@ export type Props = {
   onClick: () => void
 }
 
-export function EventAnchor({ id, onClick }: Props) {
+export default function EventAnchor({ id, onClick }: Props) {
   return (
     <Tooltip label={id}>
       <Anchor onClick={onClick} style={{ fontFamily: 'monospace' }}>

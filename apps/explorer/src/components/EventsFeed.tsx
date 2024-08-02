@@ -43,8 +43,9 @@ export function EventsFeed() {
     )
   }
 
-  const items = pages
-    .flatMap((page) => page.events)
+  const items = [...pages]
+    .reverse()
+    .flatMap((page) => [...page.events].reverse())
     .map((event) => {
       return (
         <Tooltip key={event.id} label={event.id}>
@@ -68,7 +69,9 @@ export function EventsFeed() {
         {selectedID ? <Title order={4}>{selectedID}</Title> : null}
       </Breadcrumbs>
       <Grid mt="sm">
-        <Grid.Col span={4}>
+        <Grid.Col
+          span={4}
+          style={{ height: 'calc(100vh - 160px)', overflow: 'auto' }}>
           <Stack gap="xs">{items}</Stack>
         </Grid.Col>
         <Grid.Col span={8}>
@@ -77,7 +80,7 @@ export function EventsFeed() {
               <DisplayEvent id={selectedID} onSelectEvent={setSelectedID} />
             </Box>
           ) : (
-            <Title order={3}>Select an event to display details</Title>
+            <Alert color="blue">Select an event to display details</Alert>
           )}
         </Grid.Col>
       </Grid>

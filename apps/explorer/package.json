@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "seed": "tsx ./scripts/seed.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
@@ -27,6 +28,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@ceramic-sdk/document-client": "workspace:^",
+    "@ceramic-sdk/model-client": "workspace:^",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",

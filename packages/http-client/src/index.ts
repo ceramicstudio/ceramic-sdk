@@ -3,10 +3,11 @@ import {
   carFromString,
   carToString,
   eventFromString,
-  eventToString,
+  eventToCAR,
 } from '@ceramic-sdk/events'
 import type { CAR } from 'cartonne'
 import type { Codec, Decoder } from 'codeco'
+import type { CID } from 'multiformats/cid'
 import createAPIClient, { type HeadersOptions } from 'openapi-fetch'
 import type { SimplifyDeep } from 'type-fest'
 
@@ -93,12 +94,14 @@ export class CeramicClient {
     }
   }
 
-  async postEventCAR(car: CAR): Promise<void> {
+  async postEventCAR(car: CAR): Promise<CID> {
     await this.postEvent(carToString(car))
+    return car.roots[0]
   }
 
-  async postEventType(codec: Codec<unknown>, event: unknown) {
-    await this.postEvent(eventToString(codec, event))
+  async postEventType(codec: Codec<unknown>, event: unknown): Promise<CID> {
+    const car = eventToCAR(codec, event)
+    return await this.postEventCAR(car)
   }
 
   async registerInterestModel(model: string): Promise<void> {
