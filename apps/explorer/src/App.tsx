@@ -1,5 +1,10 @@
 import '@mantine/core/styles.css'
-import { Container, MantineProvider, createTheme } from '@mantine/core'
+import {
+  AppShell,
+  Container,
+  MantineProvider,
+  createTheme,
+} from '@mantine/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider as JotaiProvider } from 'jotai'
 import type { ReactNode } from 'react'
@@ -27,12 +32,16 @@ function Providers({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <Providers>
-      <Header />
-      <Container size="md">
-        <ServerConnectedContainer>
-          <EventsFeed />
-        </ServerConnectedContainer>
-      </Container>
+      <AppShell header={{ height: 70 }} padding="md">
+        <Header />
+        <AppShell.Main>
+          <Container size="md">
+            <ServerConnectedContainer>
+              <EventsFeed />
+            </ServerConnectedContainer>
+          </Container>
+        </AppShell.Main>
+      </AppShell>
     </Providers>
   )
 }

@@ -1,18 +1,16 @@
-import { Container, Group, Image, Title } from '@mantine/core'
+import { AppShell, Container, Group, Image, Title } from '@mantine/core'
 
 import ceramicLogo from '../../assets/ceramic.svg'
 
-import classes from './Header.module.css'
-
 export default function Header() {
   return (
-    <header className={classes.header}>
-      <Container size="md">
+    <AppShell.Header>
+      <Container p="sm" size="md">
         <Group>
-          <Image src={ceramicLogo} h="60px" w="60px" />
+          <Image src={ceramicLogo} h="45px" w="45px" />
           <Title>Ceramic Explorer</Title>
         </Group>
       </Container>
-    </header>
+    </AppShell.Header>
   )
 }
