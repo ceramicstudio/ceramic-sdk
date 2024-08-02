@@ -18,13 +18,7 @@ describe('assertValidCacao()', () => {
     assertValidCacao(validCacao, 'did:pkh:123')
     assertValidCacao(
       {
-        p: { iss: 'did:pkh:123', resources: ['ceramic://*'] },
-      } as unknown as Cacao,
-      'did:pkh:123',
-    )
-    assertValidCacao(
-      {
-        p: { iss: 'did:pkh:123', resources: ['some', 'other', '*'] },
+        p: { iss: 'did:pkh:123', resources: ['some', 'other', 'ceramic://*'] },
       } as unknown as Cacao,
       'did:pkh:123',
     )
