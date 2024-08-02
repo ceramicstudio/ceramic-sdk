@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/ethereum-did",
+  "name": "@ceramic-sdk/model-protocol",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "did", "ethereum"],
+  "keywords": ["ceramic", "stream", "model"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/ethereum-did"
+    "directory": "packages/model-protocol"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,12 +32,20 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
+    "@ceramic-sdk/events": "workspace:^",
+    "@ceramic-sdk/identifiers": "workspace:^",
     "@didtools/cacao": "^3.0.1",
-    "@noble/hashes": "^1.4.0",
-    "caip": "^1.1.1",
-    "did-session": "^4.0.0",
-    "dids": "^5.0.2",
-    "viem": "^2.16.2"
+    "@didtools/codecs": "^3.0.0",
+    "ajv": "^8.16.0",
+    "ajv-formats": "^3.0.1",
+    "codeco": "^1.2.3",
+    "json-ptr": "^3.1.1"
+  },
+  "devDependencies": {
+    "@ceramic-sdk/ethereum-did": "workspace:^",
+    "json-schema-typed": "^8.0.1",
+    "multiformats": "^13.1.1",
+    "ts-essentials": "^10.0.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

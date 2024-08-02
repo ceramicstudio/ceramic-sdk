@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/ethereum-did",
+  "name": "@ceramic-sdk/model-client",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "did", "ethereum"],
+  "keywords": ["ceramic", "stream", "model", "client"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/ethereum-did"
+    "directory": "packages/model-client"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,12 +32,13 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@didtools/cacao": "^3.0.1",
-    "@noble/hashes": "^1.4.0",
-    "caip": "^1.1.1",
-    "did-session": "^4.0.0",
-    "dids": "^5.0.2",
-    "viem": "^2.16.2"
+    "@ceramic-sdk/events": "workspace:^",
+    "@ceramic-sdk/model-protocol": "workspace:^",
+    "dids": "^5.0.2"
+  },
+  "devDependencies": {
+    "@ceramic-sdk/ethereum-did": "workspace:^",
+    "@ceramic-sdk/key-did": "workspace:^"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

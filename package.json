@@ -10,9 +10,9 @@
     "test:ci": "turbo run test:ci -- --passWithNoTests"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.2",
+    "@biomejs/biome": "1.8.3",
     "@jest/globals": "^29.7.0",
-    "@swc/cli": "^0.3.14",
+    "@swc/cli": "^0.4.0",
     "@swc/core": "^1.6.5",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.12",
