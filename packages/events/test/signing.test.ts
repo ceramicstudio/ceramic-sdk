@@ -1,6 +1,6 @@
 import { randomStreamID } from '@ceramic-sdk/identifiers'
-import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import { asDIDString } from '@didtools/codecs'
+import { createDID, getAuthenticatedDID } from '@didtools/key-did'
 
 import {
   type InitEventHeader,

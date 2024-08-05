@@ -34,12 +34,12 @@
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",
-    "openapi-fetch": "^0.10.2"
+    "openapi-fetch": "^0.10.5"
   },
   "devDependencies": {
     "cartonne": "^3.0.1",
     "codeco": "^1.2.3",
-    "openapi-typescript": "^7.0.0"
+    "openapi-typescript": "^7.3.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

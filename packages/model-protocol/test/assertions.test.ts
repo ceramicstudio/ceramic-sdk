@@ -16,6 +16,12 @@ const validCacao = {
 describe('assertValidCacao()', () => {
   test('passes the expected checks', () => {
     assertValidCacao(validCacao, 'did:pkh:123')
+    assertValidCacao(
+      {
+        p: { iss: 'did:pkh:123', resources: ['some', 'other', 'ceramic://*'] },
+      } as unknown as Cacao,
+      'did:pkh:123',
+    )
   })
 
   test('checks the CACAO issuer is the expected controller', () => {

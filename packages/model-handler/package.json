@@ -39,10 +39,10 @@
     "lodash.ismatch": "^4.4.0"
   },
   "devDependencies": {
-    "@ceramic-sdk/ethereum-did": "workspace:^",
+    "@ceramic-sdk/test-utils": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
-    "@ceramic-sdk/key-did": "workspace:^",
     "@didtools/codecs": "^3.0.0",
+    "@didtools/key-did": "^1.0.0",
     "@types/lodash.ismatch": "^4.4.9",
     "json-schema-typed": "^8.0.1",
     "multiformats": "^13.1.1"
