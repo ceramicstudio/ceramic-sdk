@@ -4,7 +4,7 @@ import {
 } from '@ceramic-sdk/document-protocol'
 import { assertSignedEvent, getSignedEventPayload } from '@ceramic-sdk/events'
 import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
-import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
+import { getAuthenticatedDID } from '@didtools/key-did'
 import { equals } from 'uint8arrays'
 
 import {

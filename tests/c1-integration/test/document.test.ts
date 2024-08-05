@@ -8,7 +8,6 @@ import { handleEvent as handleDocument } from '@ceramic-sdk/document-handler'
 import { DocumentEvent } from '@ceramic-sdk/document-protocol'
 import { signedEventToCAR } from '@ceramic-sdk/events'
 import { StreamID } from '@ceramic-sdk/identifiers'
-import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import { createInitEvent as createModel } from '@ceramic-sdk/model-client'
 import {
   type ModelState,
@@ -18,6 +17,7 @@ import {
   type ModelDefinition,
   getModelStreamID,
 } from '@ceramic-sdk/model-protocol'
+import { getAuthenticatedDID } from '@didtools/key-did'
 import 'jest-environment-ceramic'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))

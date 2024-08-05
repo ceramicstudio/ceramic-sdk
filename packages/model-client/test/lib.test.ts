@@ -1,10 +1,10 @@
-import { EthereumDID } from '@ceramic-sdk/ethereum-did'
 import { assertSignedEvent } from '@ceramic-sdk/events'
-import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import {
   MODEL_RESOURCE_URI,
   type ModelDefinition,
 } from '@ceramic-sdk/model-protocol'
+import { EthereumDID } from '@ceramic-sdk/test-utils'
+import { getAuthenticatedDID } from '@didtools/key-did'
 
 import { createInitEvent } from '../src/index.js'
 
