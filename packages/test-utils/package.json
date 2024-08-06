@@ -1,13 +1,14 @@
 {
-  "name": "@ceramic-sdk/ethereum-did",
+  "name": "@ceramic-sdk/test-utils",
   "version": "0.1.0",
+  "private": true,
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "did", "ethereum"],
+  "keywords": ["ceramic", "test"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/ethereum-did"
+    "directory": "packages/test-utils"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -35,9 +36,9 @@
     "@didtools/cacao": "^3.0.1",
     "@noble/hashes": "^1.4.0",
     "caip": "^1.1.1",
-    "did-session": "^3.1.0",
+    "did-session": "^4.0.0",
     "dids": "^5.0.2",
-    "viem": "^2.16.2"
+    "viem": "^2.18.8"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

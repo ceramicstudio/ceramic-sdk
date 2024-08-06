@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@ceramic-sdk/identifiers": "workspace:^",
-    "@ceramic-sdk/key-did": "workspace:^",
+    "@didtools/key-did": "^1.0.0",
     "dids": "^5.0.2",
     "uint8arrays": "^5.1.0"
   },
