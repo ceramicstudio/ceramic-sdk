@@ -1,7 +1,5 @@
 import {
   Alert,
-  Box,
-  Breadcrumbs,
   Grid,
   NavLink,
   Stack,
@@ -10,18 +8,21 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { IconChevronRight } from '@tabler/icons-react'
-import { useState } from 'react'
+import { Link, Outlet } from '@tanstack/react-router'
 
+import CopyCodeBlock from '../components/CopyCodeBlock.tsx'
 import { useEventsFeed } from '../hooks.ts'
-
-import CopyCodeBlock from './CopyCodeBlock.tsx'
-import DisplayEvent from './DisplayEvent.tsx'
 
 const CURL_COMMAND =
   'curl -X POST "http://localhost:5101/ceramic/interests/model/kh4q0ozorrgaq2mezktnrmdwleo1d"'
 
-export function EventsFeed() {
-  const [selectedID, setSelectedID] = useState<string | null>(null)
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/_connected/events')({
+  component: EventsFeed,
+})
+
+function EventsFeed() {
   const feed = useEventsFeed()
   const pages = feed.data?.pages ?? []
   const firstPageEvents = pages[0]?.events
@@ -50,12 +51,11 @@ export function EventsFeed() {
       return (
         <Tooltip key={event.id} label={event.id}>
           <NavLink
-            style={{ fontFamily: 'monospace' }}
-            active={selectedID === event.id}
+            component={Link}
+            to="/events/$id"
+            params={{ id: event.id }}
             label={event.id}
-            onClick={() => {
-              setSelectedID(event.id)
-            }}
+            style={{ fontFamily: 'monospace' }}
             rightSection={<IconChevronRight />}
           />
         </Tooltip>
@@ -64,10 +64,7 @@ export function EventsFeed() {
 
   return (
     <>
-      <Breadcrumbs>
-        <Title order={4}>Events</Title>
-        {selectedID ? <Title order={4}>{selectedID}</Title> : null}
-      </Breadcrumbs>
+      <Title order={2}>Events</Title>
       <Grid mt="sm">
         <Grid.Col
           span={4}
@@ -75,13 +72,7 @@ export function EventsFeed() {
           <Stack gap="xs">{items}</Stack>
         </Grid.Col>
         <Grid.Col span={8}>
-          {selectedID ? (
-            <Box style={{ flex: 1, overflow: 'auto' }}>
-              <DisplayEvent id={selectedID} onSelectEvent={setSelectedID} />
-            </Box>
-          ) : (
-            <Alert color="blue">Select an event to display details</Alert>
-          )}
+          <Outlet />
         </Grid.Col>
       </Grid>
     </>

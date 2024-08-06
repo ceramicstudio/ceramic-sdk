@@ -36,15 +36,3 @@ export function useEventsFeed() {
     refetchInterval: 10_000, // 10 seconds
   })
 }
-
-export function useServerVersion() {
-  const client = useAtomValue(ceramicClientAtom)
-  return useQuery({
-    queryKey: ['version'],
-    queryFn: async () => {
-      const result = await client.getVersion()
-      return result.version
-    },
-    retry: false,
-  })
-}

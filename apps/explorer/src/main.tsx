@@ -1,11 +1,41 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import '@mantine/core/styles.css'
+import { MantineProvider, createTheme } from '@mantine/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { Provider as JotaiProvider } from 'jotai'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 
-import App from './App.tsx'
+import { routeTree } from './routeTree.gen.ts'
+import { store } from './state.ts'
+
+const queryClient = new QueryClient()
+
+const router = createRouter({
+  context: { queryClient },
+  defaultPreloadStaleTime: 0,
+  routeTree,
+})
+
+const theme = createTheme({
+  primaryColor: 'orange',
+})
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
 
 // biome-ignore lint/style/noNonNullAssertion: element exists
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <JotaiProvider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider theme={theme}>
+          <RouterProvider router={router} />
+        </MantineProvider>
+      </QueryClientProvider>
+    </JotaiProvider>
+  </StrictMode>,
 )

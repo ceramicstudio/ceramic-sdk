@@ -31,7 +31,7 @@ import type { SupportedPayload } from '../events.ts'
 import { useEventContainer } from '../hooks.ts'
 
 import CopyCodeBlock from './CopyCodeBlock.tsx'
-import EventAnchor from './EventAnchor.tsx'
+import EventLink from './EventLink.tsx'
 
 function InlineID({ value }: { value: string }) {
   return (
@@ -68,7 +68,6 @@ function TimeEventStreamID({ id }: { id: string }) {
 export type Props = {
   id: string
   event: SupportedPayload
-  onSelectEvent: (id: string) => void
 }
 
 function EventDetails(props: Props) {
@@ -84,22 +83,10 @@ function EventDetails(props: Props) {
           StreamID: <TimeEventStreamID id={event.id.toString()} />
         </Text>
         <Text truncate>
-          Init event:{' '}
-          <EventAnchor
-            id={event.id.toString()}
-            onClick={() => {
-              props.onSelectEvent(event.id.toString())
-            }}
-          />
+          Init event: <EventLink id={event.id.toString()} />
         </Text>
         <Text truncate>
-          Previous event:{' '}
-          <EventAnchor
-            id={event.prev.toString()}
-            onClick={() => {
-              props.onSelectEvent(event.prev.toString())
-            }}
-          />
+          Previous event: <EventLink id={event.prev.toString()} />
         </Text>
         <Text>Path: {event.path}</Text>
         <Text>
@@ -148,13 +135,7 @@ function EventDetails(props: Props) {
           Model: <InlineID value={event.header.model.toString()} />
         </Text>
         <Text truncate>
-          Model init event:{' '}
-          <EventAnchor
-            id={modelCID}
-            onClick={() => {
-              props.onSelectEvent(modelCID)
-            }}
-          />
+          Model init event: <EventLink id={modelCID} />
         </Text>
         <Text truncate>
           Controller: <InlineID value={event.header.controllers[0]} />
@@ -178,22 +159,10 @@ function EventDetails(props: Props) {
           StreamID: <InlineID value={streamID} />
         </Text>
         <Text truncate>
-          Init event:{' '}
-          <EventAnchor
-            id={event.id.toString()}
-            onClick={() => {
-              props.onSelectEvent(event.id.toString())
-            }}
-          />
+          Init event: <EventLink id={event.id.toString()} />
         </Text>
         <Text truncate>
-          Previous event:{' '}
-          <EventAnchor
-            id={event.prev.toString()}
-            onClick={() => {
-              props.onSelectEvent(event.prev.toString())
-            }}
-          />
+          Previous event: <EventLink id={event.prev.toString()} />
         </Text>
         <Text>Payload data:</Text>
         <PayloadBlock value={event.data} />
