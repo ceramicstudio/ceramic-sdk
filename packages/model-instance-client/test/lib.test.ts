@@ -1,10 +1,10 @@
+import { assertSignedEvent, getSignedEventPayload } from '@ceramic-sdk/events'
+import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
 import {
   DataInitEventPayload,
   DocumentDataEventPayload,
-} from '@ceramic-sdk/document-protocol'
-import { assertSignedEvent, getSignedEventPayload } from '@ceramic-sdk/events'
-import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
-import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
+} from '@ceramic-sdk/model-instance-protocol'
+import { getAuthenticatedDID } from '@didtools/key-did'
 import { equals } from 'uint8arrays'
 
 import {
@@ -106,10 +106,10 @@ describe('createDataEvent()', () => {
 
   test('creates the JSON patch payload', async () => {
     const event = await createDataEvent({
+      controller: authenticatedDID,
       currentID: commitID,
       currentContent: { hello: 'test' },
-      content: { hello: 'world', test: true },
-      controller: authenticatedDID,
+      newContent: { hello: 'world', test: true },
     })
     const payload = await getSignedEventPayload(DocumentDataEventPayload, event)
     expect(payload.data).toEqual([
@@ -121,9 +121,9 @@ describe('createDataEvent()', () => {
 
   test('adds the shouldIndex header when provided', async () => {
     const event = await createDataEvent({
-      currentID: commitID,
-      content: { hello: 'world' },
       controller: authenticatedDID,
+      currentID: commitID,
+      newContent: { hello: 'world' },
       shouldIndex: true,
     })
     const payload = await getSignedEventPayload(DocumentDataEventPayload, event)

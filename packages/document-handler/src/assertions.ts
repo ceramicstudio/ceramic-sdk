@@ -1,10 +1,10 @@
+import type { TimeEvent } from '@ceramic-sdk/events'
 import type {
   DocumentDataEventPayload,
   DocumentInitEventHeader,
   DocumentMetadata,
   JSONPatchOperation,
-} from '@ceramic-sdk/document-protocol'
-import type { TimeEvent } from '@ceramic-sdk/events'
+} from '@ceramic-sdk/model-instance-protocol'
 import type { JSONSchema, ModelDefinition } from '@ceramic-sdk/model-protocol'
 import addFormats from 'ajv-formats'
 import Ajv from 'ajv/dist/2020.js'

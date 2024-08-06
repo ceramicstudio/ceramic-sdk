@@ -1,13 +1,14 @@
 {
-  "name": "@ceramic-sdk/document-client",
+  "name": "@ceramic-sdk/test-utils",
   "version": "0.1.0",
+  "private": true,
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "stream", "document", "client"],
+  "keywords": ["ceramic", "test"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/document-client"
+    "directory": "packages/test-utils"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,16 +33,12 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@ceramic-sdk/document-protocol": "workspace:^",
-    "@ceramic-sdk/events": "workspace:^",
-    "@didtools/codecs": "^3.0.0",
-    "fast-json-patch": "^3.1.1"
-  },
-  "devDependencies": {
-    "@ceramic-sdk/identifiers": "workspace:^",
-    "@ceramic-sdk/key-did": "workspace:^",
+    "@didtools/cacao": "^3.0.1",
+    "@noble/hashes": "^1.4.0",
+    "caip": "^1.1.1",
+    "did-session": "^4.0.0",
     "dids": "^5.0.2",
-    "uint8arrays": "^5.1.0"
+    "viem": "^2.18.8"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

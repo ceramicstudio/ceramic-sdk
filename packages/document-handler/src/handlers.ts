@@ -1,10 +1,10 @@
+import { TimeEvent, eventToContainer } from '@ceramic-sdk/events'
 import {
   type DeterministicInitEventPayload,
   DocumentDataEventPayload,
   DocumentInitEventPayload,
   assertValidContentLength,
-} from '@ceramic-sdk/document-protocol'
-import { TimeEvent, eventToContainer } from '@ceramic-sdk/events'
+} from '@ceramic-sdk/model-instance-protocol'
 import jsonpatch from 'fast-json-patch'
 
 import {

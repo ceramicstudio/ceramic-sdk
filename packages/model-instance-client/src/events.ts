@@ -1,4 +1,11 @@
 import {
+  InitEventHeader,
+  type SignedEvent,
+  createSignedInitEvent,
+  signEvent,
+} from '@ceramic-sdk/events'
+import type { CommitID, StreamID } from '@ceramic-sdk/identifiers'
+import {
   type DeterministicInitEventPayload,
   type DocumentDataEventHeader,
   DocumentDataEventPayload,
@@ -6,14 +13,7 @@ import {
   type JSONPatchOperation,
   assertValidContentLength,
   assertValidPatchOperations,
-} from '@ceramic-sdk/document-protocol'
-import {
-  InitEventHeader,
-  type SignedEvent,
-  createSignedInitEvent,
-  signEvent,
-} from '@ceramic-sdk/events'
-import type { CommitID, StreamID } from '@ceramic-sdk/identifiers'
+} from '@ceramic-sdk/model-instance-protocol'
 import type { DIDString } from '@didtools/codecs'
 import type { DID } from 'dids'
 
@@ -93,16 +93,18 @@ export function createDataEventPayload(
 export type CreateDataEventParams<T extends UnknownContent = UnknownContent> = {
   controller: DID
   currentID: CommitID
-  content?: T
   currentContent?: T
-  context?: StreamID
+  newContent?: T
   shouldIndex?: boolean
 }
 
 export async function createDataEvent<
   T extends UnknownContent = UnknownContent,
 >(params: CreateDataEventParams<T>): Promise<SignedEvent> {
-  const operations = getPatchOperations(params.currentContent, params.content)
+  const operations = getPatchOperations(
+    params.currentContent,
+    params.newContent,
+  )
   // Header must only be provided if there are values
   // CBOR encoding doesn't support undefined values
   const header =

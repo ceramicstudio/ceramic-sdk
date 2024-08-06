@@ -1,5 +1,4 @@
 export {
-  GenericEventHeader,
   InitEventHeader,
   SignedEvent,
   TimeEvent,

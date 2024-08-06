@@ -1,4 +1,4 @@
-# Ceramic Document stream client
+# Ceramic test utilities
 
 ## License
 
