@@ -1,13 +1,13 @@
 import {
-  DocumentDataEventPayload,
-  DocumentInitEventPayload,
-} from '@ceramic-sdk/document-protocol'
-import {
   type EventContainer,
   TimeEvent,
   eventFromString,
   eventToContainer,
 } from '@ceramic-sdk/events'
+import {
+  DocumentDataEventPayload,
+  DocumentInitEventPayload,
+} from '@ceramic-sdk/model-instance-protocol'
 import { ModelInitEventPayload } from '@ceramic-sdk/model-protocol'
 import { createDID } from '@didtools/key-did'
 import { type TypeOf, union } from 'codeco'

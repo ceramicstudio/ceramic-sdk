@@ -1,12 +1,12 @@
-import {
-  createInitEvent as createDocument,
-  createDataEvent as updateDocument,
-} from '@ceramic-sdk/document-client'
-import { getStreamID } from '@ceramic-sdk/document-protocol'
 import { SignedEvent } from '@ceramic-sdk/events'
 import { CeramicClient } from '@ceramic-sdk/http-client'
 import { CommitID, type StreamID } from '@ceramic-sdk/identifiers'
 import { createInitEvent as createModel } from '@ceramic-sdk/model-client'
+import {
+  createInitEvent as createDocument,
+  createDataEvent as updateDocument,
+} from '@ceramic-sdk/model-instance-client'
+import { getStreamID } from '@ceramic-sdk/model-instance-protocol'
 import {
   type ModelDefinition,
   getModelStreamID,

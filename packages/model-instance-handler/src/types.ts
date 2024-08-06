@@ -1,4 +1,4 @@
-import type { DocumentMetadata } from '@ceramic-sdk/document-protocol'
+import type { DocumentMetadata } from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import type { DID } from 'dids'
 

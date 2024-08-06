@@ -1,9 +1,9 @@
+import { TimeEvent } from '@ceramic-sdk/events'
 import {
   DocumentDataEventPayload,
   DocumentInitEventPayload,
   getStreamID,
-} from '@ceramic-sdk/document-protocol'
-import { TimeEvent } from '@ceramic-sdk/events'
+} from '@ceramic-sdk/model-instance-protocol'
 import {
   ModelInitEventPayload,
   getModelStreamID,

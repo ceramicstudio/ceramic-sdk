@@ -1,4 +1,4 @@
-# Ceramic Document stream handler
+# Ceramic ModelInstanceDocument stream handler
 
 ## License
 

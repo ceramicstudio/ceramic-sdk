@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/document-client",
+  "name": "@ceramic-sdk/model-instance-protocol",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "stream", "document", "client"],
+  "keywords": ["ceramic", "stream", "model", "document"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/document-client"
+    "directory": "packages/model-instance-protocol"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,16 +32,15 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@ceramic-sdk/document-protocol": "workspace:^",
     "@ceramic-sdk/events": "workspace:^",
+    "@ceramic-sdk/identifiers": "workspace:^",
     "@didtools/codecs": "^3.0.0",
-    "fast-json-patch": "^3.1.1"
+    "codeco": "^1.3.4",
+    "object-sizeof": "^2.6.5"
   },
   "devDependencies": {
-    "@ceramic-sdk/identifiers": "workspace:^",
-    "@didtools/key-did": "^1.0.0",
-    "dids": "^5.0.2",
-    "uint8arrays": "^5.1.0"
+    "multiformats": "^13.2.2",
+    "ts-essentials": "^10.0.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

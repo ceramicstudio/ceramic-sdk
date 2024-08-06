@@ -11,10 +11,10 @@
     "deploy": "ipfs add -r --cid-version=1 --pin=true ./dist"
   },
   "dependencies": {
-    "@ceramic-sdk/document-protocol": "workspace:^",
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/http-client": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
+    "@ceramic-sdk/model-instance-protocol": "workspace:^",
     "@ceramic-sdk/model-protocol": "workspace:^",
     "@didtools/key-did": "^1.0.0",
     "@mantine/core": "^7.11.2",
@@ -29,8 +29,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@ceramic-sdk/document-client": "workspace:^",
     "@ceramic-sdk/model-client": "workspace:^",
+    "@ceramic-sdk/model-instance-client": "workspace:^",
     "@tanstack/router-devtools": "^1.46.5",
     "@tanstack/router-plugin": "^1.45.13",
     "@types/react": "^18.3.3",

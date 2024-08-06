@@ -3,9 +3,6 @@
  * @jest-environment-options {"containerName":"ceramic-test-document","externalPort":5202}
  */
 
-import { createInitEvent as createDocument } from '@ceramic-sdk/document-client'
-import { handleEvent as handleDocument } from '@ceramic-sdk/document-handler'
-import { DocumentEvent } from '@ceramic-sdk/document-protocol'
 import { signedEventToCAR } from '@ceramic-sdk/events'
 import { StreamID } from '@ceramic-sdk/identifiers'
 import { createInitEvent as createModel } from '@ceramic-sdk/model-client'
@@ -13,6 +10,9 @@ import {
   type ModelState,
   handleInitEvent as handleModel,
 } from '@ceramic-sdk/model-handler'
+import { createInitEvent as createDocument } from '@ceramic-sdk/model-instance-client'
+import { handleEvent as handleDocument } from '@ceramic-sdk/model-instance-handler'
+import { DocumentEvent } from '@ceramic-sdk/model-instance-protocol'
 import {
   type ModelDefinition,
   getModelStreamID,

@@ -1,6 +1,6 @@
 import { AppShell, Container, Group, Image, Title } from '@mantine/core'
 import type { QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 
 import ceramicLogo from '../../assets/ceramic.svg'
 

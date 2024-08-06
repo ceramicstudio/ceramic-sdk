@@ -1,9 +1,9 @@
+import { randomCID } from '@ceramic-sdk/identifiers'
 import type {
   DocumentDataEventPayload,
   DocumentInitEventHeader,
   DocumentMetadata,
-} from '@ceramic-sdk/document-protocol'
-import { randomCID } from '@ceramic-sdk/identifiers'
+} from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinitionV2 } from '@ceramic-sdk/model-protocol'
 
 import {
