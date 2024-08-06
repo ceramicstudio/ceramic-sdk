@@ -1,9 +1,9 @@
+import { SignedEvent, TimeEvent } from '@ceramic-sdk/events'
 import {
   DeterministicInitEventPayload,
   DocumentDataEventPayload,
   DocumentInitEventPayload,
-} from '@ceramic-sdk/document-protocol'
-import { SignedEvent, TimeEvent } from '@ceramic-sdk/events'
+} from '@ceramic-sdk/model-instance-protocol'
 import { type OutputOf, type TypeOf, union } from 'codeco'
 import 'ts-essentials' // Import needed for TS reference
 

@@ -1,20 +1,20 @@
+import type { TimeEvent } from '@ceramic-sdk/events'
+import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
 import {
   createDataEvent,
   createInitEvent,
   createInitHeader,
   getDeterministicInitEvent,
   getDeterministicInitEventPayload,
-} from '@ceramic-sdk/document-client'
+} from '@ceramic-sdk/model-instance-client'
 import {
   type DocumentDataEventPayload,
   type DocumentInitEventPayload,
   MAX_DOCUMENT_SIZE,
   getStreamID,
-} from '@ceramic-sdk/document-protocol'
-import type { TimeEvent } from '@ceramic-sdk/events'
-import { CommitID, randomCID, randomStreamID } from '@ceramic-sdk/identifiers'
-import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
+} from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinitionV2 } from '@ceramic-sdk/model-protocol'
+import { getAuthenticatedDID } from '@didtools/key-did'
 import { jest } from '@jest/globals'
 
 import {
@@ -603,7 +603,7 @@ describe('handleEvent()', () => {
     const dataEvent = await createDataEvent({
       controller: authenticatedDID,
       currentID: CommitID.fromStream(streamID, timeCID),
-      content: { hello: 'world', foo: 'one', bar: 'two' },
+      newContent: { hello: 'world', foo: 'one', bar: 'two' },
       shouldIndex: true,
     })
     state = await handleEvent(dataCID, dataEvent, context)
@@ -652,7 +652,7 @@ describe('handleEvent()', () => {
     const dataEvent = await createDataEvent({
       controller: authenticatedDID,
       currentID: CommitID.fromStream(streamID, initCID),
-      content: { hello: 'test' },
+      newContent: { hello: 'test' },
       shouldIndex: true,
     })
     state = await handleEvent(dataCID.toString(), dataEvent, context)

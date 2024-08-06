@@ -1,8 +1,8 @@
+import type { StreamID } from '@ceramic-sdk/identifiers'
 import {
   DocumentInitEventHeader,
   type JSONPatchOperation,
-} from '@ceramic-sdk/document-protocol'
-import type { StreamID } from '@ceramic-sdk/identifiers'
+} from '@ceramic-sdk/model-instance-protocol'
 import { type DIDString, asDIDString } from '@didtools/codecs'
 import jsonpatch from 'fast-json-patch'
 

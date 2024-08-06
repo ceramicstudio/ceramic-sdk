@@ -1,5 +1,8 @@
 name: Integration tests
-on: [pull_request]
+on:
+  push:
+    branches: ["main"]
+  pull_request:
 env:
   CI: true
 jobs:
@@ -20,7 +23,7 @@ jobs:
         id: pnpm-install
         uses: pnpm/action-setup@v3
         with:
-          version: 9.3.0
+          version: 9.5.0
           run_install: false
 
       - name: Get pnpm store directory

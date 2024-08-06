@@ -1,4 +1,4 @@
-import { DocumentDataEventPayload } from '@ceramic-sdk/document-protocol'
+import { DocumentDataEventPayload } from '@ceramic-sdk/model-instance-protocol'
 import type { ModelDefinition } from '@ceramic-sdk/model-protocol'
 import { fromString as bytesFromString } from 'uint8arrays'
 

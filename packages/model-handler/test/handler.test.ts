@@ -1,4 +1,3 @@
-import { EthereumDID } from '@ceramic-sdk/ethereum-did'
 import {
   type SignedEvent,
   type TimeEvent,
@@ -6,7 +5,6 @@ import {
   signEvent,
 } from '@ceramic-sdk/events'
 import { randomCID } from '@ceramic-sdk/identifiers'
-import { createDID, getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import {
   MODEL,
   MODEL_RESOURCE_URI,
@@ -16,7 +14,9 @@ import {
   type ModelEvent,
   ModelInitEventPayload,
 } from '@ceramic-sdk/model-protocol'
+import { EthereumDID } from '@ceramic-sdk/test-utils'
 import { asDIDString } from '@didtools/codecs'
+import { createDID, getAuthenticatedDID } from '@didtools/key-did'
 import { jest } from '@jest/globals'
 import type { DID } from 'dids'
 

@@ -1,4 +1,4 @@
-# Ceramic key DID
+# Ceramic ModelInstanceDocument stream handler
 
 ## License
 

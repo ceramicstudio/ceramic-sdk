@@ -4,7 +4,6 @@
  */
 
 import { SignedEvent, signedEventToCAR } from '@ceramic-sdk/events'
-import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import { createInitEvent } from '@ceramic-sdk/model-client'
 import { type Context, handleEvent } from '@ceramic-sdk/model-handler'
 import {
@@ -12,6 +11,7 @@ import {
   type ModelDefinition,
   ModelEvent,
 } from '@ceramic-sdk/model-protocol'
+import { getAuthenticatedDID } from '@didtools/key-did'
 import 'jest-environment-ceramic'
 
 const authenticatedDID = await getAuthenticatedDID(new Uint8Array(32))

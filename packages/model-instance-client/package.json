@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/key-did",
+  "name": "@ceramic-sdk/model-instance-client",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "did", "ed25519"],
+  "keywords": ["ceramic", "stream", "model", "document", "client"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/key-did"
+    "directory": "packages/model-instance-client"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,9 +32,16 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
+    "@ceramic-sdk/events": "workspace:^",
+    "@ceramic-sdk/model-instance-protocol": "workspace:^",
+    "@didtools/codecs": "^3.0.0",
+    "fast-json-patch": "^3.1.1"
+  },
+  "devDependencies": {
+    "@ceramic-sdk/identifiers": "workspace:^",
+    "@didtools/key-did": "^1.0.0",
     "dids": "^5.0.2",
-    "key-did-provider-ed25519": "^4.0.2",
-    "key-did-resolver": "^4.0.0"
+    "uint8arrays": "^5.1.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
