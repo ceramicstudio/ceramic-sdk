@@ -45,59 +45,6 @@ importers:
         specifier: ^5.5.2
         version: 5.5.4
 
-  packages/document-client:
-    dependencies:
-      '@ceramic-sdk/document-protocol':
-        specifier: workspace:^
-        version: link:../document-protocol
-      '@ceramic-sdk/events':
-        specifier: workspace:^
-        version: link:../events
-      '@didtools/codecs':
-        specifier: ^3.0.0
-        version: 3.0.0
-      fast-json-patch:
-        specifier: ^3.1.1
-        version: 3.1.1
-    devDependencies:
-      '@ceramic-sdk/identifiers':
-        specifier: workspace:^
-        version: link:../identifiers
-      '@didtools/key-did':
-        specifier: ^1.0.0
-        version: 1.0.0(typescript@5.5.4)
-      dids:
-        specifier: ^5.0.2
-        version: 5.0.2(typescript@5.5.4)
-      uint8arrays:
-        specifier: ^5.1.0
-        version: 5.1.0
-
-  packages/document-protocol:
-    dependencies:
-      '@ceramic-sdk/events':
-        specifier: workspace:^
-        version: link:../events
-      '@ceramic-sdk/identifiers':
-        specifier: workspace:^
-        version: link:../identifiers
-      '@didtools/codecs':
-        specifier: ^3.0.0
-        version: 3.0.0
-      codeco:
-        specifier: ^1.2.3
-        version: 1.3.4
-      object-sizeof:
-        specifier: ^2.6.4
-        version: 2.6.4
-    devDependencies:
-      multiformats:
-        specifier: ^13.1.1
-        version: 13.2.2
-      ts-essentials:
-        specifier: ^10.0.1
-        version: 10.0.1(typescript@5.5.4)
-
   packages/events:
     dependencies:
       '@ceramic-sdk/identifiers':
@@ -243,6 +190,59 @@ importers:
       multiformats:
         specifier: ^13.1.1
         version: 13.2.2
+
+  packages/model-instance-client:
+    dependencies:
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
+      '@ceramic-sdk/model-instance-protocol':
+        specifier: workspace:^
+        version: link:../model-instance-protocol
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
+      fast-json-patch:
+        specifier: ^3.1.1
+        version: 3.1.1
+    devDependencies:
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      '@didtools/key-did':
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@5.5.4)
+      dids:
+        specifier: ^5.0.2
+        version: 5.0.2(typescript@5.5.4)
+      uint8arrays:
+        specifier: ^5.1.0
+        version: 5.1.0
+
+  packages/model-instance-protocol:
+    dependencies:
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      '@didtools/codecs':
+        specifier: ^3.0.0
+        version: 3.0.0
+      codeco:
+        specifier: ^1.2.3
+        version: 1.3.4
+      object-sizeof:
+        specifier: ^2.6.4
+        version: 2.6.4
+    devDependencies:
+      multiformats:
+        specifier: ^13.1.1
+        version: 13.2.2
+      ts-essentials:
+        specifier: ^10.0.1
+        version: 10.0.1(typescript@5.5.4)
 
   packages/model-protocol:
     dependencies:

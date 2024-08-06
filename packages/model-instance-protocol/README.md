@@ -1,4 +1,4 @@
-# Ceramic Document stream client
+# Ceramic ModelInstanceDocument stream protocol
 
 ## License
 
