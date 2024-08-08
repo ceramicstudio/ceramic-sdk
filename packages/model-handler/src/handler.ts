@@ -75,6 +75,14 @@ export async function handleTimeEvent(
     )
   }
 
+  const prevID = event.prev.toString()
+  if (prevID !== stateInitID) {
+    throw new Error(
+      `Invalid time event ${cid}: expected prev to be ${stateInitID} but got ${prevID}`,
+    )
+  }
+
+  // TODO: add time information when provided by C1
   return { ...state, log: [...state.log, cid] }
 }
 
