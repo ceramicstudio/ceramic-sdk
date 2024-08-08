@@ -12,10 +12,10 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ConnectedImport } from './routes/_connected'
-import { Route as IndexImport } from './routes/index'
 import { Route as ConnectedEventsImport } from './routes/_connected.events'
-import { Route as ConnectedEventsIndexImport } from './routes/_connected.events.index'
 import { Route as ConnectedEventsIdImport } from './routes/_connected.events.$id'
+import { Route as ConnectedEventsIndexImport } from './routes/_connected.events.index'
+import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 

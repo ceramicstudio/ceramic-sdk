@@ -1,9 +1,14 @@
 import type { CeramicClient } from '@ceramic-sdk/http-client'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
+import { useCallback, useEffect, useRef } from 'react'
 
-import { decodeEvent } from './events.ts'
-import { ceramicClientAtom } from './state.ts'
+import { decodeEvent, pullFromFeed } from './events.ts'
+import {
+  ceramicClientAtom,
+  feedResumeTokenAtom,
+  feedSyncEnabledAtom,
+} from './state.ts'
 
 export function useClientQuery<T>(
   key: Array<string>,
@@ -19,6 +24,9 @@ export function useClientQuery<T>(
 export function useEventContainer(id: string) {
   return useClientQuery(['events', id], async (client) => {
     const event = await client.getEvent(id)
+    if (event.data == null) {
+      throw new Error('Missing event data')
+    }
     return await decodeEvent(event.data)
   })
 }
@@ -35,4 +43,37 @@ export function useEventsFeed() {
     maxPages: 10,
     refetchInterval: 10_000, // 10 seconds
   })
+}
+
+export function useSyncEventsFeed() {
+  const client = useAtomValue(ceramicClientAtom)
+  const isEnabled = useAtomValue(feedSyncEnabledAtom)
+  const [initialResumeToken, setResumeAt] = useAtom(feedResumeTokenAtom)
+  const isLoading = useRef(false)
+  const resumeToken = useRef<string | undefined>(initialResumeToken)
+
+  const loadNext = useCallback(async () => {
+    isLoading.current = true
+    const [hasResults, newResumeToken] = await pullFromFeed(
+      client,
+      resumeToken.current,
+    )
+    console.log('loaded events, has results:', hasResults, newResumeToken)
+    setResumeAt(newResumeToken)
+    resumeToken.current = newResumeToken
+    isLoading.current = false
+    if (hasResults) {
+      loadNext()
+    } else {
+      setTimeout(() => {
+        loadNext()
+      }, 10_000)
+    }
+  }, [client, setResumeAt])
+
+  useEffect(() => {
+    if (isEnabled && !isLoading.current) {
+      loadNext()
+    }
+  }, [isEnabled, loadNext])
 }

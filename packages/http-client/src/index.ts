@@ -27,6 +27,7 @@ export type ClientParams = {
 export type EventsFeedParams = {
   resumeAt?: string
   limit?: number
+  includeData?: 'none' | 'full'
 }
 
 export class CeramicClient {
@@ -36,6 +37,9 @@ export class CeramicClient {
     const { url, ...options } = params
     this.#api = createAPIClient<paths>({
       baseUrl: `${url}/ceramic`,
+      querySerializer: {
+        object: { style: 'form', explode: true },
+      },
       ...options,
     })
   }
@@ -56,6 +60,9 @@ export class CeramicClient {
 
   async getEventCAR(id: string): Promise<CAR> {
     const event = await this.getEvent(id)
+    if (event.data == null) {
+      throw new Error('Missing event data')
+    }
     return carFromString(event.data)
   }
 
@@ -64,6 +71,9 @@ export class CeramicClient {
     id: string,
   ): Promise<SignedEvent | Payload> {
     const event = await this.getEvent(id)
+    if (event.data == null) {
+      throw new Error('Missing event data')
+    }
     return eventFromString(decoder, event.data)
   }
 
@@ -71,7 +81,7 @@ export class CeramicClient {
     params: EventsFeedParams = {},
   ): Promise<Schema<'EventFeed'>> {
     const { data, error } = await this.#api.GET('/feed/events', {
-      query: params,
+      params: { query: params },
     })
     if (error != null) {
       throw new Error(error.message)

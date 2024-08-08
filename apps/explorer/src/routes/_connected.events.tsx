@@ -11,7 +11,7 @@ import { IconChevronRight } from '@tabler/icons-react'
 import { Link, Outlet } from '@tanstack/react-router'
 
 import CopyCodeBlock from '../components/CopyCodeBlock.tsx'
-import { useEventsFeed } from '../hooks.ts'
+import { useEventsFeed, useSyncEventsFeed } from '../hooks.ts'
 
 const CURL_COMMAND =
   'curl -X POST "http://localhost:5101/ceramic/interests/model/kh4q0ozorrgaq2mezktnrmdwleo1d"'
@@ -26,6 +26,8 @@ function EventsFeed() {
   const feed = useEventsFeed()
   const pages = feed.data?.pages ?? []
   const firstPageEvents = pages[0]?.events
+
+  // useSyncEventsFeed()
 
   if (firstPageEvents == null) {
     return null

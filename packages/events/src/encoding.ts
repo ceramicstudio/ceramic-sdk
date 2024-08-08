@@ -23,6 +23,10 @@ export function carToString(car: CAR, base: Base = DEFAULT_BASE): string {
   return car.toString(base)
 }
 
+export function carFromBytes(bytes: Uint8Array): CAR {
+  return carFactory.fromBytes(bytes)
+}
+
 export function carFromString(value: string, base: Base = DEFAULT_BASE): CAR {
   const codec = bases[base]
   if (codec == null) {

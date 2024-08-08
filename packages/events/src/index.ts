@@ -17,6 +17,7 @@ export {
 } from './container.js'
 export {
   type Base,
+  carFromBytes,
   carFromString,
   carToString,
   encodeEventToCAR,
