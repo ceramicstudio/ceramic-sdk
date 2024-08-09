@@ -1,7 +1,11 @@
 import '@mantine/core/styles.css'
 import { MantineProvider, createTheme } from '@mantine/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import {
+  RouterProvider,
+  createHashHistory,
+  createRouter,
+} from '@tanstack/react-router'
 import { Provider as JotaiProvider } from 'jotai'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -13,6 +17,7 @@ const queryClient = new QueryClient()
 
 const router = createRouter({
   context: { queryClient },
+  history: createHashHistory(),
   defaultPreloadStaleTime: 0,
   routeTree,
 })
