@@ -290,12 +290,26 @@ describe('handleTimeEvent()', () => {
     )
   })
 
+  test('throws if the event prev ID does not match the loaded state init ID', async () => {
+    const getModelState = jest.fn(() => {
+      return Promise.resolve({ log: [modelCIDString] } as unknown as ModelState)
+    })
+    const context = { getModelState }
+    const prevCID = randomCID()
+    const event = { id: modelCID, prev: prevCID } as TimeEvent
+    await expect(async () => {
+      await handleTimeEvent(eventCID, event, context)
+    }).rejects.toThrow(
+      `Invalid time event ${eventCID}: expected prev to be ${modelCID} but got ${prevCID}`,
+    )
+  })
+
   test('adds the time event to the log', async () => {
     const getModelState = jest.fn(() => {
       return Promise.resolve({ log: [modelCIDString] } as unknown as ModelState)
     })
     const context = { getModelState }
-    const event = { id: modelCID } as unknown as TimeEvent
+    const event = { id: modelCID, prev: modelCID } as TimeEvent
     await expect(handleTimeEvent(eventCID, event, context)).resolves.toEqual({
       log: [modelCIDString, eventCID],
     })
@@ -325,7 +339,7 @@ describe('handleEvent()', () => {
     // Handle time event
     const timeEvent = {
       id: modelCID,
-      prev: randomCID(),
+      prev: modelCID,
       proof: randomCID(),
       path: '/',
     }
