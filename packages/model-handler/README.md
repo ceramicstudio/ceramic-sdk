@@ -1,4 +1,4 @@
-# Ceramic Ethereum PKH DID
+# Ceramic Model stream codecs
 
 ## License
 

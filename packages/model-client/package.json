@@ -37,8 +37,8 @@
     "dids": "^5.0.2"
   },
   "devDependencies": {
-    "@ceramic-sdk/ethereum-did": "workspace:^",
-    "@ceramic-sdk/key-did": "workspace:^"
+    "@ceramic-sdk/test-utils": "workspace:^",
+    "@didtools/key-did": "^1.0.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

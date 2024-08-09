@@ -1,6 +1,6 @@
 import { randomStreamID } from '@ceramic-sdk/identifiers'
-import { getAuthenticatedDID } from '@ceramic-sdk/key-did'
 import { asDIDString } from '@didtools/codecs'
+import { getAuthenticatedDID } from '@didtools/key-did'
 
 import { InitEventPayload } from '../src/codecs.js'
 import {
