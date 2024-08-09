@@ -2,6 +2,7 @@ import { TimeEvent, eventToContainer } from '@ceramic-sdk/events'
 import {
   type DeterministicInitEventPayload,
   DocumentDataEventPayload,
+  type DocumentInitEventHeader,
   DocumentInitEventPayload,
   assertValidContentLength,
 } from '@ceramic-sdk/model-instance-protocol'
@@ -19,6 +20,24 @@ import type { Context, DocumentState } from './types.js'
 import { getImmutableFieldsToCheck } from './utils.js'
 import { validateRelationsContent } from './validation.js'
 
+function createInitState(
+  cid: string,
+  header: DocumentInitEventHeader,
+  content: Record<string, unknown> | null,
+): DocumentState {
+  return {
+    content,
+    metadata: {
+      controller: header.controllers[0],
+      model: header.model,
+      unique: header.unique,
+      context: header.context,
+      shouldIndex: header.shouldIndex,
+    },
+    log: [cid],
+  }
+}
+
 export async function handleDeterministicInitPayload(
   cid: string,
   payload: DeterministicInitEventPayload,
@@ -35,16 +54,7 @@ export async function handleDeterministicInitPayload(
   const definition = await context.getModelDefinition(modelID)
   assertValidInitHeader(definition, header)
 
-  return {
-    content: null,
-    metadata: {
-      controller: header.controllers[0],
-      model: header.model,
-      unique: header.unique,
-      context: header.context,
-    },
-    log: [cid],
-  }
+  return createInitState(cid, header, null)
 }
 
 export async function handleInitPayload(
@@ -67,17 +77,7 @@ export async function handleInitPayload(
   assertValidContent(modelID, definition.schema, data)
   await validateRelationsContent(context, definition, data)
 
-  return {
-    content: data,
-    metadata: {
-      controller: header.controllers[0],
-      model: header.model,
-      unique: header.unique,
-      context: header.context,
-      shouldIndex: header.shouldIndex,
-    },
-    log: [cid],
-  }
+  return createInitState(cid, header, data)
 }
 
 export async function handleDataPayload(
