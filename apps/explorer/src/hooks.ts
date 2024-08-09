@@ -3,6 +3,8 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { queryEventIDs } from './data/db.ts'
+import type { QueryEventsParams } from './data/types.ts'
 import { decodeEvent, pullFromFeed } from './events.ts'
 import {
   ceramicClientAtom,
@@ -58,7 +60,6 @@ export function useSyncEventsFeed() {
       client,
       resumeToken.current,
     )
-    console.log('loaded events, has results:', hasResults, newResumeToken)
     setResumeAt(newResumeToken)
     resumeToken.current = newResumeToken
     isLoading.current = false
@@ -76,4 +77,20 @@ export function useSyncEventsFeed() {
       loadNext()
     }
   }, [isEnabled, loadNext])
+}
+
+export function useStoredEventIDs(pageSize = 20) {
+  return useInfiniteQuery({
+    queryKey: ['db', 'event-ids'],
+    queryFn: async ({ pageParam }: { pageParam: QueryEventsParams }) => {
+      console.log('load event ids', pageParam)
+      return await queryEventIDs(pageParam)
+    },
+    initialPageParam: { limit: pageSize, cursor: undefined },
+    getNextPageParam: (lastPage) => {
+      return lastPage.ids.length
+        ? { limit: pageSize, cursor: lastPage.cursor }
+        : null
+    },
+  })
 }
