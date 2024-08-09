@@ -41,6 +41,7 @@ export async function handleDeterministicInitPayload(
       controller: header.controllers[0],
       model: header.model,
       unique: header.unique,
+      context: header.context,
     },
     log: [cid],
   }
