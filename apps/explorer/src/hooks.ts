@@ -1,7 +1,7 @@
 import type { CeramicClient } from '@ceramic-sdk/http-client'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useAtom, useAtomValue } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { queryEventIDs } from './data/db.ts'
 import type { QueryEventsParams } from './data/types.ts'
@@ -47,28 +47,42 @@ export function useEventsFeed() {
   })
 }
 
+export type SyncEventFeed = {
+  ids: Array<string>
+  resumeToken?: string
+}
+
 export function useSyncEventsFeed() {
   const client = useAtomValue(ceramicClientAtom)
   const isEnabled = useAtomValue(feedSyncEnabledAtom)
   const [initialResumeToken, setResumeAt] = useAtom(feedResumeTokenAtom)
   const isLoading = useRef(false)
   const resumeToken = useRef<string | undefined>(initialResumeToken)
+  const [loadedIDs, setLoadedIDs] = useState<Array<string>>([])
 
   const loadNext = useCallback(async () => {
     isLoading.current = true
-    const [hasResults, newResumeToken] = await pullFromFeed(
-      client,
-      resumeToken.current,
-    )
-    setResumeAt(newResumeToken)
-    resumeToken.current = newResumeToken
+    const result = await pullFromFeed(client, resumeToken.current)
+    if (result.resumeToken !== resumeToken.current) {
+      setResumeAt(result.resumeToken)
+      resumeToken.current = result.resumeToken
+    }
     isLoading.current = false
-    if (hasResults) {
-      loadNext()
-    } else {
+    if (result.events.length === 0) {
+      // Delay loading for 10 seconds
       setTimeout(() => {
         loadNext()
       }, 10_000)
+    } else {
+      // Add IDs in reverse order
+      setLoadedIDs((ids) => {
+        return result.events
+          .map((e) => e.id)
+          .reverse()
+          .concat(ids)
+      })
+      // Load more immediately
+      loadNext()
     }
   }, [client, setResumeAt])
 
@@ -77,13 +91,14 @@ export function useSyncEventsFeed() {
       loadNext()
     }
   }, [isEnabled, loadNext])
+
+  return { ids: loadedIDs, resumeToken: resumeToken.current }
 }
 
 export function useStoredEventIDs(pageSize = 20) {
   return useInfiniteQuery({
     queryKey: ['db', 'event-ids'],
     queryFn: async ({ pageParam }: { pageParam: QueryEventsParams }) => {
-      console.log('load event ids', pageParam)
       return await queryEventIDs(pageParam)
     },
     initialPageParam: { limit: pageSize, cursor: undefined },

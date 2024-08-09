@@ -4,7 +4,6 @@ import {
   Grid,
   type MantineStyleProp,
   NavLink,
-  Stack,
   Text,
   Title,
   Tooltip,
@@ -15,11 +14,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { useEffect, useRef } from 'react'
 
 import CopyCodeBlock from '../components/CopyCodeBlock.tsx'
-import {
-  useEventsFeed,
-  useStoredEventIDs,
-  useSyncEventsFeed,
-} from '../hooks.ts'
+import { useStoredEventIDs, useSyncEventsFeed } from '../hooks.ts'
 
 const CURL_COMMAND =
   'curl -X POST "http://localhost:5101/ceramic/interests/model/kh4q0ozorrgaq2mezktnrmdwleo1d"'
@@ -31,20 +26,16 @@ export const Route = createFileRoute('/_connected/events')({
 })
 
 function EventsFeed() {
-  // TODO: get new events from this feed + whether the feed has any event
-  useSyncEventsFeed()
-
+  const polledEvents = useSyncEventsFeed()
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useStoredEventIDs()
-  const storedEventIDsLoaded = data
-    ? data.pages.flatMap((page) => page.ids)
-    : []
+  const eventIDs = data
+    ? polledEvents.ids.concat(data.pages.flatMap((page) => page.ids))
+    : polledEvents.ids
 
   const containerRef = useRef<HTMLDivElement>(null)
   const virtualizer = useVirtualizer({
-    count: hasNextPage
-      ? storedEventIDsLoaded.length + 1
-      : storedEventIDsLoaded.length,
+    count: hasNextPage ? eventIDs.length + 1 : eventIDs.length,
     estimateSize: () => 40,
     getScrollElement: () => containerRef.current,
   })
@@ -57,40 +48,32 @@ function EventsFeed() {
     }
 
     if (
-      lastItem.index >= storedEventIDsLoaded.length - 1 &&
+      lastItem.index >= eventIDs.length - 1 &&
       hasNextPage &&
       !isFetchingNextPage
     ) {
       fetchNextPage()
     }
   }, [
+    eventIDs.length,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    storedEventIDsLoaded.length,
     virtualItems,
   ])
 
-  // const feed = useEventsFeed()
-  // const pages = feed.data?.pages ?? []
-  // const firstPageEvents = pages[0]?.events
-
-  // if (firstPageEvents == null) {
-  //   return null
-  // }
-
-  // if (firstPageEvents.length === 0) {
-  //   return (
-  //     <Alert color="orange" title="No events">
-  //       <Text>No events are stored on the Ceramic node yet!</Text>
-  //       <Text>
-  //         To start receiving events for the models created on the network, run
-  //         the following command:
-  //       </Text>
-  //       <CopyCodeBlock code={CURL_COMMAND} />
-  //     </Alert>
-  //   )
-  // }
+  if (eventIDs.length === 0 && polledEvents.resumeToken != null) {
+    return (
+      <Alert color="orange" title="No events">
+        <Text>No events are stored on the Ceramic node yet!</Text>
+        <Text>
+          To start receiving events for the models created on the network, run
+          the following command:
+        </Text>
+        <CopyCodeBlock code={CURL_COMMAND} />
+      </Alert>
+    )
+  }
 
   const items = virtualItems.map((item) => {
     const style: MantineStyleProp = {
@@ -102,7 +85,7 @@ function EventsFeed() {
       transform: `translateY(${item.start}px)`,
     }
 
-    if (item.index > storedEventIDsLoaded.length - 1) {
+    if (item.index > eventIDs.length - 1) {
       return (
         <Box key="loading" style={style}>
           <Text>Loading...</Text>
@@ -110,7 +93,7 @@ function EventsFeed() {
       )
     }
 
-    const id = storedEventIDsLoaded[item.index]
+    const id = eventIDs[item.index]
     return (
       <Tooltip key={id} label={id}>
         <NavLink

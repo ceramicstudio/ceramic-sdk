@@ -4,10 +4,10 @@ import { SQLocalKysely } from 'sqlocal/kysely'
 import * as migration0 from './migrations/0-init.ts'
 import type {
   InsertEvent,
-  Tables,
   QueryEventIDsResult,
   QueryEventsParams,
   QueryEventsResult,
+  Tables,
 } from './types.ts'
 
 const { dialect } = new SQLocalKysely('ceramic-explorer.sqlite3')
