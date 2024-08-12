@@ -10,6 +10,8 @@ export type EventsTable = {
 
 export type InsertEvent = Insertable<EventsTable>
 
+export type EventResult = Selectable<EventsTable>
+
 export type QueryEventsCursor = {
   created_at: number
   id: string
@@ -21,7 +23,7 @@ export type QueryEventsParams = {
 }
 
 export type QueryEventsResult = {
-  events: Array<Selectable<EventsTable>>
+  events: Array<EventResult>
   cursor?: QueryEventsCursor
 }
 

@@ -56,6 +56,12 @@ importers:
       '@ceramic-sdk/identifiers':
         specifier: workspace:^
         version: link:../../packages/identifiers
+      '@ceramic-sdk/model-handler':
+        specifier: workspace:^
+        version: link:../../packages/model-handler
+      '@ceramic-sdk/model-instance-handler':
+        specifier: workspace:^
+        version: link:../../packages/model-instance-handler
       '@ceramic-sdk/model-instance-protocol':
         specifier: workspace:^
         version: link:../../packages/model-instance-protocol

@@ -13,15 +13,16 @@ import {
 } from '@ceramic-sdk/model-instance-protocol'
 import { ModelInitEventPayload } from '@ceramic-sdk/model-protocol'
 import { createDID } from '@didtools/key-did'
+import type { CAR } from 'cartonne'
 import { type TypeOf, union } from 'codeco'
 import 'ts-essentials'
 
 import { insertEvents } from './data/db.ts'
 import type { InsertEvent } from './data/types.ts'
 
-const did = createDID()
+export const verifier = createDID()
 
-const SupportedPayload = union([
+export const SupportedPayload = union([
   DocumentDataEventPayload,
   DocumentInitEventPayload,
   ModelInitEventPayload,
@@ -29,13 +30,20 @@ const SupportedPayload = union([
 ])
 export type SupportedPayload = TypeOf<typeof SupportedPayload>
 
+export async function carToContainer(
+  car: CAR,
+): Promise<EventContainer<SupportedPayload>> {
+  const event = eventFromCAR(SupportedPayload, car)
+  return await eventToContainer(verifier, SupportedPayload, event)
+}
+
 export type EventFeed = Schema<'EventFeed'>
 
 export async function decodeEvent(
   data: string,
 ): Promise<EventContainer<SupportedPayload>> {
   const event = eventFromString(SupportedPayload, data)
-  return await eventToContainer(did, SupportedPayload, event)
+  return await eventToContainer(verifier, SupportedPayload, event)
 }
 
 type FeedEvent = EventFeed['events'][0]
@@ -46,8 +54,7 @@ async function toInsertEvent(input: FeedEvent): Promise<InsertEvent> {
   }
 
   const car = carFromString(input.data)
-  const event = eventFromCAR(SupportedPayload, car)
-  const container = await eventToContainer(did, SupportedPayload, event)
+  const container = await carToContainer(car)
 
   if (
     ModelInitEventPayload.is(container.payload) ||

@@ -3,6 +3,7 @@ import { SQLocalKysely } from 'sqlocal/kysely'
 
 import * as migration0 from './migrations/0-init.ts'
 import type {
+  EventResult,
   InsertEvent,
   QueryEventIDsResult,
   QueryEventsParams,
@@ -113,4 +114,16 @@ export async function queryEventIDs({
     ids: events.map((e) => e.id),
     cursor: { created_at: cursorEvent.created_at, id: cursorEvent.id },
   }
+}
+
+export async function queryStreamEvents(
+  initID: string,
+): Promise<Array<EventResult>> {
+  await dbReady
+  return await db
+    .selectFrom('events')
+    .selectAll()
+    .where('init_id', '=', initID)
+    .orderBy('created_at asc')
+    .execute()
 }

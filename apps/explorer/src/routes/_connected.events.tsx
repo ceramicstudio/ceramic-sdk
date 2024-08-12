@@ -62,7 +62,11 @@ function EventsFeed() {
     virtualItems,
   ])
 
-  if (eventIDs.length === 0 && polledEvents.resumeToken != null) {
+  if (
+    data != null &&
+    eventIDs.length === 0 &&
+    polledEvents.resumeToken != null
+  ) {
     return (
       <Alert color="orange" title="No events">
         <Text>No events are stored on the Ceramic node yet!</Text>
