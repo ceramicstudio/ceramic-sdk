@@ -146,7 +146,7 @@ importers:
     devDependencies:
       '@ceramic-sdk/test-utils':
         specifier: workspace:^
-        version: link:../test-utils
+        version: link:../test-vectors
       '@didtools/key-did':
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.5.4)
@@ -174,7 +174,7 @@ importers:
         version: link:../identifiers
       '@ceramic-sdk/test-utils':
         specifier: workspace:^
-        version: link:../test-utils
+        version: link:../test-vectors
       '@didtools/codecs':
         specifier: ^3.0.0
         version: 3.0.0
@@ -273,7 +273,7 @@ importers:
     devDependencies:
       '@ceramic-sdk/test-utils':
         specifier: workspace:^
-        version: link:../test-utils
+        version: link:../test-vectors
       json-schema-typed:
         specifier: ^8.0.1
         version: 8.0.1
@@ -304,6 +304,36 @@ importers:
       viem:
         specifier: ^2.18.8
         version: 2.19.1(typescript@5.5.4)(zod@3.23.8)
+
+  packages/test-vectors:
+    devDependencies:
+      '@ceramic-sdk/events':
+        specifier: workspace:^
+        version: link:../events
+      '@ceramic-sdk/identifiers':
+        specifier: workspace:^
+        version: link:../identifiers
+      '@ceramic-sdk/model-instance-client':
+        specifier: workspace:^
+        version: link:../model-instance-client
+      '@ceramic-sdk/model-instance-protocol':
+        specifier: workspace:^
+        version: link:../model-instance-protocol
+      '@didtools/key-did':
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@5.5.4)
+      '@ipld/dag-cbor':
+        specifier: ^9.2.1
+        version: 9.2.1
+      cartonne:
+        specifier: ^3.0.1
+        version: 3.0.1
+      multiformats:
+        specifier: ^13.1.1
+        version: 13.2.2
+      multihashes-sync:
+        specifier: ^2.0.0
+        version: 2.0.0
 
 packages:
 
