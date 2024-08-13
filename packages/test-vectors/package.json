@@ -38,9 +38,11 @@
     "@ceramic-sdk/identifiers": "workspace:^",
     "@ceramic-sdk/model-instance-client": "workspace:^",
     "@ceramic-sdk/model-instance-protocol": "workspace:^",
+    "@ceramic-sdk/test-utils": "workspace:^",
     "@didtools/key-did": "^1.0.0",
     "@ipld/dag-cbor": "^9.2.1",
     "cartonne": "^3.0.1",
+    "dids": "^5.0.2",
     "multiformats": "^13.1.1",
     "multihashes-sync": "^2.0.0"
   },
