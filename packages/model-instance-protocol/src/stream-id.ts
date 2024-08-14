@@ -1,17 +1,14 @@
 import { StreamID } from '@ceramic-sdk/identifiers'
 import type { CID } from 'multiformats/cid'
 
-import {
-  DeterministicInitEventHeader,
-  type DocumentInitEventHeader,
-} from './codecs.js'
+import { DocumentInitEventHeader } from './codecs.js'
 import { STREAM_TYPE_ID } from './constants.js'
 
 export function getDeterministicStreamID(
   header: DocumentInitEventHeader,
 ): StreamID {
   // Generate deterministic stream ID from specific header keys
-  const initHeader = DeterministicInitEventHeader.encode({
+  const initHeader = DocumentInitEventHeader.encode({
     controllers: header.controllers,
     model: header.model,
     sep: header.sep,

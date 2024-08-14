@@ -2,8 +2,10 @@ import { TimeEvent, eventToContainer } from '@ceramic-sdk/events'
 import {
   type DeterministicInitEventPayload,
   DocumentDataEventPayload,
+  type DocumentInitEventHeader,
   DocumentInitEventPayload,
   assertValidContentLength,
+  getStreamID,
 } from '@ceramic-sdk/model-instance-protocol'
 import jsonpatch from 'fast-json-patch'
 
@@ -18,6 +20,24 @@ import { type DocumentEvent, DocumentEventPayload } from './codecs.js'
 import type { Context, DocumentState } from './types.js'
 import { getImmutableFieldsToCheck } from './utils.js'
 import { validateRelationsContent } from './validation.js'
+
+function createInitState(
+  cid: string,
+  header: DocumentInitEventHeader,
+  content: Record<string, unknown> | null,
+): DocumentState {
+  return {
+    content,
+    metadata: {
+      controller: header.controllers[0],
+      model: header.model,
+      unique: header.unique,
+      context: header.context,
+      shouldIndex: header.shouldIndex,
+    },
+    log: [cid],
+  }
+}
 
 export async function handleDeterministicInitPayload(
   cid: string,
@@ -35,15 +55,7 @@ export async function handleDeterministicInitPayload(
   const definition = await context.getModelDefinition(modelID)
   assertValidInitHeader(definition, header)
 
-  return {
-    content: null,
-    metadata: {
-      controller: header.controllers[0],
-      model: header.model,
-      unique: header.unique,
-    },
-    log: [cid],
-  }
+  return createInitState(cid, header, null)
 }
 
 export async function handleInitPayload(
@@ -66,17 +78,7 @@ export async function handleInitPayload(
   assertValidContent(modelID, definition.schema, data)
   await validateRelationsContent(context, definition, data)
 
-  return {
-    content: data,
-    metadata: {
-      controller: header.controllers[0],
-      model: header.model,
-      unique: header.unique,
-      context: header.context,
-      shouldIndex: header.shouldIndex,
-    },
-    log: [cid],
-  }
+  return createInitState(cid, header, data)
 }
 
 export async function handleDataPayload(
@@ -84,7 +86,8 @@ export async function handleDataPayload(
   payload: DocumentDataEventPayload,
   context: Context,
 ): Promise<DocumentState> {
-  const state = await context.getDocumentState(payload.id)
+  const streamID = getStreamID(payload.id).toString()
+  const state = await context.getDocumentState(streamID)
   assertEventLinksToState(payload, state)
 
   const metadata = { ...state.metadata }
@@ -136,7 +139,8 @@ export async function handleTimeEvent(
   event: TimeEvent,
   context: Context,
 ): Promise<DocumentState> {
-  const state = await context.getDocumentState(event.id.toString())
+  const streamID = getStreamID(event.id).toString()
+  const state = await context.getDocumentState(streamID)
   assertEventLinksToState(event, state)
   return { ...state, log: [...state.log, cid] }
 }
