@@ -124,28 +124,12 @@ export const DataInitEventPayload = sparse(
 export type DataInitEventPayload = TypeOf<typeof DataInitEventPayload>
 
 /**
- * Init event header for a deterministic ModelInstanceDocument Stream
- */
-export const DeterministicInitEventHeader = sparse(
-  {
-    controllers: tuple([didString]),
-    model: streamIDAsBytes,
-    sep: literal('model'),
-    unique: optional(uint8array),
-  },
-  'DeterministicInitEventHeader',
-)
-export type DeterministicInitEventHeader = TypeOf<
-  typeof DeterministicInitEventHeader
->
-
-/**
  * Init event payload for a deterministic ModelInstanceDocument Stream
  */
 export const DeterministicInitEventPayload = sparse(
   {
     data: nullCodec,
-    header: DeterministicInitEventHeader,
+    header: DocumentInitEventHeader,
   },
   'DeterministicInitEventPayload',
 )
