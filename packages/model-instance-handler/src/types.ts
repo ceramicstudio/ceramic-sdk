@@ -11,8 +11,8 @@ export type DocumentState = {
 }
 
 export type Context = {
-  getDocumentModel: (id: string) => Promise<string>
-  getDocumentState: (cid: string) => Promise<DocumentState>
-  getModelDefinition: (id: string) => Promise<ModelDefinition>
+  getDocumentModel: (streamID: string) => Promise<string>
+  getDocumentState: (streamID: string) => Promise<DocumentState>
+  getModelDefinition: (streamID: string) => Promise<ModelDefinition>
   verifier: DID
 }
