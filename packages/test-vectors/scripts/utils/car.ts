@@ -1,10 +1,6 @@
-import * as codec from '@ipld/dag-cbor'
-import { type CAR, CARFactory, type IBlock } from 'cartonne'
-import { sha256 } from 'multihashes-sync/sha2'
+import type { CAR, IBlock } from 'cartonne'
 
-export const carFactory = new CARFactory()
-carFactory.codecs.add(codec)
-carFactory.hashers.add(sha256)
+import { carFactory } from '../../src/index.ts'
 
 export function createCAR(
   blocks: Iterable<IBlock>,

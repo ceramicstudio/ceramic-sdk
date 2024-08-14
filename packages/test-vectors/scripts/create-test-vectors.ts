@@ -14,8 +14,12 @@ import { EthereumDID, type Hex } from '@ceramic-sdk/test-utils'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import type { DID } from 'dids'
 
+import type { ControllerType } from '../src/index.ts'
+
 import { createCAR } from './utils/car.ts'
 import { writeCARFile } from './utils/fs.ts'
+
+const validCACAOExpirationTime = new Date(9999, 0).toISOString()
 
 const model = StreamID.fromString(
   'k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lq',
@@ -36,15 +40,17 @@ const controllerFactories = {
       '0xe50df915de22bad5bf1abf43f78b55d64640afdcdfa6b1699a514d97662b23f7' as Hex,
       { domain: 'localhost', resources: ['ceramic://*'] },
     )
-    const session = await ethereumDID.createSession()
+    const session = await ethereumDID.createSession({
+      expirationTime: validCACAOExpirationTime,
+    })
     return { id: ethereumDID.id, signer: session.did }
   },
-} satisfies Record<string, () => Promise<Controller>>
+} satisfies Record<ControllerType, () => Promise<Controller>>
 
 for (const [controllerType, createController] of Object.entries(
   controllerFactories,
 )) {
-  // Setup
+  // Create controller
   const controller = await createController()
 
   // Deterministic (init) event
@@ -85,5 +91,5 @@ for (const [controllerType, createController] of Object.entries(
       validDataEvent: validDataCAR.roots[0],
     },
   )
-  await writeCARFile(controllerType, controllerCAR)
+  await writeCARFile(controllerType as ControllerType, controllerCAR)
 }

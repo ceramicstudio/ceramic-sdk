@@ -33,18 +33,24 @@
     "prepare": "pnpm build",
     "prepublishOnly": "package-check"
   },
+  "dependencies": {
+    "@ipld/dag-cbor": "^9.2.1",
+    "@ipld/dag-json": "^10.2.2",
+    "cartonne": "^3.0.1",
+    "dag-jose": "^5.1.0",
+    "multihashes-sync": "^2.0.0"
+  },
   "devDependencies": {
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
     "@ceramic-sdk/model-instance-client": "workspace:^",
     "@ceramic-sdk/model-instance-protocol": "workspace:^",
     "@ceramic-sdk/test-utils": "workspace:^",
+    "@didtools/cacao": "^3.0.1",
     "@didtools/key-did": "^1.0.0",
-    "@ipld/dag-cbor": "^9.2.1",
-    "cartonne": "^3.0.1",
+    "@didtools/pkh-ethereum": "^0.6.0",
     "dids": "^5.0.2",
-    "multiformats": "^13.1.1",
-    "multihashes-sync": "^2.0.0"
+    "multiformats": "^13.1.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

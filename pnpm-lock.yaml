@@ -80,7 +80,7 @@ importers:
     devDependencies:
       '@didtools/key-did':
         specifier: ^1.0.0
-        version: 1.0.0(typescript@5.5.4)
+        version: 1.0.0(typescript@5.5.4)(zod@3.23.8)
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.5.4)(zod@3.23.8)
@@ -149,7 +149,7 @@ importers:
         version: link:../test-utils
       '@didtools/key-did':
         specifier: ^1.0.0
-        version: 1.0.0(typescript@5.5.4)
+        version: 1.0.0(typescript@5.5.4)(zod@3.23.8)
 
   packages/model-handler:
     dependencies:
@@ -180,7 +180,7 @@ importers:
         version: 3.0.0
       '@didtools/key-did':
         specifier: ^1.0.0
-        version: 1.0.0(typescript@5.5.4)
+        version: 1.0.0(typescript@5.5.4)(zod@3.23.8)
       '@types/lodash.ismatch':
         specifier: ^4.4.9
         version: 4.4.9
@@ -211,7 +211,7 @@ importers:
         version: link:../identifiers
       '@didtools/key-did':
         specifier: ^1.0.0
-        version: 1.0.0(typescript@5.5.4)
+        version: 1.0.0(typescript@5.5.4)(zod@3.23.8)
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.5.4)(zod@3.23.8)
@@ -306,6 +306,22 @@ importers:
         version: 2.19.1(typescript@5.5.4)(zod@3.23.8)
 
   packages/test-vectors:
+    dependencies:
+      '@ipld/dag-cbor':
+        specifier: ^9.2.1
+        version: 9.2.1
+      '@ipld/dag-json':
+        specifier: ^10.2.2
+        version: 10.2.2
+      cartonne:
+        specifier: ^3.0.1
+        version: 3.0.1
+      dag-jose:
+        specifier: ^5.1.0
+        version: 5.1.1
+      multihashes-sync:
+        specifier: ^2.0.0
+        version: 2.0.0
     devDependencies:
       '@ceramic-sdk/events':
         specifier: workspace:^
@@ -322,24 +338,21 @@ importers:
       '@ceramic-sdk/test-utils':
         specifier: workspace:^
         version: link:../test-utils
+      '@didtools/cacao':
+        specifier: ^3.0.1
+        version: 3.0.1(typescript@5.5.4)(zod@3.23.8)
       '@didtools/key-did':
         specifier: ^1.0.0
-        version: 1.0.0(typescript@5.5.4)
-      '@ipld/dag-cbor':
-        specifier: ^9.2.1
-        version: 9.2.1
-      cartonne:
-        specifier: ^3.0.1
-        version: 3.0.1
+        version: 1.0.0(typescript@5.5.4)(zod@3.23.8)
+      '@didtools/pkh-ethereum':
+        specifier: ^0.6.0
+        version: 0.6.0(typescript@5.5.4)(zod@3.23.8)
       dids:
         specifier: ^5.0.2
         version: 5.0.2(typescript@5.5.4)(zod@3.23.8)
       multiformats:
         specifier: ^13.1.1
         version: 13.2.2
-      multihashes-sync:
-        specifier: ^2.0.0
-        version: 2.0.0
 
 packages:
 
@@ -572,6 +585,10 @@ packages:
 
   '@didtools/pkh-ethereum@0.5.0':
     resolution: {integrity: sha512-2S+TS/I2jVTNnkgyslxQvSjCzzLsCabjXD2UWjJnVkAoxeJgPE9GvY1JhTDgvVLfxLPnYwTIP/O1WR9wJcDkFg==}
+    engines: {node: '>=14.14'}
+
+  '@didtools/pkh-ethereum@0.6.0':
+    resolution: {integrity: sha512-9lYcQmiI+8D5zv438H/6oweMi7UbKk9ch5ZOHkdAuCZYIP/sBP6ItMe/Nim34MZKV4emCuuHeZ1Z0xwXOLXF8A==}
     engines: {node: '>=14.14'}
 
   '@didtools/siwx@2.0.0':
@@ -3006,7 +3023,7 @@ snapshots:
       multiformats: 13.2.2
       uint8arrays: 5.1.0
 
-  '@didtools/key-did@1.0.0(typescript@5.5.4)':
+  '@didtools/key-did@1.0.0(typescript@5.5.4)(zod@3.23.8)':
     dependencies:
       dids: 5.0.2(typescript@5.5.4)(zod@3.23.8)
       key-did-provider-ed25519: 4.0.2(typescript@5.5.4)(zod@3.23.8)
@@ -3025,6 +3042,19 @@ snapshots:
       varint: 6.0.0
 
   '@didtools/pkh-ethereum@0.5.0(typescript@5.5.4)(zod@3.23.8)':
+    dependencies:
+      '@didtools/cacao': 3.0.1(typescript@5.5.4)(zod@3.23.8)
+      '@noble/curves': 1.4.2
+      '@noble/hashes': 1.4.0
+      '@stablelib/random': 1.0.2
+      caip: 1.1.1
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
+  '@didtools/pkh-ethereum@0.6.0(typescript@5.5.4)(zod@3.23.8)':
     dependencies:
       '@didtools/cacao': 3.0.1(typescript@5.5.4)(zod@3.23.8)
       '@noble/curves': 1.4.2
