@@ -15,7 +15,7 @@ import { getAuthenticatedDID } from '@didtools/key-did'
 import type { DID } from 'dids'
 
 import { createCAR } from './utils/car.ts'
-import { createControllerDir, writeCARFile } from './utils/fs.ts'
+import { writeCARFile } from './utils/fs.ts'
 
 const model = StreamID.fromString(
   'k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lq',
@@ -45,24 +45,16 @@ for (const [controllerType, createController] of Object.entries(
   controllerFactories,
 )) {
   // Setup
-
   const controller = await createController()
-  const dirPath = await createControllerDir(controllerType, {
-    controller: controller.id,
-    model: model.toString(),
-  })
 
   // Deterministic (init) event
-
-  const deterministicEvent = getDeterministicInitEvent(model, controller.id)
-  await writeCARFile(
-    [dirPath, 'valid', 'deterministic'],
-    createCAR(deterministicEvent),
+  const validDeterministicEvent = getDeterministicInitEvent(
+    model,
+    controller.id,
   )
 
   // Signed init event
-
-  const initPayload = InitEventPayload.encode({
+  const validInitPayload = InitEventPayload.encode({
     data: { test: true },
     header: createInitHeader({
       controller: controller.id,
@@ -70,24 +62,28 @@ for (const [controllerType, createController] of Object.entries(
       unique: new Uint8Array([0, 1, 2, 3]),
     }),
   })
-  await writeCARFile([dirPath, 'valid', 'init-payload'], createCAR(initPayload))
-
-  const initEvent = await signEvent(controller.signer, initPayload)
-  const initCAR = signedEventToCAR(initEvent)
-  const initCID = initCAR.roots[0]
-  await writeCARFile([dirPath, 'valid', 'init-event'], initCAR)
+  const validInitEvent = await signEvent(controller.signer, validInitPayload)
+  const validInitCAR = signedEventToCAR(validInitEvent)
 
   // Data event
-
-  const streamID = getStreamID(initCID)
-  const dataPayload = createDataEventPayload(CommitID.fromStream(streamID), [
-    { op: 'add', path: '/update', value: true },
-  ])
-  await writeCARFile([dirPath, 'valid', 'data-payload'], createCAR(dataPayload))
-
-  const dataEvent = await signEvent(controller.signer, dataPayload)
-  await writeCARFile(
-    [dirPath, 'valid', 'data-event'],
-    signedEventToCAR(dataEvent),
+  const streamID = getStreamID(validInitCAR.roots[0])
+  const validDataPayload = createDataEventPayload(
+    CommitID.fromStream(streamID),
+    [{ op: 'add', path: '/update', value: true }],
   )
+  const validDataEvent = await signEvent(controller.signer, validDataPayload)
+  const validDataCAR = signedEventToCAR(validDataEvent)
+
+  // Write CAR file
+  const controllerCAR = createCAR(
+    [...validInitCAR.blocks, ...validDataCAR.blocks],
+    { validDeterministicEvent, validInitPayload, validDataPayload },
+    {
+      controller: controller.id,
+      model: model.bytes,
+      validInitEvent: validInitCAR.roots[0],
+      validDataEvent: validDataCAR.roots[0],
+    },
+  )
+  await writeCARFile(controllerType, controllerCAR)
 }

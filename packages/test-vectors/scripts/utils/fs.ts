@@ -1,26 +1,16 @@
 import { mkdir, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { CAR } from 'cartonne'
 
-export async function createControllerDir(
-  controllerType: string,
-  meta: Record<string, unknown>,
-): Promise<string> {
-  const dirPath = fileURLToPath(
-    new URL(`../../assets/${controllerType}`, import.meta.url),
-  )
-  await mkdir(dirPath, { recursive: true })
-  await writeFile(join(dirPath, 'meta.json'), JSON.stringify(meta, null, 2))
-  return dirPath
-}
-
 export async function writeCARFile(
-  pathParts: Array<string>,
+  controllerType: string,
   car: CAR,
 ): Promise<string> {
-  const filePath = join(...pathParts)
+  const filePath = fileURLToPath(
+    new URL(`../../assets/${controllerType}.car`, import.meta.url),
+  )
   await mkdir(dirname(filePath), { recursive: true })
-  await writeFile(`${filePath}.car`, car.bytes)
+  await writeFile(filePath, car.bytes)
   return filePath
 }
