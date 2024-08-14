@@ -16,7 +16,7 @@ export type InitContext = {
 }
 
 export type TimeContext = {
-  getModelState: (initCID: string) => Promise<ModelState>
+  getModelState: (streamID: string) => Promise<ModelState>
 }
 
 export type Context = InitContext & TimeContext

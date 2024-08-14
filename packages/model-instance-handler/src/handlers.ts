@@ -5,6 +5,7 @@ import {
   type DocumentInitEventHeader,
   DocumentInitEventPayload,
   assertValidContentLength,
+  getStreamID,
 } from '@ceramic-sdk/model-instance-protocol'
 import jsonpatch from 'fast-json-patch'
 
@@ -85,7 +86,8 @@ export async function handleDataPayload(
   payload: DocumentDataEventPayload,
   context: Context,
 ): Promise<DocumentState> {
-  const state = await context.getDocumentState(payload.id)
+  const streamID = getStreamID(payload.id).toString()
+  const state = await context.getDocumentState(streamID)
   assertEventLinksToState(payload, state)
 
   const metadata = { ...state.metadata }
@@ -137,7 +139,8 @@ export async function handleTimeEvent(
   event: TimeEvent,
   context: Context,
 ): Promise<DocumentState> {
-  const state = await context.getDocumentState(event.id.toString())
+  const streamID = getStreamID(event.id).toString()
+  const state = await context.getDocumentState(streamID)
   assertEventLinksToState(event, state)
   return { ...state, log: [...state.log, cid] }
 }

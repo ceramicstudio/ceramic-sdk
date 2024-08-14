@@ -12,7 +12,7 @@ export type DocumentState = {
 
 export type Context = {
   getDocumentModel: (streamID: string) => Promise<string>
-  getDocumentState: (initCID: string) => Promise<DocumentState>
+  getDocumentState: (streamID: string) => Promise<DocumentState>
   getModelDefinition: (streamID: string) => Promise<ModelDefinition>
   verifier: DID
 }
