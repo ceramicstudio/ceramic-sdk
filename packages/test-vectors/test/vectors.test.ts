@@ -7,7 +7,9 @@ import {
   DocumentDataEventPayload,
   DocumentInitEventPayload,
 } from '@ceramic-sdk/model-instance-protocol'
+import { Cacao } from '@didtools/cacao'
 import { createDID } from '@didtools/key-did'
+import { getEIP191Verifier } from '@didtools/pkh-ethereum'
 
 import { loadCAR } from '../src/index.ts'
 
@@ -68,6 +70,7 @@ describe('key-plain', () => {
 
 describe('pkh-ethereum', () => {
   const root = pkhEthereumCAR.get(pkhEthereumCAR.roots[0])
+  const verifiers = getEIP191Verifier()
 
   test('valid deterministic init event', () => {
     const cid = root.validDeterministicEvent
@@ -89,6 +92,15 @@ describe('pkh-ethereum', () => {
       event,
     )
     expect(container.signed).toBe(true)
+
+    // biome-ignore lint/style/noNonNullAssertion: existing value
+    const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+    const verified = await verifier.verifyJWS(event.jws, {
+      capability,
+      issuer: root.controller,
+      verifiers,
+    })
+    expect(verified).toBeDefined()
   })
 
   test('valid data event', async () => {
@@ -105,5 +117,14 @@ describe('pkh-ethereum', () => {
       event,
     )
     expect(container.signed).toBe(true)
+
+    // biome-ignore lint/style/noNonNullAssertion: existing value
+    const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+    const verified = await verifier.verifyJWS(event.jws, {
+      capability,
+      issuer: root.controller,
+      verifiers,
+    })
+    expect(verified).toBeDefined()
   })
 })

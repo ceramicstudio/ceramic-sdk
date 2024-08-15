@@ -1,3 +1,5 @@
+import { Cacao } from '@didtools/cacao'
+import { getEIP191Verifier } from '@didtools/pkh-ethereum'
 import { DIDSession } from 'did-session'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -55,4 +57,30 @@ describe('EthereumDID', () => {
     expect(session2.id).toBe(factory.id)
     expect(session2.did.id).not.toBe(session1.did.id)
   })
+})
+
+test('Session signing can be verified', async () => {
+  const verifiers = getEIP191Verifier()
+  const provider = createProvider(generatePrivateKey())
+  const accountId = await getAccount(provider)
+  const authMethod = await createAuthMethod(provider, accountId)
+
+  const eth = new EthereumDID({
+    accountId,
+    authMethod,
+    authOptions: defaultOptions,
+  })
+  const session = await eth.createSession()
+  expect(session.id).toBe(session.did.parent)
+  expect(session.id).toBe(eth.id)
+
+  const result = await session.did.createDagJWS({ test: true })
+  // biome-ignore lint/style/noNonNullAssertion: existing value
+  const capability = await Cacao.fromBlockBytes(result.cacaoBlock!)
+  const verified = await session.did.verifyJWS(result.jws, {
+    capability,
+    issuer: session.id,
+    verifiers,
+  })
+  expect(verified).toBeDefined()
 })
