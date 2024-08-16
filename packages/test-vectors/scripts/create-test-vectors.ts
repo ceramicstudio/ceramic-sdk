@@ -12,12 +12,15 @@ import {
 import { getStreamID } from '@ceramic-sdk/model-instance-protocol'
 import { EthereumDID, type Hex } from '@ceramic-sdk/test-utils'
 import { getAuthenticatedDID } from '@didtools/key-did'
-import type { DID } from 'dids'
+import { WebcryptoProvider } from '@didtools/key-webcrypto'
+import { DID } from 'dids'
+import { getResolver } from 'key-did-resolver'
 
 import type { ControllerType } from '../src/index.ts'
 
 import { createCAR } from './utils/car.ts'
 import { writeCARFile } from './utils/fs.ts'
+import { getKeyPair } from './utils/webcrypto.ts'
 
 const validCACAOExpirationTime = new Date(9999, 0).toISOString()
 
@@ -31,9 +34,18 @@ type Controller = {
 }
 
 const controllerFactories = {
-  'key-plain': async () => {
+  'key-ed25519': async () => {
     const did = await getAuthenticatedDID(new Uint8Array(32))
     return { id: did.id, signer: did }
+  },
+  'key-webcrypto': async () => {
+    const keyPair = await getKeyPair()
+    const signer = new DID({
+      provider: new WebcryptoProvider(keyPair),
+      resolver: getResolver(),
+    })
+    await signer.authenticate()
+    return { id: signer.id, signer }
   },
   'pkh-ethereum': async () => {
     const ethereumDID = await EthereumDID.fromPrivateKey(

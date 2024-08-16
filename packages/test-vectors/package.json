@@ -48,8 +48,10 @@
     "@ceramic-sdk/test-utils": "workspace:^",
     "@didtools/cacao": "^3.0.1",
     "@didtools/key-did": "^1.0.0",
+    "@didtools/key-webcrypto": "^0.2.0",
     "@didtools/pkh-ethereum": "^0.6.0",
     "dids": "^5.0.2",
+    "key-did-resolver": "^4.0.0",
     "multiformats": "^13.1.1"
   },
   "jest": {

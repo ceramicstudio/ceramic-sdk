@@ -7,7 +7,8 @@ import * as joseCodec from 'dag-jose'
 import { sha256 } from 'multihashes-sync/sha2'
 
 const CONTROLLER_TYPES = {
-  'key-plain': true,
+  'key-ed25519': true,
+  'key-webcrypto': true,
   'pkh-ethereum': true,
 }
 

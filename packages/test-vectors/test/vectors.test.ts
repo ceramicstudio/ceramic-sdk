@@ -15,24 +15,25 @@ import { loadCAR } from '../src/index.ts'
 
 const verifier = createDID()
 
-const [keyPlainCAR, pkhEthereumCAR] = await Promise.all([
-  loadCAR('key-plain'),
+const [keyEd25519CAR, keyWebCryptoCAR, pkhEthereumCAR] = await Promise.all([
+  loadCAR('key-ed25519'),
+  loadCAR('key-webcrypto'),
   loadCAR('pkh-ethereum'),
 ])
 
-describe('key-plain', () => {
-  const root = keyPlainCAR.get(keyPlainCAR.roots[0])
+describe('key-ed25519', () => {
+  const root = keyEd25519CAR.get(keyEd25519CAR.roots[0])
 
   test('valid deterministic init event', () => {
     const cid = root.validDeterministicEvent
-    const event = eventFromCAR(DocumentInitEventPayload, keyPlainCAR, cid)
+    const event = eventFromCAR(DocumentInitEventPayload, keyEd25519CAR, cid)
     expect(event).toBeDefined()
   })
 
   test('valid signed init event', async () => {
     const event = eventFromCAR(
       DocumentInitEventPayload,
-      keyPlainCAR,
+      keyEd25519CAR,
       root.validInitEvent,
     ) as SignedEvent
     expect(event.jws.link.toString()).toBe(root.validInitPayload.toString())
@@ -51,7 +52,55 @@ describe('key-plain', () => {
   test('valid data event', async () => {
     const event = eventFromCAR(
       DocumentDataEventPayload,
-      keyPlainCAR,
+      keyEd25519CAR,
+      root.validDataEvent,
+    ) as SignedEvent
+    expect(event.jws.link.toString()).toBe(root.validDataPayload.toString())
+
+    const container = await signedEventToContainer(
+      verifier,
+      DocumentDataEventPayload,
+      event,
+    )
+    expect(container.signed).toBe(true)
+
+    const did = container.verified.kid.split('#')[0]
+    expect(did).toBe(root.controller)
+  })
+})
+
+describe('key-webcrypto', () => {
+  const root = keyWebCryptoCAR.get(keyWebCryptoCAR.roots[0])
+
+  test('valid deterministic init event', () => {
+    const cid = root.validDeterministicEvent
+    const event = eventFromCAR(DocumentInitEventPayload, keyWebCryptoCAR, cid)
+    expect(event).toBeDefined()
+  })
+
+  test('valid signed init event', async () => {
+    const event = eventFromCAR(
+      DocumentInitEventPayload,
+      keyWebCryptoCAR,
+      root.validInitEvent,
+    ) as SignedEvent
+    expect(event.jws.link.toString()).toBe(root.validInitPayload.toString())
+
+    const container = await signedEventToContainer(
+      verifier,
+      DocumentInitEventPayload,
+      event,
+    )
+    expect(container.signed).toBe(true)
+
+    const did = container.verified.kid.split('#')[0]
+    expect(did).toBe(root.controller)
+  })
+
+  test('valid data event', async () => {
+    const event = eventFromCAR(
+      DocumentDataEventPayload,
+      keyWebCryptoCAR,
       root.validDataEvent,
     ) as SignedEvent
     expect(event.jws.link.toString()).toBe(root.validDataPayload.toString())
