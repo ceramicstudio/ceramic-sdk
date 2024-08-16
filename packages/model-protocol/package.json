@@ -44,8 +44,8 @@
   "devDependencies": {
     "@ceramic-sdk/test-utils": "workspace:^",
     "json-schema-typed": "^8.0.1",
-    "multiformats": "^13.1.1",
-    "ts-essentials": "^10.0.2"
+    "multiformats": "^13.1.3",
+    "ts-essentials": "^10.0.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

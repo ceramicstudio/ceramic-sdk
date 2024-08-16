@@ -9,6 +9,7 @@ import {
   ModelInitEventPayload,
   ModelMetadata,
   assertValidModelContent,
+  getModelStreamID,
   validateController,
 } from '@ceramic-sdk/model-protocol'
 import type { DID } from 'dids'
@@ -61,7 +62,8 @@ export async function handleTimeEvent(
   context: TimeContext,
 ): Promise<ModelState> {
   const initID = event.id.toString()
-  const state = await context.getModelState(initID)
+  const streamID = getModelStreamID(event.id).toString()
+  const state = await context.getModelState(streamID)
   if (state.log.length === 0) {
     throw new Error(
       `Invalid model state provided for time event ${cid}: log is empty`,

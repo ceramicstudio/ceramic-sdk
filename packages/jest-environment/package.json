@@ -1,13 +1,13 @@
 {
-  "name": "@ceramic-sdk/identifiers",
+  "name": "jest-environment-ceramic",
   "version": "0.1.0",
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "identifiers"],
+  "keywords": ["ceramic", "jest", "environment"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/identifiers"
+    "directory": "packages/jest-environment"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -32,15 +32,9 @@
     "prepublishOnly": "package-check"
   },
   "dependencies": {
-    "@ipld/dag-cbor": "^9.2.1",
-    "codeco": "^1.4.1",
-    "mapmoize": "^1.2.1",
-    "multiformats": "^13.1.3",
-    "uint8arrays": "^5.1.0",
-    "varint": "^6.0.0"
-  },
-  "devDependencies": {
-    "@types/varint": "^6.0.3"
+    "@ceramic-sdk/http-client": "workspace:^",
+    "@databases/with-container": "^2.1.1",
+    "jest-environment-node": "^29.7.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
@@ -55,5 +49,8 @@
         }
       ]
     }
+  },
+  "devDependencies": {
+    "@jest/environment": "^29.7.0"
   }
 }
