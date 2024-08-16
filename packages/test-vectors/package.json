@@ -50,6 +50,10 @@
     "@didtools/key-did": "^1.0.0",
     "@didtools/key-webcrypto": "^0.2.0",
     "@didtools/pkh-ethereum": "^0.6.0",
+    "@didtools/pkh-solana": "^0.2.0",
+    "@solana/signers": "^2.0.0-rc.1",
+    "caip": "^1.1.1",
+    "did-session": "^4.0.0",
     "dids": "^5.0.2",
     "key-did-resolver": "^4.0.0",
     "multiformats": "^13.1.1"

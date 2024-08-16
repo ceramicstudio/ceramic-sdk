@@ -13,6 +13,8 @@ import { getStreamID } from '@ceramic-sdk/model-instance-protocol'
 import { EthereumDID, type Hex } from '@ceramic-sdk/test-utils'
 import { getAuthenticatedDID } from '@didtools/key-did'
 import { WebcryptoProvider } from '@didtools/key-webcrypto'
+import { SolanaNodeAuth } from '@didtools/pkh-solana'
+import { DIDSession } from 'did-session'
 import { DID } from 'dids'
 import { getResolver } from 'key-did-resolver'
 
@@ -20,7 +22,8 @@ import type { ControllerType } from '../src/index.ts'
 
 import { createCAR } from './utils/car.ts'
 import { writeCARFile } from './utils/fs.ts'
-import { getKeyPair } from './utils/webcrypto.ts'
+import * as solana from './utils/solana.ts'
+import { getP256KeyPair } from './utils/webcrypto.ts'
 
 const validCACAOExpirationTime = new Date(9999, 0).toISOString()
 
@@ -34,18 +37,18 @@ type Controller = {
 }
 
 const controllerFactories = {
-  'key-ed25519': async () => {
-    const did = await getAuthenticatedDID(new Uint8Array(32))
-    return { id: did.id, signer: did }
-  },
-  'key-webcrypto': async () => {
-    const keyPair = await getKeyPair()
+  'key-ecdsa-p256': async () => {
+    const keyPair = await getP256KeyPair()
     const signer = new DID({
       provider: new WebcryptoProvider(keyPair),
       resolver: getResolver(),
     })
     await signer.authenticate()
     return { id: signer.id, signer }
+  },
+  'key-ed25519': async () => {
+    const did = await getAuthenticatedDID(new Uint8Array(32))
+    return { id: did.id, signer: did }
   },
   'pkh-ethereum': async () => {
     const ethereumDID = await EthereumDID.fromPrivateKey(
@@ -56,6 +59,19 @@ const controllerFactories = {
       expirationTime: validCACAOExpirationTime,
     })
     return { id: ethereumDID.id, signer: session.did }
+  },
+  'pkh-solana': async () => {
+    const signer = await solana.getSigner()
+    const authMethod = await SolanaNodeAuth.getAuthMethod(
+      solana.getProvider(signer),
+      solana.getAccountId(signer),
+      'test',
+    )
+    const session = await DIDSession.authorize(authMethod, {
+      expirationTime: validCACAOExpirationTime,
+      resources: ['ceramic://*'],
+    })
+    return { id: session.id, signer: session.did }
   },
 } satisfies Record<ControllerType, () => Promise<Controller>>
 
