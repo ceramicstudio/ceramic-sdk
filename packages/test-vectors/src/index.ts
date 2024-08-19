@@ -4,6 +4,7 @@ import * as cborCodec from '@ipld/dag-cbor'
 import * as jsonCodec from '@ipld/dag-json'
 import { type CAR, CARFactory } from 'cartonne'
 import * as joseCodec from 'dag-jose'
+import type { CID } from 'multiformats/cid'
 import { sha256 } from 'multihashes-sync/sha2'
 
 const CONTROLLER_TYPES = {
@@ -14,6 +15,18 @@ const CONTROLLER_TYPES = {
 }
 
 export type ControllerType = keyof typeof CONTROLLER_TYPES
+
+export type ArchiveRootContent = {
+  controller: string
+  model: Uint8Array
+  validInitEvent: CID
+  validDataEvent: CID
+  validDeterministicEvent: CID
+  validInitPayload: CID
+  validDataPayload: CID
+  invalidInitEventSignature: CID
+  invalidDataEventSignature: CID
+}
 
 export function getCARPath(type: ControllerType): string {
   if (CONTROLLER_TYPES[type] == null) {

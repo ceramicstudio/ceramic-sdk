@@ -1,5 +1,6 @@
 import {
   InitEventPayload,
+  type SignedEvent,
   signEvent,
   signedEventToCAR,
 } from '@ceramic-sdk/events'
@@ -24,6 +25,23 @@ import { createCAR } from './utils/car.ts'
 import { writeCARFile } from './utils/fs.ts'
 import * as solana from './utils/solana.ts'
 import { getP256KeyPair } from './utils/webcrypto.ts'
+
+function changeEventSignature(event: SignedEvent): SignedEvent {
+  const [firstSignature, ...otherSignatures] = event.jws.signatures
+  return {
+    ...event,
+    jws: {
+      ...event.jws,
+      signatures: [
+        {
+          ...firstSignature,
+          signature: `${firstSignature.signature.slice(0, -4)}AAAA`,
+        },
+        ...otherSignatures,
+      ],
+    },
+  }
+}
 
 const validCACAOExpirationTime = new Date(9999, 0).toISOString()
 
@@ -99,6 +117,10 @@ for (const [controllerType, createController] of Object.entries(
   const validInitEvent = await signEvent(controller.signer, validInitPayload)
   const validInitCAR = signedEventToCAR(validInitEvent)
 
+  const invalidInitSignatureCAR = signedEventToCAR(
+    changeEventSignature(validInitEvent),
+  )
+
   // Data event
   const streamID = getStreamID(validInitCAR.roots[0])
   const validDataPayload = createDataEventPayload(
@@ -108,15 +130,26 @@ for (const [controllerType, createController] of Object.entries(
   const validDataEvent = await signEvent(controller.signer, validDataPayload)
   const validDataCAR = signedEventToCAR(validDataEvent)
 
+  const invalidDataSignatureCAR = signedEventToCAR(
+    changeEventSignature(validDataEvent),
+  )
+
   // Write CAR file
   const controllerCAR = createCAR(
-    [...validInitCAR.blocks, ...validDataCAR.blocks],
+    [
+      ...validInitCAR.blocks,
+      ...validDataCAR.blocks,
+      ...invalidInitSignatureCAR.blocks,
+      ...invalidDataSignatureCAR.blocks,
+    ],
     { validDeterministicEvent, validInitPayload, validDataPayload },
     {
       controller: controller.id,
       model: model.bytes,
       validInitEvent: validInitCAR.roots[0],
       validDataEvent: validDataCAR.roots[0],
+      invalidInitEventSignature: invalidInitSignatureCAR.roots[0],
+      invalidDataEventSignature: invalidDataSignatureCAR.roots[0],
     },
   )
   await writeCARFile(controllerType as ControllerType, controllerCAR)
