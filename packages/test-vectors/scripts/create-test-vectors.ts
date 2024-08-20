@@ -11,20 +11,22 @@ import {
   getDeterministicInitEvent,
 } from '@ceramic-sdk/model-instance-client'
 import { getStreamID } from '@ceramic-sdk/model-instance-protocol'
-import { EthereumDID, type Hex } from '@ceramic-sdk/test-utils'
-import { getAuthenticatedDID } from '@didtools/key-did'
-import { WebcryptoProvider } from '@didtools/key-webcrypto'
-import { SolanaNodeAuth } from '@didtools/pkh-solana'
-import { DIDSession } from 'did-session'
-import { DID } from 'dids'
-import { getResolver } from 'key-did-resolver'
+import type { Cacao } from '@didtools/cacao'
+import type { IBlock } from 'cartonne'
+import type { CreateJWSOptions, DID } from 'dids'
 
 import type { ControllerType } from '../src/index.ts'
 
 import { createCAR } from './utils/car.ts'
+import {
+  createCapabilityDID,
+  createExpiredCapabilityDID,
+  keyDID,
+} from './utils/did.ts'
+import { getAuthMethod as getEthereumAuth } from './utils/ethereum.ts'
 import { writeCARFile } from './utils/fs.ts'
-import * as solana from './utils/solana.ts'
-import { getP256KeyPair } from './utils/webcrypto.ts'
+import { getAuthMethod as getSolanaAuth } from './utils/solana.ts'
+import { getP256KeyDID } from './utils/webcrypto.ts'
 
 function changeEventSignature(event: SignedEvent): SignedEvent {
   const [firstSignature, ...otherSignatures] = event.jws.signatures
@@ -43,7 +45,11 @@ function changeEventSignature(event: SignedEvent): SignedEvent {
   }
 }
 
-const validCACAOExpirationTime = new Date(9999, 0).toISOString()
+function changeCapabilitySignature(cacao: Cacao): Cacao {
+  // biome-ignore lint/style/noNonNullAssertion: existing value
+  const signature = cacao.s!
+  return { ...cacao, s: { ...signature, s: `${signature.s.slice(0, -4)}AAAA` } }
+}
 
 const model = StreamID.fromString(
   'k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lq',
@@ -52,46 +58,33 @@ const model = StreamID.fromString(
 type Controller = {
   id: string
   signer: DID
-}
+} & ({ withCapability: false } | { withCapability: true; expiredSigner: DID })
 
 const controllerFactories = {
   'key-ecdsa-p256': async () => {
-    const keyPair = await getP256KeyPair()
-    const signer = new DID({
-      provider: new WebcryptoProvider(keyPair),
-      resolver: getResolver(),
-    })
-    await signer.authenticate()
-    return { id: signer.id, signer }
+    const signer = await getP256KeyDID()
+    return { withCapability: false, id: signer.id, signer }
   },
-  'key-ed25519': async () => {
-    const did = await getAuthenticatedDID(new Uint8Array(32))
-    return { id: did.id, signer: did }
+  'key-ed25519': () => {
+    return { withCapability: false, id: keyDID.id, signer: keyDID }
   },
   'pkh-ethereum': async () => {
-    const ethereumDID = await EthereumDID.fromPrivateKey(
-      '0xe50df915de22bad5bf1abf43f78b55d64640afdcdfa6b1699a514d97662b23f7' as Hex,
-      { domain: 'localhost', resources: ['ceramic://*'] },
-    )
-    const session = await ethereumDID.createSession({
-      expirationTime: validCACAOExpirationTime,
-    })
-    return { id: ethereumDID.id, signer: session.did }
+    const authMethod = await getEthereumAuth()
+    const [signer, expiredSigner] = await Promise.all([
+      createCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
+      createExpiredCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
+    ])
+    return { withCapability: true, id: signer.id, signer, expiredSigner }
   },
   'pkh-solana': async () => {
-    const signer = await solana.getSigner()
-    const authMethod = await SolanaNodeAuth.getAuthMethod(
-      solana.getProvider(signer),
-      solana.getAccountId(signer),
-      'test',
-    )
-    const session = await DIDSession.authorize(authMethod, {
-      expirationTime: validCACAOExpirationTime,
-      resources: ['ceramic://*'],
-    })
-    return { id: session.id, signer: session.did }
+    const authMethod = await getSolanaAuth()
+    const [signer, expiredSigner] = await Promise.all([
+      createCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
+      createExpiredCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
+    ])
+    return { withCapability: true, id: signer.id, signer, expiredSigner }
   },
-} satisfies Record<ControllerType, () => Promise<Controller>>
+} satisfies Record<ControllerType, () => Controller | Promise<Controller>>
 
 for (const [controllerType, createController] of Object.entries(
   controllerFactories,
@@ -134,23 +127,72 @@ for (const [controllerType, createController] of Object.entries(
     changeEventSignature(validDataEvent),
   )
 
+  const carBlocks: Array<IBlock> = [
+    ...validInitCAR.blocks,
+    ...validDataCAR.blocks,
+    ...invalidInitSignatureCAR.blocks,
+    ...invalidDataSignatureCAR.blocks,
+  ]
+  const carMeta: Record<string, unknown> = {
+    controller: controller.id,
+    model: model.bytes,
+    validInitEvent: validInitCAR.roots[0],
+    validDataEvent: validDataCAR.roots[0],
+    invalidInitEventSignature: invalidInitSignatureCAR.roots[0],
+    invalidDataEventSignature: invalidDataSignatureCAR.roots[0],
+  }
+
+  if (controller.withCapability) {
+    // Events with expired capabilities
+
+    const expiredInitEvent = await signEvent(
+      controller.expiredSigner,
+      validInitPayload,
+    )
+    const expiredInitCAR = signedEventToCAR(expiredInitEvent)
+    carBlocks.push(...expiredInitCAR.blocks)
+    carMeta.expiredInitEventCapability = expiredInitCAR.roots[0]
+
+    const expiredDataEvent = await signEvent(
+      controller.expiredSigner,
+      validDataPayload,
+    )
+    const expiredDataCAR = signedEventToCAR(expiredDataEvent)
+    carBlocks.push(...expiredDataCAR.blocks)
+    carMeta.expiredDataEventCapability = expiredDataCAR.roots[0]
+
+    // Events with altered capability signatures
+
+    const invalidCapability = changeCapabilitySignature(
+      controller.signer.capability,
+    )
+
+    const invalidInitCapability = await signEvent(
+      controller.signer,
+      validInitPayload,
+      { capability: invalidCapability } as unknown as CreateJWSOptions,
+    )
+    const invalidInitCapabilityCAR = signedEventToCAR(invalidInitCapability)
+    carBlocks.push(...invalidInitCapabilityCAR.blocks)
+    carMeta.invalidInitEventCapabilitySignature =
+      invalidInitCapabilityCAR.roots[0]
+
+    const invalidDataCapability = await signEvent(
+      controller.signer,
+      validDataPayload,
+      { capability: invalidCapability } as unknown as CreateJWSOptions,
+    )
+    const invalidDataCapabilityCAR = signedEventToCAR(invalidDataCapability)
+    carBlocks.push(...invalidDataCapabilityCAR.blocks)
+    carMeta.invalidDataEventCapabilitySignature =
+      invalidDataCapabilityCAR.roots[0]
+  }
+
   // Write CAR file
   const controllerCAR = createCAR(
-    [
-      ...validInitCAR.blocks,
-      ...validDataCAR.blocks,
-      ...invalidInitSignatureCAR.blocks,
-      ...invalidDataSignatureCAR.blocks,
-    ],
+    carBlocks,
     { validDeterministicEvent, validInitPayload, validDataPayload },
-    {
-      controller: controller.id,
-      model: model.bytes,
-      validInitEvent: validInitCAR.roots[0],
-      validDataEvent: validDataCAR.roots[0],
-      invalidInitEventSignature: invalidInitSignatureCAR.roots[0],
-      invalidDataEventSignature: invalidDataSignatureCAR.roots[0],
-    },
+    carMeta,
   )
   await writeCARFile(controllerType as ControllerType, controllerCAR)
 }

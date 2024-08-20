@@ -16,7 +16,7 @@ const CONTROLLER_TYPES = {
 
 export type ControllerType = keyof typeof CONTROLLER_TYPES
 
-export type ArchiveRootContent = {
+export type ArchiveRootContentCommon = {
   controller: string
   model: Uint8Array
   validInitEvent: CID
@@ -27,6 +27,22 @@ export type ArchiveRootContent = {
   invalidInitEventSignature: CID
   invalidDataEventSignature: CID
 }
+
+export type ArchiveRootContentWithoutCapability = ArchiveRootContentCommon & {
+  withCapability: false
+}
+
+export type ArchiveRootContentWithCapability = ArchiveRootContentCommon & {
+  withCapability: true
+  expiredInitEventCapability: CID
+  expiredDataEventCapability: CID
+  invalidInitEventCapabilitySignature: CID
+  invalidDataEventCapabilitySignature: CID
+}
+
+export type ArchiveRootContent =
+  | ArchiveRootContentWithCapability
+  | ArchiveRootContentWithoutCapability
 
 export function getCARPath(type: ControllerType): string {
   if (CONTROLLER_TYPES[type] == null) {

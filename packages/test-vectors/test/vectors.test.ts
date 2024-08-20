@@ -13,7 +13,14 @@ import { getEIP191Verifier } from '@didtools/pkh-ethereum'
 import { getSolanaVerifier } from '@didtools/pkh-solana'
 import type { CAR } from 'cartonne'
 
-import { type ArchiveRootContent, loadCAR } from '../src/index.ts'
+import {
+  type ArchiveRootContentCommon,
+  type ArchiveRootContentWithCapability,
+  type ArchiveRootContentWithoutCapability,
+  loadCAR,
+} from '../src/index.ts'
+
+const EXPECTED_EXPIRED_DATE = new Date(2000, 0).toISOString()
 
 const verifier = createDID()
 
@@ -33,7 +40,7 @@ describe.each([
   ['pkh-ethereum', pkhEthereumCAR],
   ['pkh-solana', pkhSolanaCAR],
 ])('common checks using %s', (controllerType: string, car: CAR) => {
-  const root = car.get(car.roots[0]) as ArchiveRootContent
+  const root = car.get(car.roots[0]) as ArchiveRootContentCommon
 
   test('valid deterministic init event', () => {
     const cid = root.validDeterministicEvent
@@ -74,7 +81,7 @@ describe.each([
   ['key-ecdsa-p256', keyP256CAR],
   ['key-ed25519', keyEd25519CAR],
 ])('direct signatures using %s', (controllerType: string, car: CAR) => {
-  const root = car.get(car.roots[0]) as ArchiveRootContent
+  const root = car.get(car.roots[0]) as ArchiveRootContentWithoutCapability
 
   test('valid signed init event', async () => {
     const event = eventFromCAR(
@@ -123,7 +130,7 @@ describe.each([
 ])(
   'CACAO signatures using %s',
   (controllerType: string, car: CAR, verifiers) => {
-    const root = car.get(car.roots[0]) as ArchiveRootContent
+    const root = car.get(car.roots[0]) as ArchiveRootContentWithCapability
 
     test('valid signed init event', async () => {
       const event = eventFromCAR(
@@ -150,6 +157,48 @@ describe.each([
       expect(verified).toBeDefined()
     })
 
+    test('expired signed init event capability', async () => {
+      const event = eventFromCAR(
+        DocumentInitEventPayload,
+        car,
+        root.expiredInitEventCapability,
+      ) as SignedEvent
+      expect(event.jws.link.toString()).toBe(root.validInitPayload.toString())
+
+      const container = await signedEventToContainer(
+        verifier,
+        DocumentInitEventPayload,
+        event,
+      )
+      expect(container.signed).toBe(true)
+
+      // biome-ignore lint/style/noNonNullAssertion: existing value
+      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+      expect(capability.p.exp).toBe(EXPECTED_EXPIRED_DATE)
+    })
+
+    test('invalid signed init event capability', async () => {
+      const event = eventFromCAR(
+        DocumentInitEventPayload,
+        car,
+        root.invalidInitEventCapabilitySignature,
+      ) as SignedEvent
+      expect(event.jws.link.toString()).toBe(root.validInitPayload.toString())
+
+      const container = await signedEventToContainer(
+        verifier,
+        DocumentInitEventPayload,
+        event,
+      )
+      expect(container.signed).toBe(true)
+
+      // biome-ignore lint/style/noNonNullAssertion: existing value
+      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+      await expect(async () => {
+        await Cacao.verify(capability, { verifiers })
+      }).rejects.toThrow()
+    })
+
     test('valid data event', async () => {
       const event = eventFromCAR(
         DocumentDataEventPayload,
@@ -173,6 +222,48 @@ describe.each([
         verifiers,
       })
       expect(verified).toBeDefined()
+    })
+
+    test('expired data event capability', async () => {
+      const event = eventFromCAR(
+        DocumentDataEventPayload,
+        car,
+        root.expiredDataEventCapability,
+      ) as SignedEvent
+      expect(event.jws.link.toString()).toBe(root.validDataPayload.toString())
+
+      const container = await signedEventToContainer(
+        verifier,
+        DocumentDataEventPayload,
+        event,
+      )
+      expect(container.signed).toBe(true)
+
+      // biome-ignore lint/style/noNonNullAssertion: existing value
+      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+      expect(capability.p.exp).toBe(EXPECTED_EXPIRED_DATE)
+    })
+
+    test('invalid data event capability', async () => {
+      const event = eventFromCAR(
+        DocumentDataEventPayload,
+        car,
+        root.invalidDataEventCapabilitySignature,
+      ) as SignedEvent
+      expect(event.jws.link.toString()).toBe(root.validDataPayload.toString())
+
+      const container = await signedEventToContainer(
+        verifier,
+        DocumentDataEventPayload,
+        event,
+      )
+      expect(container.signed).toBe(true)
+
+      // biome-ignore lint/style/noNonNullAssertion: existing value
+      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+      await expect(async () => {
+        await Cacao.verify(capability, { verifiers })
+      }).rejects.toThrow()
     })
   },
 )
