@@ -1,8 +1,10 @@
 import {
   type SignedEvent,
+  type SignedEventContainer,
   eventFromCAR,
   signedEventToContainer,
 } from '@ceramic-sdk/events'
+import { StreamID } from '@ceramic-sdk/identifiers'
 import {
   DocumentDataEventPayload,
   DocumentInitEventPayload,
@@ -131,139 +133,104 @@ describe.each([
   'CACAO signatures using %s',
   (controllerType: string, car: CAR, verifiers) => {
     const root = car.get(car.roots[0]) as ArchiveRootContentWithCapability
+    const expectedModel = StreamID.fromBytes(root.model)
 
-    test('valid signed init event', async () => {
-      const event = eventFromCAR(
-        DocumentInitEventPayload,
-        car,
-        root.validInitEvent,
-      ) as SignedEvent
-      expect(event.jws.link.toString()).toBe(root.validInitPayload.toString())
+    describe.each([
+      ['Init', DocumentInitEventPayload],
+      ['Data', DocumentDataEventPayload],
+    ])('%s events', (type: string, payloadCodec) => {
+      function getEvent(prefix: string, suffix = ''): SignedEvent {
+        const event = eventFromCAR(
+          payloadCodec,
+          car,
+          root[`${prefix}${type}Event${suffix}` as keyof typeof root],
+        ) as SignedEvent
+        expect(event.jws.link.toString()).toBe(
+          root[`valid${type}Payload`].toString(),
+        )
+        return event
+      }
 
-      const container = await signedEventToContainer(
-        verifier,
-        DocumentInitEventPayload,
-        event,
-      )
-      expect(container.signed).toBe(true)
+      async function getContainer(
+        event: SignedEvent,
+      ): Promise<SignedEventContainer<typeof payloadCodec>> {
+        const container = await signedEventToContainer(
+          verifier,
+          payloadCodec,
+          event,
+        )
+        expect(container.signed).toBe(true)
+        return container as unknown as SignedEventContainer<typeof payloadCodec>
+      }
 
-      // biome-ignore lint/style/noNonNullAssertion: existing value
-      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
-      const verified = await verifier.verifyJWS(event.jws, {
-        capability,
-        issuer: root.controller,
-        verifiers,
+      test('valid capability: wildcard ceramic resource', async () => {
+        const event = getEvent('valid')
+        const container = await getContainer(event)
+
+        // biome-ignore lint/style/noNonNullAssertion: existing value
+        const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+        const verified = await verifier.verifyJWS(event.jws, {
+          capability,
+          issuer: root.controller,
+          verifiers,
+        })
+        expect(verified).toBeDefined()
       })
-      expect(verified).toBeDefined()
-    })
 
-    test('expired signed init event capability', async () => {
-      const event = eventFromCAR(
-        DocumentInitEventPayload,
-        car,
-        root.expiredInitEventCapability,
-      ) as SignedEvent
-      expect(event.jws.link.toString()).toBe(root.validInitPayload.toString())
+      test('valid capability: exact ceramic model resource', async () => {
+        const event = getEvent('valid', 'CapabilityExactModel')
+        const container = await getContainer(event)
 
-      const container = await signedEventToContainer(
-        verifier,
-        DocumentInitEventPayload,
-        event,
-      )
-      expect(container.signed).toBe(true)
-
-      // biome-ignore lint/style/noNonNullAssertion: existing value
-      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
-      expect(capability.p.exp).toBe(EXPECTED_EXPIRED_DATE)
-    })
-
-    test('invalid signed init event capability', async () => {
-      const event = eventFromCAR(
-        DocumentInitEventPayload,
-        car,
-        root.invalidInitEventCapabilitySignature,
-      ) as SignedEvent
-      expect(event.jws.link.toString()).toBe(root.validInitPayload.toString())
-
-      const container = await signedEventToContainer(
-        verifier,
-        DocumentInitEventPayload,
-        event,
-      )
-      expect(container.signed).toBe(true)
-
-      // biome-ignore lint/style/noNonNullAssertion: existing value
-      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
-      await expect(async () => {
-        await Cacao.verify(capability, { verifiers })
-      }).rejects.toThrow()
-    })
-
-    test('valid data event', async () => {
-      const event = eventFromCAR(
-        DocumentDataEventPayload,
-        car,
-        root.validDataEvent,
-      ) as SignedEvent
-      expect(event.jws.link.toString()).toBe(root.validDataPayload.toString())
-
-      const container = await signedEventToContainer(
-        verifier,
-        DocumentDataEventPayload,
-        event,
-      )
-      expect(container.signed).toBe(true)
-
-      // biome-ignore lint/style/noNonNullAssertion: existing value
-      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
-      const verified = await verifier.verifyJWS(event.jws, {
-        capability,
-        issuer: root.controller,
-        verifiers,
+        // biome-ignore lint/style/noNonNullAssertion: existing value
+        const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+        const resources = capability.p.resources ?? []
+        expect(resources).toHaveLength(1)
+        expect(resources[0]).toBe(
+          `ceramic://*?model=${expectedModel.toString()}`,
+        )
       })
-      expect(verified).toBeDefined()
-    })
 
-    test('expired data event capability', async () => {
-      const event = eventFromCAR(
-        DocumentDataEventPayload,
-        car,
-        root.expiredDataEventCapability,
-      ) as SignedEvent
-      expect(event.jws.link.toString()).toBe(root.validDataPayload.toString())
+      test('expired capability', async () => {
+        const event = getEvent('expired', 'Capability')
+        const container = await getContainer(event)
 
-      const container = await signedEventToContainer(
-        verifier,
-        DocumentDataEventPayload,
-        event,
-      )
-      expect(container.signed).toBe(true)
+        // biome-ignore lint/style/noNonNullAssertion: existing value
+        const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+        expect(capability.p.exp).toBe(EXPECTED_EXPIRED_DATE)
+      })
 
-      // biome-ignore lint/style/noNonNullAssertion: existing value
-      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
-      expect(capability.p.exp).toBe(EXPECTED_EXPIRED_DATE)
-    })
+      test('invalid capability: signature', async () => {
+        const event = getEvent('invalid', 'CapabilitySignature')
+        const container = await getContainer(event)
 
-    test('invalid data event capability', async () => {
-      const event = eventFromCAR(
-        DocumentDataEventPayload,
-        car,
-        root.invalidDataEventCapabilitySignature,
-      ) as SignedEvent
-      expect(event.jws.link.toString()).toBe(root.validDataPayload.toString())
+        // biome-ignore lint/style/noNonNullAssertion: existing value
+        const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+        await expect(async () => {
+          await Cacao.verify(capability, { verifiers })
+        }).rejects.toThrow()
+      })
 
-      const container = await signedEventToContainer(
-        verifier,
-        DocumentDataEventPayload,
-        event,
-      )
-      expect(container.signed).toBe(true)
+      test('invalid capability: no resource', async () => {
+        const event = getEvent('invalid', 'CapabilityNoResource')
+        const container = await getContainer(event)
 
-      // biome-ignore lint/style/noNonNullAssertion: existing value
-      const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
-      await expect(async () => {
-        await Cacao.verify(capability, { verifiers })
-      }).rejects.toThrow()
+        // biome-ignore lint/style/noNonNullAssertion: existing value
+        const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+        expect(capability.p.resources).toHaveLength(0)
+      })
+
+      test('invalid capability: other model resource', async () => {
+        const event = getEvent('invalid', 'CapabilityOtherModel')
+        const container = await getContainer(event)
+
+        // biome-ignore lint/style/noNonNullAssertion: existing value
+        const capability = await Cacao.fromBlockBytes(container.cacaoBlock!)
+        const resources = capability.p.resources ?? []
+        expect(resources).toHaveLength(1)
+        expect(resources[0]).not.toBe(
+          `ceramic://*?model=${expectedModel.toString()}`,
+        )
+      })
     })
   },
 )

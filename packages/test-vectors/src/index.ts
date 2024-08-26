@@ -38,6 +38,12 @@ export type ArchiveRootContentWithCapability = ArchiveRootContentCommon & {
   expiredDataEventCapability: CID
   invalidInitEventCapabilitySignature: CID
   invalidDataEventCapabilitySignature: CID
+  invalidInitEventCapabilityNoResource: CID
+  invalidDataEventCapabilityNoResource: CID
+  invalidInitEventCapabilityOtherModel: CID
+  invalidDataEventCapabilityOtherModel: CID
+  validInitEventCapabilityExactModel: CID
+  validDataEventCapabilityExactModel: CID
 }
 
 export type ArchiveRootContent =
