@@ -1,5 +1,5 @@
 import { Cacao, SiweMessage, type SiwxMessage } from '@didtools/cacao'
-import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils'
+import { bytesToHex } from '@noble/hashes/utils'
 import type { AccountId } from 'caip'
 import type { Address, EIP1193Provider, Hex } from 'viem'
 
@@ -11,10 +11,6 @@ import type { AuthMethod, AuthParams } from './types.js'
 const VERSION = '1'
 
 const ONE_WEEK = 7 * 24 * 60 * 60 * 1000
-
-function encodeHexStr(str: string): Hex {
-  return `0x${bytesToHex(utf8ToBytes(str))}`
-}
 
 function randomNonce(): string {
   return bytesToHex(globalThis.crypto.getRandomValues(new Uint8Array(10)))
@@ -50,7 +46,7 @@ export async function createCACAO(
   const signature = await provider.request({
     method: 'personal_sign',
     params: [
-      encodeHexStr(siweMessage.signMessage()),
+      siweMessage.signMessage({ eip55: true }) as Hex,
       account.address as Address,
     ],
   })

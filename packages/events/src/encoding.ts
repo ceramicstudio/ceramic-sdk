@@ -89,8 +89,9 @@ export function eventToString(
 export function eventFromCAR<Payload = unknown>(
   decoder: Decoder<unknown, Payload>,
   car: CAR,
+  eventCID?: CID,
 ): SignedEvent | Payload {
-  const cid = car.roots[0]
+  const cid = eventCID ?? car.roots[0]
   const root = car.get(cid)
 
   if (DagJWS.is(root)) {

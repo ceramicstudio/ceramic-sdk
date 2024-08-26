@@ -1,13 +1,14 @@
 {
-  "name": "@ceramic-sdk/identifiers",
+  "name": "@ceramic-sdk/test-vectors",
   "version": "0.1.0",
+  "private": true,
   "author": "3Box Labs",
   "license": "(Apache-2.0 OR MIT)",
-  "keywords": ["ceramic", "identifiers"],
+  "keywords": ["ceramic", "test"],
   "repository": {
     "type": "git",
     "url": "https://github.com/ceramicstudio/ceramic-sdk",
-    "directory": "packages/identifiers"
+    "directory": "packages/test-vectors"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -21,6 +22,7 @@
   },
   "sideEffects": false,
   "scripts": {
+    "create": "tsx ./scripts/create-test-vectors.ts",
     "build:clean": "del dist",
     "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
     "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --skipLibCheck",
@@ -33,14 +35,28 @@
   },
   "dependencies": {
     "@ipld/dag-cbor": "^9.2.1",
-    "codeco": "^1.4.1",
-    "mapmoize": "^1.2.1",
-    "multiformats": "^13.1.3",
-    "uint8arrays": "^5.1.0",
-    "varint": "^6.0.0"
+    "@ipld/dag-json": "^10.2.2",
+    "cartonne": "^3.0.1",
+    "dag-jose": "^5.1.0",
+    "multihashes-sync": "^2.0.0"
   },
   "devDependencies": {
-    "@types/varint": "^6.0.3"
+    "@ceramic-sdk/events": "workspace:^",
+    "@ceramic-sdk/identifiers": "workspace:^",
+    "@ceramic-sdk/model-instance-client": "workspace:^",
+    "@ceramic-sdk/model-instance-protocol": "workspace:^",
+    "@ceramic-sdk/test-utils": "workspace:^",
+    "@didtools/cacao": "^3.0.1",
+    "@didtools/key-did": "^1.0.0",
+    "@didtools/key-webcrypto": "^0.2.0",
+    "@didtools/pkh-ethereum": "^0.6.0",
+    "@didtools/pkh-solana": "^0.2.0",
+    "@solana/signers": "^2.0.0-rc.1",
+    "caip": "^1.1.1",
+    "did-session": "^4.0.0",
+    "dids": "^5.0.2",
+    "key-did-resolver": "^4.0.0",
+    "multiformats": "^13.1.1"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

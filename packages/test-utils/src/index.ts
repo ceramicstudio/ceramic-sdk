@@ -11,6 +11,9 @@ import type { AuthMethod, AuthOptions } from './types.js'
 export { generatePrivateKey }
 export type { EIP1193Provider, Hex }
 
+// Re-exports useful internals
+export { createAuthMethod, createProvider, getAccount }
+
 export type EthereumDIDParams = {
   accountId: AccountId
   authMethod: AuthMethod

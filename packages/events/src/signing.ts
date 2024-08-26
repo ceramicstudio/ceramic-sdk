@@ -1,7 +1,7 @@
 import { type DIDString, asDIDString } from '@didtools/codecs'
 import * as dagCbor from '@ipld/dag-cbor'
 import { type Decoder, decode } from 'codeco'
-import type { DID } from 'dids'
+import type { CreateJWSOptions, DID } from 'dids'
 import * as Block from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 
@@ -14,11 +14,12 @@ import {
 export async function signEvent(
   did: DID,
   payload: Record<string, unknown>,
+  options?: CreateJWSOptions,
 ): Promise<SignedEvent> {
   if (!did.authenticated) {
     await did.authenticate()
   }
-  const { linkedBlock, ...rest } = await did.createDagJWS(payload)
+  const { linkedBlock, ...rest } = await did.createDagJWS(payload, options)
   return { ...rest, linkedBlock: new Uint8Array(linkedBlock) }
 }
 
@@ -31,6 +32,7 @@ export async function createSignedInitEvent<T>(
   did: DID,
   data: T,
   header: PartialInitEventHeader,
+  options?: CreateJWSOptions,
 ): Promise<SignedEvent> {
   if (!did.authenticated) {
     await did.authenticate()
@@ -42,7 +44,7 @@ export async function createSignedInitEvent<T>(
     data,
     header: { ...header, controllers },
   })
-  return await signEvent(did, payload)
+  return await signEvent(did, payload, options)
 }
 
 export async function getSignedEventPayload<Payload = Record<string, unknown>>(

@@ -1,5 +1,6 @@
 export {
   InitEventHeader,
+  InitEventPayload,
   SignedEvent,
   TimeEvent,
   assertSignedEvent,
