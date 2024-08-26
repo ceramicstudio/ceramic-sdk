@@ -51,14 +51,23 @@ function changeCapabilitySignature(cacao: Cacao): Cacao {
   return { ...cacao, s: { ...signature, s: `${signature.s.slice(0, -4)}AAAA` } }
 }
 
-const model = StreamID.fromString(
-  'k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lq',
-)
+const MODEL_ID =
+  'k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lq'
+const model = StreamID.fromString(MODEL_ID)
 
 type Controller = {
   id: string
   signer: DID
-} & ({ withCapability: false } | { withCapability: true; expiredSigner: DID })
+} & (
+  | { withCapability: false }
+  | {
+      withCapability: true
+      expiredSigner: DID
+      noResourceSigner: DID
+      expectedModelSigner: DID
+      otherModelSigner: DID
+    }
+)
 
 const controllerFactories = {
   'key-ecdsa-p256': async () => {
@@ -70,19 +79,65 @@ const controllerFactories = {
   },
   'pkh-ethereum': async () => {
     const authMethod = await getEthereumAuth()
-    const [signer, expiredSigner] = await Promise.all([
+    const [
+      signer,
+      expiredSigner,
+      noResourceSigner,
+      expectedModelSigner,
+      otherModelSigner,
+    ] = await Promise.all([
       createCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
       createExpiredCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
+      createCapabilityDID(authMethod, { resources: [] }),
+      createCapabilityDID(authMethod, {
+        resources: [`ceramic://*?model=${MODEL_ID}`],
+      }),
+      createCapabilityDID(authMethod, {
+        resources: [
+          'ceramic://*?model=k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lr',
+        ],
+      }),
     ])
-    return { withCapability: true, id: signer.id, signer, expiredSigner }
+    return {
+      withCapability: true,
+      id: signer.id,
+      signer,
+      expiredSigner,
+      noResourceSigner,
+      expectedModelSigner,
+      otherModelSigner,
+    }
   },
   'pkh-solana': async () => {
     const authMethod = await getSolanaAuth()
-    const [signer, expiredSigner] = await Promise.all([
+    const [
+      signer,
+      expiredSigner,
+      noResourceSigner,
+      expectedModelSigner,
+      otherModelSigner,
+    ] = await Promise.all([
       createCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
       createExpiredCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
+      createCapabilityDID(authMethod, { resources: [] }),
+      createCapabilityDID(authMethod, {
+        resources: [`ceramic://*?model=${MODEL_ID}`],
+      }),
+      createCapabilityDID(authMethod, {
+        resources: [
+          'ceramic://*?model=k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lr',
+        ],
+      }),
     ])
-    return { withCapability: true, id: signer.id, signer, expiredSigner }
+    return {
+      withCapability: true,
+      id: signer.id,
+      signer,
+      expiredSigner,
+      noResourceSigner,
+      expectedModelSigner,
+      otherModelSigner,
+    }
   },
 } satisfies Record<ControllerType, () => Controller | Promise<Controller>>
 
@@ -143,49 +198,60 @@ for (const [controllerType, createController] of Object.entries(
   }
 
   if (controller.withCapability) {
+    async function addEvents(
+      signer: DID,
+      initKey: string,
+      dataKey: string,
+      options?: CreateJWSOptions,
+    ) {
+      const initEvent = await signEvent(signer, validInitPayload, options)
+      const initCAR = signedEventToCAR(initEvent)
+      carBlocks.push(...initCAR.blocks)
+      carMeta[initKey] = initCAR.roots[0]
+
+      const dataEvent = await signEvent(signer, validDataPayload, options)
+      const dataCAR = signedEventToCAR(dataEvent)
+      carBlocks.push(...dataCAR.blocks)
+      carMeta[dataKey] = dataCAR.roots[0]
+    }
+
     // Events with expired capabilities
-
-    const expiredInitEvent = await signEvent(
+    await addEvents(
       controller.expiredSigner,
-      validInitPayload,
+      'expiredInitEventCapability',
+      'expiredDataEventCapability',
     )
-    const expiredInitCAR = signedEventToCAR(expiredInitEvent)
-    carBlocks.push(...expiredInitCAR.blocks)
-    carMeta.expiredInitEventCapability = expiredInitCAR.roots[0]
-
-    const expiredDataEvent = await signEvent(
-      controller.expiredSigner,
-      validDataPayload,
-    )
-    const expiredDataCAR = signedEventToCAR(expiredDataEvent)
-    carBlocks.push(...expiredDataCAR.blocks)
-    carMeta.expiredDataEventCapability = expiredDataCAR.roots[0]
 
     // Events with altered capability signatures
-
-    const invalidCapability = changeCapabilitySignature(
-      controller.signer.capability,
-    )
-
-    const invalidInitCapability = await signEvent(
+    await addEvents(
       controller.signer,
-      validInitPayload,
-      { capability: invalidCapability } as unknown as CreateJWSOptions,
+      'invalidInitEventCapabilitySignature',
+      'invalidDataEventCapabilitySignature',
+      {
+        capability: changeCapabilitySignature(controller.signer.capability),
+      } as unknown as CreateJWSOptions,
     )
-    const invalidInitCapabilityCAR = signedEventToCAR(invalidInitCapability)
-    carBlocks.push(...invalidInitCapabilityCAR.blocks)
-    carMeta.invalidInitEventCapabilitySignature =
-      invalidInitCapabilityCAR.roots[0]
 
-    const invalidDataCapability = await signEvent(
-      controller.signer,
-      validDataPayload,
-      { capability: invalidCapability } as unknown as CreateJWSOptions,
+    // Events with no allowed resource
+    await addEvents(
+      controller.noResourceSigner,
+      'invalidInitEventCapabilityNoResource',
+      'invalidDataEventCapabilityNoResource',
     )
-    const invalidDataCapabilityCAR = signedEventToCAR(invalidDataCapability)
-    carBlocks.push(...invalidDataCapabilityCAR.blocks)
-    carMeta.invalidDataEventCapabilitySignature =
-      invalidDataCapabilityCAR.roots[0]
+
+    // Events with other model resource
+    await addEvents(
+      controller.otherModelSigner,
+      'invalidInitEventCapabilityOtherModel',
+      'invalidDataEventCapabilityOtherModel',
+    )
+
+    // Events with exact model resource (no wildcard)
+    await addEvents(
+      controller.expectedModelSigner,
+      'validInitEventCapabilityExactModel',
+      'validDataEventCapabilityExactModel',
+    )
   }
 
   // Write CAR file
