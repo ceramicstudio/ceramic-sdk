@@ -23,7 +23,7 @@ jobs:
         id: pnpm-install
         uses: pnpm/action-setup@v3
         with:
-          version: 9.5.0
+          version: 9.8.0
           run_install: false
 
       - name: Get pnpm store directory

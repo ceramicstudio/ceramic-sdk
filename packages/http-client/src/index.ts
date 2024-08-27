@@ -54,17 +54,25 @@ export class CeramicClient {
     return data
   }
 
-  async getEventCAR(id: string): Promise<CAR> {
+  async getEventData(id: string): Promise<string> {
     const event = await this.getEvent(id)
-    return carFromString(event.data)
+    if (event.data == null) {
+      throw new Error('Missing event data')
+    }
+    return event.data
+  }
+
+  async getEventCAR(id: string): Promise<CAR> {
+    const data = await this.getEventData(id)
+    return carFromString(data)
   }
 
   async getEventType<Payload>(
     decoder: Decoder<unknown, Payload>,
     id: string,
   ): Promise<SignedEvent | Payload> {
-    const event = await this.getEvent(id)
-    return eventFromString(decoder, event.data)
+    const data = await this.getEventData(id)
+    return eventFromString(decoder, data)
   }
 
   async getEventsFeed(

@@ -541,6 +541,60 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/config/network': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get info about the Ceramic network the node is connected to */
+    get: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description success */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content: {
+            'application/json': components['schemas']['NetworkInfo']
+          }
+        }
+      }
+    }
+    put?: never
+    post?: never
+    delete?: never
+    /** cors */
+    options: {
+      parameters: {
+        query?: never
+        header?: never
+        path?: never
+        cookie?: never
+      }
+      requestBody?: never
+      responses: {
+        /** @description cors */
+        200: {
+          headers: {
+            [name: string]: unknown
+          }
+          content?: never
+        }
+      }
+    }
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/experimental/interests': {
     parameters: {
       query?: never
@@ -551,7 +605,10 @@ export interface paths {
     /** Get the interests stored on the node */
     get: {
       parameters: {
-        query?: never
+        query?: {
+          /** @description Only return interests from the specified peer ID. */
+          peerId?: string
+        }
         header?: never
         path?: never
         cookie?: never
@@ -593,7 +650,10 @@ export interface paths {
     /** cors */
     options: {
       parameters: {
-        query?: never
+        query?: {
+          /** @description Only return interests from the specified peer ID. */
+          peerId?: string
+        }
         header?: never
         path?: never
         cookie?: never
@@ -717,8 +777,13 @@ export interface paths {
         query?: {
           /** @description token that designates the point to resume from, that is find keys added after this point */
           resumeAt?: string
-          /** @description the maximum number of events to return, default is 10000. */
+          /** @description The maximum number of events to return, default is 100. The max with data is 10000. */
           limit?: number
+          /** @description Whether to include the event data (carfile) in the response. In the future, only the payload or other options may be supported:
+           *       * `none` - Empty, only the event ID is returned
+           *       * `full` - The entire event carfile (including the envelope and payload)
+           *      */
+          includeData?: 'none' | 'full'
         }
         header?: never
         path?: never
@@ -887,7 +952,7 @@ export interface components {
       /** @description Multibase encoding of event root CID bytes. */
       id: string
       /** @description Multibase encoding of event data. */
-      data: string
+      data?: string
     }
     /**
      * A Ceramic Event Data Payload
@@ -994,6 +1059,17 @@ export interface components {
       controller?: string
       /** @description Multibase encoded stream ID. */
       streamId?: string
+    }
+    /**
+     * Information about the Ceramic network
+     * @description Ceramic network information
+     * @example {
+     *       "name": "name"
+     *     }
+     */
+    NetworkInfo: {
+      /** @description Name of the Ceramic network */
+      name: string
     }
     /** @example {
      *       "resumeToken": "resumeToken"
