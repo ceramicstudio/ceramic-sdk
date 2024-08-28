@@ -21,7 +21,7 @@
   },
   "sideEffects": false,
   "scripts": {
-    "generate": "openapi-typescript https://raw.githubusercontent.com/ceramicnetwork/rust-ceramic/main/api-server/api/openapi.yaml -o ./src/__generated__/api.d.ts",
+    "generate": "openapi-typescript https://raw.githubusercontent.com/ceramicnetwork/rust-ceramic/main/api-server/api/openapi.yaml -o ./src/__generated__/api.ts",
     "build:clean": "del dist",
     "build:js": "swc src -d ./dist --config-file ../../.swcrc --strip-leading-paths",
     "build:types": "tsc --project tsconfig.json --emitDeclarationOnly --skipLibCheck",
@@ -39,7 +39,9 @@
   "devDependencies": {
     "cartonne": "^3.0.1",
     "codeco": "^1.4.1",
-    "openapi-typescript": "^7.3.0"
+    "multiformats": "^13.2.2",
+    "openapi-typescript": "^7.3.0",
+    "type-fest": "^4.24.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],

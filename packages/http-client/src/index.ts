@@ -3,15 +3,20 @@ import {
   carFromString,
   carToString,
   eventFromString,
-  eventToString,
+  eventToCAR,
 } from '@ceramic-sdk/events'
 import type { CAR } from 'cartonne'
 import type { Codec, Decoder } from 'codeco'
+import type { CID } from 'multiformats/cid'
 import createAPIClient, { type HeadersOptions } from 'openapi-fetch'
+import type { SimplifyDeep } from 'type-fest'
 
 import type { components, paths } from './__generated__/api'
 
 export type CeramicAPI = ReturnType<typeof createAPIClient<paths>>
+
+export type Schemas = SimplifyDeep<components['schemas']>
+export type Schema<Name extends keyof Schemas> = SimplifyDeep<Schemas[Name]>
 
 export type ClientParams = {
   url: string
@@ -39,7 +44,7 @@ export class CeramicClient {
     return this.#api
   }
 
-  async getEvent(id: string): Promise<components['schemas']['Event']> {
+  async getEvent(id: string): Promise<Schema<'Event'>> {
     const { data, error } = await this.#api.GET('/events/{event_id}', {
       params: { path: { event_id: id } },
     })
@@ -49,25 +54,41 @@ export class CeramicClient {
     return data
   }
 
-  async getEventCAR(id: string): Promise<CAR> {
+  async getEventData(id: string): Promise<string> {
     const event = await this.getEvent(id)
-    return carFromString(event.data)
+    if (event.data == null) {
+      throw new Error('Missing event data')
+    }
+    return event.data
+  }
+
+  async getEventCAR(id: string): Promise<CAR> {
+    const data = await this.getEventData(id)
+    return carFromString(data)
   }
 
   async getEventType<Payload>(
     decoder: Decoder<unknown, Payload>,
     id: string,
   ): Promise<SignedEvent | Payload> {
-    const event = await this.getEvent(id)
-    return eventFromString(decoder, event.data)
+    const data = await this.getEventData(id)
+    return eventFromString(decoder, data)
   }
 
   async getEventsFeed(
     params: EventsFeedParams = {},
-  ): Promise<components['schemas']['EventFeed']> {
+  ): Promise<Schema<'EventFeed'>> {
     const { data, error } = await this.#api.GET('/feed/events', {
       query: params,
     })
+    if (error != null) {
+      throw new Error(error.message)
+    }
+    return data
+  }
+
+  async getVersion(): Promise<Schema<'Version'>> {
+    const { data, error } = await this.#api.GET('/version')
     if (error != null) {
       throw new Error(error.message)
     }
@@ -81,12 +102,14 @@ export class CeramicClient {
     }
   }
 
-  async postEventCAR(car: CAR): Promise<void> {
+  async postEventCAR(car: CAR): Promise<CID> {
     await this.postEvent(carToString(car))
+    return car.roots[0]
   }
 
-  async postEventType(codec: Codec<unknown>, event: unknown) {
-    await this.postEvent(eventToString(codec, event))
+  async postEventType(codec: Codec<unknown>, event: unknown): Promise<CID> {
+    const car = eventToCAR(codec, event)
+    return await this.postEventCAR(car)
   }
 
   async registerInterestModel(model: string): Promise<void> {
