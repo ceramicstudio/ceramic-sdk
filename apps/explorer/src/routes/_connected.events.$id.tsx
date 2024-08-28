@@ -8,8 +8,8 @@ function getQueryOptions(id: string) {
   return {
     queryKey: ['events', id],
     queryFn: async () => {
-      const event = await getCeramicClient().getEvent(id)
-      return await decodeEvent(event.data)
+      const event = await getCeramicClient().getEventData(id)
+      return await decodeEvent(event)
     },
   }
 }

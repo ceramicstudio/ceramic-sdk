@@ -18,8 +18,8 @@ export function useClientQuery<T>(
 
 export function useEventContainer(id: string) {
   return useClientQuery(['events', id], async (client) => {
-    const event = await client.getEvent(id)
-    return await decodeEvent(event.data)
+    const event = await client.getEventData(id)
+    return await decodeEvent(event)
   })
 }
 
