@@ -12,6 +12,7 @@ const CONTROLLER_TYPES = {
   'key-ed25519': true,
   'pkh-ethereum': true,
   'pkh-solana': true,
+  'pkh-webauthn': true,
 }
 
 export type ControllerType = keyof typeof CONTROLLER_TYPES
