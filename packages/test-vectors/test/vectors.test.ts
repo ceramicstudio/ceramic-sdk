@@ -11,9 +11,13 @@ import {
 } from '@ceramic-sdk/model-instance-protocol'
 import { Cacao } from '@didtools/cacao'
 import { createDID } from '@didtools/key-did'
+import { WebauthnAuth } from '@didtools/key-webauthn'
 import { getEIP191Verifier } from '@didtools/pkh-ethereum'
 import { getSolanaVerifier } from '@didtools/pkh-solana'
 import type { CAR } from 'cartonne'
+
+// Inject mock WebAuthn authenticator
+import '../scripts/utils/webauthn.ts'
 
 import {
   type ArchiveRootContentCommon,
@@ -26,13 +30,19 @@ const EXPECTED_EXPIRED_DATE = new Date(2000, 0).toISOString()
 
 const verifier = createDID()
 
-const [keyP256CAR, keyEd25519CAR, pkhEthereumCAR, pkhSolanaCAR] =
-  await Promise.all([
-    loadCAR('key-ecdsa-p256'),
-    loadCAR('key-ed25519'),
-    loadCAR('pkh-ethereum'),
-    loadCAR('pkh-solana'),
-  ])
+const [
+  keyP256CAR,
+  keyEd25519CAR,
+  pkhEthereumCAR,
+  pkhSolanaCAR,
+  pkhWebAuthnCAR,
+] = await Promise.all([
+  loadCAR('key-ecdsa-p256'),
+  loadCAR('key-ed25519'),
+  loadCAR('pkh-ethereum'),
+  loadCAR('pkh-solana'),
+  loadCAR('pkh-webauthn'),
+])
 
 // Tests applying to any DID type
 
@@ -41,6 +51,7 @@ describe.each([
   ['key-ed25519', keyEd25519CAR],
   ['pkh-ethereum', pkhEthereumCAR],
   ['pkh-solana', pkhSolanaCAR],
+  ['pkh-webauthn', pkhWebAuthnCAR],
 ])('common checks using %s', (controllerType: string, car: CAR) => {
   const root = car.get(car.roots[0]) as ArchiveRootContentCommon
 
@@ -129,6 +140,7 @@ describe.each([
 describe.each([
   ['pkh-ethereum', pkhEthereumCAR, getEIP191Verifier()],
   ['pkh-solana', pkhSolanaCAR, getSolanaVerifier()],
+  ['pkh-webauthn', pkhWebAuthnCAR, WebauthnAuth.getVerifier()],
 ])(
   'CACAO signatures using %s',
   (controllerType: string, car: CAR, verifiers) => {

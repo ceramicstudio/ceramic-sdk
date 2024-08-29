@@ -35,7 +35,7 @@
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
     "@didtools/codecs": "^3.0.0",
-    "codeco": "^1.4.1",
+    "codeco": "^1.4.2",
     "object-sizeof": "^2.6.4"
   },
   "devDependencies": {

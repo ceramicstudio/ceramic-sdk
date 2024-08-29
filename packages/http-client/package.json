@@ -38,10 +38,10 @@
   },
   "devDependencies": {
     "cartonne": "^3.0.1",
-    "codeco": "^1.4.1",
+    "codeco": "^1.4.2",
     "multiformats": "^13.2.2",
     "openapi-typescript": "^7.3.0",
-    "type-fest": "^4.24.0"
+    "type-fest": "^4.26.0"
   },
   "jest": {
     "extensionsToTreatAsEsm": [".ts"],
