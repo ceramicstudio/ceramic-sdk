@@ -2,6 +2,8 @@ import { WebcryptoProvider } from '@didtools/key-webcrypto'
 import { DID } from 'dids'
 import { getResolver } from 'key-did-resolver'
 
+// Key pairs used for tests
+
 const PUBLIC_ED25519_JWK = {
   key_ops: ['verify'],
   ext: true,
@@ -34,7 +36,7 @@ const P256_IMPORT_PARAMS: EcKeyImportParams = {
   namedCurve: 'P-256',
 }
 
-async function importKey(
+export async function importKey(
   jwk: JsonWebKey,
   algorithm: AlgorithmIdentifier | EcKeyImportParams,
   usage: KeyUsage,
@@ -58,8 +60,9 @@ export async function getP256KeyPair(): Promise<CryptoKeyPair> {
   return { privateKey, publicKey }
 }
 
-export async function getP256KeyDID(): Promise<DID> {
-  const keyPair = await getP256KeyPair()
+export async function getAuthenticatedDID(
+  keyPair: CryptoKeyPair,
+): Promise<DID> {
   const did = new DID({
     provider: new WebcryptoProvider(keyPair),
     resolver: getResolver(),

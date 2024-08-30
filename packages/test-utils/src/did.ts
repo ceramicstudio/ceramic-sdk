@@ -4,7 +4,6 @@ import {
   type Cacao,
   CacaoBlock,
 } from '@didtools/cacao'
-import { getAuthenticatedDID } from '@didtools/key-did'
 import {
   type CreateJWSOptions,
   DID,
@@ -16,14 +15,13 @@ import { CID } from 'multiformats/cid'
 const VALID_EXPIRATION_TIME = new Date(9999, 0).toISOString()
 const INVALID_EXPIRATION_TIME = new Date(2000, 0).toISOString()
 
-export const keyDID = await getAuthenticatedDID(new Uint8Array(32))
-
 export type CustomCreateJWSOptions = CreateJWSOptions & {
   capability?: Cacao
 }
 
 export class CustomCapabilityDID extends DID {
   get capability(): Cacao {
+    // @ts-ignore private field
     return this._capability
   }
 
@@ -32,9 +30,12 @@ export class CustomCapabilityDID extends DID {
     payload: T,
     options: CustomCreateJWSOptions = {},
   ): Promise<DagJWS> {
+    // @ts-ignore private field
     if (this._client == null) throw new Error('No provider available')
+    // @ts-ignore private field
     if (this._id == null) throw new Error('DID is not authenticated')
     // Use capability from options when provided
+    // @ts-ignore private field
     const capability = options.capability ?? this._capability
     if (capability) {
       const cacaoBlock = await CacaoBlock.fromCacao(capability)
@@ -47,7 +48,9 @@ export class CustomCapabilityDID extends DID {
       options.protected = options.protected || {}
       options.protected.cap = `ipfs://${capCID?.toString()}`
     }
+    // @ts-ignore private field
     const { jws } = await this._client.request('did_createJWS', {
+      // @ts-ignore private field
       did: this._id,
       ...options,
       payload,
@@ -70,6 +73,7 @@ export class CustomCapabilityDID extends DID {
 }
 
 export async function createCapabilityDID(
+  keyDID: DID,
   authMethod: AuthMethod,
   authParams: AuthMethodOpts = {},
 ): Promise<CustomCapabilityDID> {
@@ -80,9 +84,12 @@ export async function createCapabilityDID(
     ...authParams,
   })
   const did = new CustomCapabilityDID({
+    // @ts-ignore private field
     provider: keyDID._client?.connection,
+    // @ts-ignore private field
     resolver: keyDID._resolver,
     capability,
+    // @ts-ignore private field
     parent: keyDID._parentId,
   })
   await did.authenticate()
@@ -95,9 +102,13 @@ export class ExpiredCapabilityDID extends DID {
     payload: T,
     options: CreateJWSOptions = {},
   ): Promise<DagJWS> {
+    // @ts-ignore private field
     if (this._client == null) throw new Error('No provider available')
+    // @ts-ignore private field
     if (this._id == null) throw new Error('DID is not authenticated')
+    // @ts-ignore private field
     if (this._capability) {
+      // @ts-ignore private field
       const cacaoBlock = await CacaoBlock.fromCacao(this._capability)
       const capCID = CID.asCID(cacaoBlock.cid)
       if (!capCID) {
@@ -108,7 +119,9 @@ export class ExpiredCapabilityDID extends DID {
       options.protected = options.protected || {}
       options.protected.cap = `ipfs://${capCID?.toString()}`
     }
+    // @ts-ignore private field
     const { jws } = await this._client.request('did_createJWS', {
+      // @ts-ignore private field
       did: this._id,
       ...options,
       payload,
@@ -118,6 +131,7 @@ export class ExpiredCapabilityDID extends DID {
 }
 
 export async function createExpiredCapabilityDID(
+  keyDID: DID,
   authMethod: AuthMethod,
   authParams: AuthMethodOpts = {},
 ): Promise<DID> {
@@ -128,9 +142,12 @@ export async function createExpiredCapabilityDID(
     ...authParams,
   })
   const did = new ExpiredCapabilityDID({
+    // @ts-ignore private field
     provider: keyDID._client?.connection,
+    // @ts-ignore private field
     resolver: keyDID._resolver,
     capability,
+    // @ts-ignore private field
     parent: keyDID._parentId,
   })
   await did.authenticate()

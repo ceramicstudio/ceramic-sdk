@@ -1,5 +1,6 @@
 import type { Cacao } from '@didtools/cacao'
 
+// DIDSession creation options
 export type AuthOptions = {
   domain: string
   expirationTime?: string | null
@@ -10,6 +11,7 @@ export type AuthOptions = {
   statement?: string
 }
 
+// AuthMethod parameters
 export type AuthParams = {
   domain: string
   expirationTime?: string | null
@@ -20,4 +22,4 @@ export type AuthParams = {
   uri: string
 }
 
-export type AuthMethod = (options: Partial<AuthOptions>) => Promise<Cacao>
+export type AuthMethod = (params: AuthParams) => Promise<Cacao>

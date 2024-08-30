@@ -32,6 +32,7 @@ export class MockAuthenticator {
     const rawId = u8a.concat([pk.slice(1, 14), u8a.fromString('STUB', 'utf8')])
     const id = u8a.toString(rawId, 'base64url')
     const userHandle = hash(
+      // @ts-ignore
       opts.publicKey?.user?.id || p256.CURVE.randomBytes(32),
     )
     const authData = mkAuthData(pk)
@@ -76,6 +77,7 @@ export class MockAuthenticator {
     return out
   }
 
+  // @ts-ignore unknow opts type
   async get(opts) {
     const { secret, id, rawId, userHandle } = this.credentials[0] // pick first
     const challenge = u8a.toString(
@@ -116,7 +118,7 @@ export class MockAuthenticator {
 // assuming that the encode does not either.
 // The offset in authenticator data is static,
 // so we use a live sample and inject the test-key to satisfy utils.js#decodeAuthenticatorData().
-function mkAuthData(pk) {
+function mkAuthData(pk: Uint8Array) {
   const authDataCreate =
     'f689f6b7489197aacf01172f02a82e0715f72aff70d5f758b9b0f7d3999978d2c5000000020000000000000000000000000000000000309face7743395482aefb4e1a67134641cdea3529c5752594090f26252e2198e4a0c547a4b0bd2fa346500e47cdf9c58f6a50102032620012158209face7743395482aefb4e1a671aafbf1566cc099f7647db230952bc169f43f9c2258203462f7968f7824f955570f3453280452948cccf132f03f369a2e834546649a78a16b6372656450726f7465637402'
   const buffer = u8a.fromString(authDataCreate, 'hex')
@@ -132,23 +134,25 @@ function mkAuthData(pk) {
 }
 
 // node:Buffer to Uint8Array
-function bufToU8(b) {
+function bufToU8(b: Buffer | Uint8Array | ArrayBuffer) {
   if (b instanceof Uint8Array || b instanceof ArrayBuffer) return b // no conversion needed
+  // @ts-ignore Buffer check
   return new Uint8Array(b.buffer.slice(b.offset, b.offset + b.length))
 }
-function hash(m) {
+function hash(m: Uint8Array | string) {
   return p256.CURVE.hash(m)
 }
 
-// Stub navigator.credentials for nodeJS
-// @ts-ignore
-globalThis.location ??= {}
-// @ts-ignore
-globalThis.location.hostname = 'http://localhost'
-// @ts-ignore
-globalThis.navigator ??= {}
-// @ts-ignore
-globalThis.navigator.credentials = new MockAuthenticator()
+export function injectMockBrowserGlobals(hostname = 'localhost') {
+  // @ts-ignore
+  globalThis.location ??= {}
+  // @ts-ignore
+  globalThis.location.hostname = hostname
+  // @ts-ignore
+  globalThis.navigator ??= {}
+  // @ts-ignore
+  globalThis.navigator.credentials = new MockAuthenticator()
+}
 
 export async function getAuthMethod(): Promise<AuthMethod> {
   const did = await WebauthnAuth.createDID('test')
