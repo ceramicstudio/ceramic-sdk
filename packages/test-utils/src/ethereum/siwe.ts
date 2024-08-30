@@ -1,9 +1,13 @@
-import { Cacao, SiweMessage, type SiwxMessage } from '@didtools/cacao'
+import {
+  type AuthMethod,
+  type AuthMethodOpts,
+  Cacao,
+  SiweMessage,
+  type SiwxMessage,
+} from '@didtools/cacao'
 import { bytesToHex } from '@noble/hashes/utils'
 import type { AccountId } from 'caip'
 import type { Address, EIP1193Provider, Hex } from 'viem'
-
-import type { AuthMethod, AuthParams } from './types.js'
 
 /**
  * SIWX Version
@@ -19,27 +23,27 @@ function randomNonce(): string {
 export async function createCACAO(
   provider: EIP1193Provider,
   account: AccountId,
-  params: AuthParams,
+  options: AuthMethodOpts,
 ): Promise<Cacao> {
   const now = new Date()
 
   const message: Partial<SiwxMessage> = {
-    domain: params.domain,
+    domain: options.domain,
     address: account.address,
     statement:
-      params.statement ??
+      options.statement ??
       'Give this application access to some of your data on Ceramic',
-    uri: params.uri,
+    uri: options.uri,
     version: VERSION,
-    nonce: params.nonce ?? randomNonce(),
+    nonce: options.nonce ?? randomNonce(),
     issuedAt: now.toISOString(),
     chainId: account.chainId.reference,
-    resources: params.resources,
+    resources: options.resources,
   }
   // Only add expirationTime if not explicitly set to null
-  if (params.expirationTime !== null) {
+  if (options.expirationTime !== null) {
     message.expirationTime =
-      params.expirationTime ?? new Date(now.getTime() + ONE_WEEK).toISOString()
+      options.expirationTime ?? new Date(now.getTime() + ONE_WEEK).toISOString()
   }
 
   const siweMessage = new SiweMessage(message)
@@ -59,7 +63,7 @@ export function createAuthMethod(
   provider: EIP1193Provider,
   account: AccountId,
 ): AuthMethod {
-  return (params) => {
-    return createCACAO(provider, account, params as unknown as AuthParams)
+  return (options: AuthMethodOpts) => {
+    return createCACAO(provider, account, options)
   }
 }

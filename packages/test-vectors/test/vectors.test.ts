@@ -9,6 +9,7 @@ import {
   DocumentDataEventPayload,
   DocumentInitEventPayload,
 } from '@ceramic-sdk/model-instance-protocol'
+import { webauthn } from '@ceramic-sdk/test-utils'
 import { Cacao } from '@didtools/cacao'
 import { createDID } from '@didtools/key-did'
 import { WebauthnAuth } from '@didtools/key-webauthn'
@@ -17,7 +18,7 @@ import { getSolanaVerifier } from '@didtools/pkh-solana'
 import type { CAR } from 'cartonne'
 
 // Inject mock WebAuthn authenticator
-import '../scripts/utils/webauthn.ts'
+webauthn.injectMockBrowserGlobals()
 
 import {
   type ArchiveRootContentCommon,

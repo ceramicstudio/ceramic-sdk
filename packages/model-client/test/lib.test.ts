@@ -3,7 +3,7 @@ import {
   MODEL_RESOURCE_URI,
   type ModelDefinition,
 } from '@ceramic-sdk/model-protocol'
-import { EthereumDID } from '@ceramic-sdk/test-utils'
+import { createSession, ethereum } from '@ceramic-sdk/test-utils'
 import { getAuthenticatedDID } from '@didtools/key-did'
 
 import { createInitEvent } from '../src/index.js'
@@ -42,14 +42,19 @@ describe('createInitEvent()', () => {
     })
 
     test('supports did:pkh', async () => {
-      const did = await EthereumDID.random({
-        domain: 'test',
-        resources: [MODEL_RESOURCE_URI],
-      })
+      const authMethod = await ethereum.authMethodFromRandomKey()
 
       const [validSession, invalidSession] = await Promise.all([
-        did.createSession({ expirationTime: null }),
-        did.createSession({ expiresInSecs: 60 }),
+        createSession(authMethod, {
+          domain: 'test',
+          resources: [MODEL_RESOURCE_URI],
+          expirationTime: null,
+        }),
+        createSession(authMethod, {
+          domain: 'test',
+          resources: [MODEL_RESOURCE_URI],
+          expiresInSecs: 60,
+        }),
       ])
 
       await expect(async () => {

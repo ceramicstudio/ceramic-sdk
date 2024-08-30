@@ -7,7 +7,7 @@ import {
 } from '@solana/signers'
 import { AccountId } from 'caip'
 
-import { getEd25519KeyPair } from './webcrypto.ts'
+import { getEd25519KeyPair } from './webcrypto.js'
 
 // Value from RPC call - https://solana.com/docs/rpc/http/getgenesishash#code-sample
 // Sliced to only keep the first 32 characters

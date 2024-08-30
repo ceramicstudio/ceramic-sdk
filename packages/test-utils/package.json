@@ -34,11 +34,20 @@
   },
   "dependencies": {
     "@didtools/cacao": "^3.0.1",
+    "@didtools/key-webauthn": "^2.0.2",
+    "@didtools/key-webcrypto": "^0.2.0",
+    "@didtools/pkh-solana": "^0.2.0",
+    "@noble/curves": "^1.5.0",
     "@noble/hashes": "^1.4.0",
+    "@solana/signers": "^2.0.0-rc.1",
     "caip": "^1.1.1",
+    "cborg": "^4.2.3",
     "did-session": "^4.0.0",
     "dids": "^5.0.2",
-    "viem": "^2.20.1"
+    "key-did-resolver": "^4.0.0",
+    "multiformats": "^13.2.2",
+    "uint8arrays": "^5.1.0",
+    "viem": "^2.21.0"
   },
   "devDependencies": {
     "@didtools/pkh-ethereum": "^0.6.0"

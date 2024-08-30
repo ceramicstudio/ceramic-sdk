@@ -1,132 +1,32 @@
 import {
   InitEventPayload,
-  type SignedEvent,
   signEvent,
   signedEventToCAR,
 } from '@ceramic-sdk/events'
-import { CommitID, StreamID } from '@ceramic-sdk/identifiers'
+import { CommitID } from '@ceramic-sdk/identifiers'
 import {
   createDataEventPayload,
   createInitHeader,
   getDeterministicInitEvent,
 } from '@ceramic-sdk/model-instance-client'
 import { getStreamID } from '@ceramic-sdk/model-instance-protocol'
-import type { AuthMethod, Cacao } from '@didtools/cacao'
+import { webauthn } from '@ceramic-sdk/test-utils'
 import type { IBlock } from 'cartonne'
 import type { CreateJWSOptions, DID } from 'dids'
 
 import type { ControllerType } from '../src/index.ts'
 
 import { createCAR } from './utils/car.ts'
-import {
-  createCapabilityDID,
-  createExpiredCapabilityDID,
-  keyDID,
-} from './utils/did.ts'
-import { getAuthMethod as getEthereumAuth } from './utils/ethereum.ts'
+import { controllerFactories } from './utils/controllers.ts'
 import { writeCARFile } from './utils/fs.ts'
-import { getAuthMethod as getSolanaAuth } from './utils/solana.ts'
-import { getAuthMethod as getWebAuthnAuth } from './utils/webauthn.ts'
-import { getP256KeyDID } from './utils/webcrypto.ts'
+import {
+  changeCapabilitySignature,
+  changeEventSignature,
+} from './utils/signatures.ts'
+import { testModel } from './utils/streams.ts'
 
-function changeEventSignature(event: SignedEvent): SignedEvent {
-  const [firstSignature, ...otherSignatures] = event.jws.signatures
-  return {
-    ...event,
-    jws: {
-      ...event.jws,
-      signatures: [
-        {
-          ...firstSignature,
-          signature: `${firstSignature.signature.slice(0, -4)}AAAA`,
-        },
-        ...otherSignatures,
-      ],
-    },
-  }
-}
-
-function changeCapabilitySignature(cacao: Cacao): Cacao {
-  // biome-ignore lint/style/noNonNullAssertion: existing value
-  const signature = cacao.s!
-  return { ...cacao, s: { ...signature, s: `${signature.s.slice(0, -4)}AAAA` } }
-}
-
-const MODEL_ID =
-  'k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lq'
-const model = StreamID.fromString(MODEL_ID)
-
-type ControllerCommon = {
-  id: string
-  signer: DID
-}
-
-type ControllerWithoutCapability = ControllerCommon & { withCapability: false }
-
-type ControllerWithCapability = ControllerCommon & {
-  withCapability: true
-  expiredSigner: DID
-  noResourceSigner: DID
-  expectedModelSigner: DID
-  otherModelSigner: DID
-}
-
-type Controller = ControllerWithoutCapability | ControllerWithCapability
-
-async function createCapabilityController(
-  authMethod: AuthMethod,
-): Promise<ControllerWithCapability> {
-  const [
-    signer,
-    expiredSigner,
-    noResourceSigner,
-    expectedModelSigner,
-    otherModelSigner,
-  ] = await Promise.all([
-    createCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
-    createExpiredCapabilityDID(authMethod, { resources: ['ceramic://*'] }),
-    createCapabilityDID(authMethod, { resources: [] }),
-    createCapabilityDID(authMethod, {
-      resources: [`ceramic://*?model=${MODEL_ID}`],
-    }),
-    createCapabilityDID(authMethod, {
-      resources: [
-        'ceramic://*?model=k2t6wz4z9kggqqnbn3vqggh2z4fe9jctr9vvbc1em2yho0qnzzrtzz1n2hr4lr',
-      ],
-    }),
-  ])
-  return {
-    withCapability: true,
-    id: signer.id,
-    signer,
-    expiredSigner,
-    noResourceSigner,
-    expectedModelSigner,
-    otherModelSigner,
-  }
-}
-
-const controllerFactories = {
-  'key-ecdsa-p256': async () => {
-    const signer = await getP256KeyDID()
-    return { withCapability: false, id: signer.id, signer }
-  },
-  'key-ed25519': () => {
-    return { withCapability: false, id: keyDID.id, signer: keyDID }
-  },
-  'pkh-ethereum': async () => {
-    const authMethod = await getEthereumAuth()
-    return await createCapabilityController(authMethod)
-  },
-  'pkh-solana': async () => {
-    const authMethod = await getSolanaAuth()
-    return await createCapabilityController(authMethod)
-  },
-  'pkh-webauthn': async () => {
-    const authMethod = await getWebAuthnAuth()
-    return await createCapabilityController(authMethod)
-  },
-} satisfies Record<ControllerType, () => Controller | Promise<Controller>>
+// Inject mock WebAuthn authenticator
+webauthn.injectMockBrowserGlobals()
 
 for (const [controllerType, createController] of Object.entries(
   controllerFactories,
@@ -136,7 +36,7 @@ for (const [controllerType, createController] of Object.entries(
 
   // Deterministic (init) event
   const validDeterministicEvent = getDeterministicInitEvent(
-    model,
+    testModel,
     controller.id,
   )
 
@@ -145,7 +45,7 @@ for (const [controllerType, createController] of Object.entries(
     data: { test: true },
     header: createInitHeader({
       controller: controller.id,
-      model,
+      model: testModel,
       unique: new Uint8Array([0, 1, 2, 3]),
     }),
   })
@@ -177,7 +77,7 @@ for (const [controllerType, createController] of Object.entries(
   ]
   const carMeta: Record<string, unknown> = {
     controller: controller.id,
-    model: model.bytes,
+    model: testModel.bytes,
     validInitEvent: validInitCAR.roots[0],
     validDataEvent: validDataCAR.roots[0],
     invalidInitEventSignature: invalidInitSignatureCAR.roots[0],
