@@ -35,11 +35,11 @@
     "@ceramic-sdk/events": "workspace:^",
     "@ceramic-sdk/identifiers": "workspace:^",
     "@didtools/codecs": "^3.0.0",
-    "codeco": "^1.4.2",
+    "codeco": "^1.4.3",
     "object-sizeof": "^2.6.4"
   },
   "devDependencies": {
-    "multiformats": "^13.1.1",
+    "multiformats": "^13.3.0",
     "ts-essentials": "^10.0.2"
   },
   "jest": {
