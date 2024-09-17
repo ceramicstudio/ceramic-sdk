@@ -34,11 +34,11 @@
   },
   "dependencies": {
     "@didtools/cacao": "^3.0.1",
-    "@noble/hashes": "^1.4.0",
+    "@noble/hashes": "^1.5.0",
     "caip": "^1.1.1",
     "did-session": "^4.0.0",
     "dids": "^5.0.2",
-    "viem": "^2.20.1"
+    "viem": "^2.21.8"
   },
   "devDependencies": {
     "@didtools/pkh-ethereum": "^0.6.0"
