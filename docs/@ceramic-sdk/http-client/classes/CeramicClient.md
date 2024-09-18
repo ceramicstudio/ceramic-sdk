@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[packages/http-client/src/index.ts:40](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L40)
+[packages/http-client/src/index.ts:40](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L40)
 
 ## Accessors
 
@@ -38,7 +38,7 @@ OpenAPI client used internally, provides low-level access to the HTTP APIs expos
 
 #### Defined in
 
-[packages/http-client/src/index.ts:49](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L49)
+[packages/http-client/src/index.ts:49](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L49)
 
 ## Methods
 
@@ -74,7 +74,7 @@ Multibase encoding of event root CID bytes.
 
 #### Defined in
 
-[packages/http-client/src/index.ts:54](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L54)
+[packages/http-client/src/index.ts:54](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L54)
 
 ***
 
@@ -94,7 +94,7 @@ Get the CAR-encoded event for the given event CID
 
 #### Defined in
 
-[packages/http-client/src/index.ts:74](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L74)
+[packages/http-client/src/index.ts:74](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L74)
 
 ***
 
@@ -114,7 +114,7 @@ Get the string-encoded event for the given event CID
 
 #### Defined in
 
-[packages/http-client/src/index.ts:65](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L65)
+[packages/http-client/src/index.ts:65](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L65)
 
 ***
 
@@ -150,7 +150,7 @@ The token/highwater mark to used as resumeAt on a future request
 
 #### Defined in
 
-[packages/http-client/src/index.ts:89](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L89)
+[packages/http-client/src/index.ts:89](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L89)
 
 ***
 
@@ -176,7 +176,7 @@ Get the decoded event for the given decoder and event CID
 
 #### Defined in
 
-[packages/http-client/src/index.ts:80](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L80)
+[packages/http-client/src/index.ts:80](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L80)
 
 ***
 
@@ -200,7 +200,7 @@ Version of the Ceramic node
 
 #### Defined in
 
-[packages/http-client/src/index.ts:102](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L102)
+[packages/http-client/src/index.ts:102](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L102)
 
 ***
 
@@ -220,7 +220,7 @@ Post a string-encoded event to the server
 
 #### Defined in
 
-[packages/http-client/src/index.ts:111](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L111)
+[packages/http-client/src/index.ts:111](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L111)
 
 ***
 
@@ -240,7 +240,7 @@ Post a CAR-encoded event to the server
 
 #### Defined in
 
-[packages/http-client/src/index.ts:119](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L119)
+[packages/http-client/src/index.ts:119](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L119)
 
 ***
 
@@ -262,7 +262,7 @@ Encode and post an event to the server
 
 #### Defined in
 
-[packages/http-client/src/index.ts:125](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L125)
+[packages/http-client/src/index.ts:125](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L125)
 
 ***
 
@@ -282,4 +282,4 @@ Register interest in streams using the given model stream ID
 
 #### Defined in
 
-[packages/http-client/src/index.ts:131](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/http-client/src/index.ts#L131)
+[packages/http-client/src/index.ts:131](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/http-client/src/index.ts#L131)

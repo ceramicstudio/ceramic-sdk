@@ -38,4 +38,4 @@ Container for a signed Ceramic event
 
 ## Defined in
 
-[packages/events/src/container.ts:9](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/events/src/container.ts#L9)
+[packages/events/src/container.ts:9](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/events/src/container.ts#L9)

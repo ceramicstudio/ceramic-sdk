@@ -28,4 +28,4 @@ Decode a Ceramic event into a container using the provided verifier DID and payl
 
 ## Defined in
 
-[packages/events/src/container.ts:54](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/events/src/container.ts#L54)
+[packages/events/src/container.ts:54](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/events/src/container.ts#L54)

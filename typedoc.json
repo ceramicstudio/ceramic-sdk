@@ -4,11 +4,14 @@
   "entryPoints": [
     "packages/events",
     "packages/http-client",
-    "packages/identifiers"
+    "packages/identifiers",
+    "packages/model-client",
+    "packages/model-protocol"
   ],
   "name": "Ceramic SDK",
   "packageOptions": {
     "entryPoints": ["src/index.ts"],
+    "excludeExternals": true,
     "excludeInternal": true,
     "includeVersion": true,
     "readme": "none"

@@ -34,16 +34,10 @@ Signed event structure - equivalent to DagJWSResult in `dids` package
 
 > **signatures**: `Codec`\<`MapIn`\<`object`, `$TypeOf`\>[], `MapIn`\<`object`, `$OutputOf`\>[], `unknown`\> & `object`
 
-###### Type declaration
-
-###### item
-
-> **item**: `ExactCodec`\<`TypeCodec`\<`object`\>\>
-
 ### linkedBlock
 
 > **linkedBlock**: `TrivialCodec`\<`Uint8Array`\> = `uint8array`
 
 ## Defined in
 
-[packages/events/src/codecs.ts:54](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/events/src/codecs.ts#L54)
+[packages/events/src/codecs.ts:54](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/events/src/codecs.ts#L54)

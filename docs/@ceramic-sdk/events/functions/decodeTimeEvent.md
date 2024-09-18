@@ -20,4 +20,4 @@ Decode the provided `input` as a TimeEvent. Throws if decoding fails.
 
 ## Defined in
 
-[packages/events/src/codecs.ts:89](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/events/src/codecs.ts#L89)
+[packages/events/src/codecs.ts:89](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/events/src/codecs.ts#L89)

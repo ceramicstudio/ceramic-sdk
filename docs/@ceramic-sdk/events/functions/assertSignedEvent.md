@@ -20,4 +20,4 @@ Assert the provided `input` is a SignedEvent
 
 ## Defined in
 
-[packages/events/src/codecs.ts:70](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/events/src/codecs.ts#L70)
+[packages/events/src/codecs.ts:70](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/events/src/codecs.ts#L70)
