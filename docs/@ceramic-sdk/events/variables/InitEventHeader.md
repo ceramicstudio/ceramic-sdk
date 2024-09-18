@@ -14,7 +14,7 @@ Header structure of Init events
 
 ### context
 
-> **context**: `OptionalCodec`\<`Type`\<`StreamID`, `Uint8Array`, `Uint8Array`\>\>
+> **context**: `OptionalCodec`\<`Type`\<[`StreamID`](../../identifiers/classes/StreamID.md), `Uint8Array`, `Uint8Array`\>\>
 
 ### controllers
 
@@ -22,7 +22,7 @@ Header structure of Init events
 
 ### model
 
-> **model**: `Type`\<`StreamID`, `Uint8Array`, `Uint8Array`\> = `streamIDAsBytes`
+> **model**: `Type`\<[`StreamID`](../../identifiers/classes/StreamID.md), `Uint8Array`, `Uint8Array`\> = `streamIDAsBytes`
 
 ### sep
 
@@ -38,4 +38,4 @@ Header structure of Init events
 
 ## Defined in
 
-[packages/events/src/codecs.ts:27](https://github.com/ceramicstudio/ceramic-sdk/blob/945faad9ebf96fe9133cf555c12887003aaa32e5/packages/events/src/codecs.ts#L27)
+[packages/events/src/codecs.ts:27](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/events/src/codecs.ts#L27)

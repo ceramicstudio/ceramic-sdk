@@ -1,13 +1,19 @@
 {
   "$schema": "https://typedoc-plugin-markdown.org/schema.json",
   "entryPointStrategy": "packages",
-  "entryPoints": ["packages/events", "packages/http-client"],
+  "entryPoints": [
+    "packages/events",
+    "packages/http-client",
+    "packages/identifiers"
+  ],
   "name": "Ceramic SDK",
   "packageOptions": {
     "entryPoints": ["src/index.ts"],
+    "excludeInternal": true,
     "includeVersion": true,
     "readme": "none"
   },
   "out": "./docs",
-  "plugin": ["typedoc-plugin-markdown"]
+  "plugin": ["typedoc-plugin-markdown"],
+  "readme": "none"
 }

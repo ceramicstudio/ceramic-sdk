@@ -14,6 +14,7 @@ import { StreamID } from './stream-id.js'
 type CodecCode = typeof codec.code
 type DigestCode = typeof sha256.code
 
+/** @internal */
 export function createCID<T = unknown>(
   value: T,
 ): CID<T, CodecCode, DigestCode, 1> {
@@ -23,6 +24,7 @@ export function createCID<T = unknown>(
   return CID.createV1(codec.code, hash) as CID<T, CodecCode, DigestCode, 1>
 }
 
+/** @internal */
 export function getCodeByName(name: StreamTypeName): StreamTypeCode {
   const index = STREAM_TYPES[name]
   if (index == null) {
@@ -31,6 +33,7 @@ export function getCodeByName(name: StreamTypeName): StreamTypeCode {
   return index
 }
 
+/** @internal */
 export function getNameByCode(code: StreamTypeCode): StreamTypeName {
   for (const [name, value] of Object.entries(STREAM_TYPES)) {
     if (value === code) {
@@ -40,11 +43,13 @@ export function getNameByCode(code: StreamTypeCode): StreamTypeName {
   throw new Error(`No stream type registered for code ${code}`)
 }
 
+/** @internal */
 export function randomCID(): CID {
   const randomBytes = globalThis.crypto.getRandomValues(new Uint8Array(32))
   return CID.createV1(codec.code, create(sha256.code, randomBytes))
 }
 
+/** @internal */
 export function randomStreamID(type: StreamType = 0): StreamID {
   return new StreamID(type, randomCID())
 }

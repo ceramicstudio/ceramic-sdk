@@ -8,7 +8,6 @@
 
 ## Type Aliases
 
-- [Base](type-aliases/Base.md)
 - [EventContainer](type-aliases/EventContainer.md)
 - [InitEventHeader](type-aliases/InitEventHeader.md)
 - [InitEventPayload](type-aliases/InitEventPayload.md)

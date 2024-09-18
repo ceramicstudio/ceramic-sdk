@@ -28,4 +28,4 @@ Decode an event from a string using the provided codec for unsigned events and t
 
 ## Defined in
 
-[packages/events/src/encoding.ts:128](https://github.com/ceramicstudio/ceramic-sdk/blob/945faad9ebf96fe9133cf555c12887003aaa32e5/packages/events/src/encoding.ts#L128)
+[packages/events/src/encoding.ts:128](https://github.com/ceramicstudio/ceramic-sdk/blob/08d58118912aa26627dbf829b08a7b8bc9962e2e/packages/events/src/encoding.ts#L128)
