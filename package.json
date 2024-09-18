@@ -13,6 +13,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.1",
     "@jest/globals": "^29.7.0",
+    "@skypack/package-check": "^0.2.2",
     "@swc/cli": "^0.4.0",
     "@swc/core": "^1.7.24",
     "@swc/jest": "^0.2.36",
