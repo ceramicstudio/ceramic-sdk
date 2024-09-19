@@ -10,4 +10,4 @@
 
 ## Defined in
 
-[constants.ts:13](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/constants.ts#L13)
+[constants.ts:13](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/constants.ts#L13)

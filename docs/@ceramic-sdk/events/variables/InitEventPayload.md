@@ -48,4 +48,4 @@ Payload structure of Init events
 
 ## Defined in
 
-[packages/events/src/codecs.ts:41](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/events/src/codecs.ts#L41)
+[packages/events/src/codecs.ts:41](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/events/src/codecs.ts#L41)

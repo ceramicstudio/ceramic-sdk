@@ -6,6 +6,7 @@ import { MAX_DOCUMENT_SIZE } from './constants.js'
 /**
  * Validate that content does not exceed the maximum size allowed
  * @param content Content to validate
+ * @internal
  */
 export function assertValidContentLength(content: unknown) {
   if (content != null) {
@@ -21,6 +22,7 @@ export function assertValidContentLength(content: unknown) {
 /**
  * Validate that patches content does not exceed the maximum size allowed
  * @param patches JSON patches to validate
+ * @internal
  */
 export function assertValidPatchOperations(patches: Array<JSONPatchOperation>) {
   for (const patch of patches) {

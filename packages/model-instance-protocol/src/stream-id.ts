@@ -4,6 +4,9 @@ import type { CID } from 'multiformats/cid'
 import { DocumentInitEventHeader } from './codecs.js'
 import { STREAM_TYPE_ID } from './constants.js'
 
+/**
+ * Get the StreamID of a deterministic ModelInstanceDocument based on its init header
+ */
 export function getDeterministicStreamID(
   header: DocumentInitEventHeader,
 ): StreamID {
@@ -20,6 +23,9 @@ export function getDeterministicStreamID(
   })
 }
 
+/**
+ * Get the StreamID of a ModelInstanceDocument based on its init CID
+ */
 export function getStreamID(cid: CID): StreamID {
   return new StreamID(STREAM_TYPE_ID, cid)
 }

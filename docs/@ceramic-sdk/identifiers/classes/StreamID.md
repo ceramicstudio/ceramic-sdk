@@ -44,7 +44,7 @@ new StreamID(3, cid);
 
 #### Defined in
 
-[stream-id.ts:106](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L106)
+[stream-id.ts:106](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L106)
 
 ## Properties
 
@@ -54,7 +54,7 @@ new StreamID(3, cid);
 
 #### Defined in
 
-[stream-id.ts:73](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L73)
+[stream-id.ts:73](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L73)
 
 ***
 
@@ -84,7 +84,7 @@ StreamID#bytes
 
 #### Defined in
 
-[stream-id.ts:78](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L78)
+[stream-id.ts:78](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L78)
 
 ***
 
@@ -111,7 +111,7 @@ string representation of StreamID, be it base36-encoded string or URL.
 
 #### Defined in
 
-[stream-id.ts:79](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L79)
+[stream-id.ts:79](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L79)
 
 ## Accessors
 
@@ -127,7 +127,7 @@ Copy of self. Exists to maintain compatibility with CommitID.
 
 #### Defined in
 
-[stream-id.ts:170](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L170)
+[stream-id.ts:170](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L170)
 
 ***
 
@@ -143,7 +143,7 @@ Bytes representation of StreamID.
 
 #### Defined in
 
-[stream-id.ts:160](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L160)
+[stream-id.ts:160](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L160)
 
 ***
 
@@ -159,7 +159,7 @@ Genesis commits CID
 
 #### Defined in
 
-[stream-id.ts:152](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L152)
+[stream-id.ts:152](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L152)
 
 ***
 
@@ -175,7 +175,7 @@ Stream type code
 
 #### Defined in
 
-[stream-id.ts:137](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L137)
+[stream-id.ts:137](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L137)
 
 ***
 
@@ -191,7 +191,7 @@ Stream type name
 
 #### Defined in
 
-[stream-id.ts:145](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L145)
+[stream-id.ts:145](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L145)
 
 ## Methods
 
@@ -211,7 +211,7 @@ Compare equality with another StreamID.
 
 #### Defined in
 
-[stream-id.ts:177](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L177)
+[stream-id.ts:177](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L177)
 
 ***
 
@@ -227,7 +227,7 @@ Encode the StreamID into a string.
 
 #### Defined in
 
-[stream-id.ts:187](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L187)
+[stream-id.ts:187](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L187)
 
 ***
 
@@ -243,7 +243,7 @@ Encode the StreamID into a base36 url.
 
 #### Defined in
 
-[stream-id.ts:195](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L195)
+[stream-id.ts:195](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L195)
 
 ***
 
@@ -280,7 +280,7 @@ const streamId = StreamID.fromPayload('MID', {
 
 #### Defined in
 
-[stream-id.ts:130](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L130)
+[stream-id.ts:130](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L130)
 
 ***
 
@@ -298,4 +298,4 @@ const streamId = StreamID.fromPayload('MID', {
 
 #### Defined in
 
-[stream-id.ts:84](https://github.com/ceramicstudio/ceramic-sdk/blob/2df74ee449b4c48a3a1f531066c64854fe2dc5dd/packages/identifiers/src/stream-id.ts#L84)
+[stream-id.ts:84](https://github.com/ceramicstudio/ceramic-sdk/blob/a220cbca7950f690af7f3d03a0023681bb9f5426/packages/identifiers/src/stream-id.ts#L84)
