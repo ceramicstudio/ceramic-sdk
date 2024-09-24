@@ -121,3 +121,12 @@ export class CeramicClient {
     }
   }
 }
+
+/** @internal */
+export function getCeramicClient(
+  ceramic: CeramicClient | string,
+): CeramicClient {
+  return typeof ceramic === 'string'
+    ? new CeramicClient({ url: ceramic })
+    : ceramic
+}
