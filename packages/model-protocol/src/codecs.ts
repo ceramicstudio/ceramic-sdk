@@ -29,6 +29,7 @@ import 'ts-essentials' // Import needed for TS reference
 
 import { MODEL } from './constants.js'
 
+/** @internal */
 export const ajv = new Ajv({
   strict: true,
   allErrors: true,
@@ -50,6 +51,7 @@ export type SchemaType =
 
 /**
  * Create a codec for a specific JSON Schema type such as Object, String, etc.
+ * @internal
  */
 export function createSchemaType<T extends SchemaType>(
   type: T['type'],

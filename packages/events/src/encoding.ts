@@ -15,14 +15,18 @@ carFactory.codecs.add(dagJose)
 carFactory.codecs.add(dagJson)
 carFactory.hashers.add(sha256)
 
+/** @internal */
 export type Base = keyof typeof bases
 
+/** @internal */
 export const DEFAULT_BASE: Base = 'base64'
 
+/** Encode a CAR into a string, using the given base (defaults to base64) */
 export function carToString(car: CAR, base: Base = DEFAULT_BASE): string {
   return car.toString(base)
 }
 
+/** Decode a CAR from a string, using the given base (defaults to base64) */
 export function carFromString(value: string, base: Base = DEFAULT_BASE): CAR {
   const codec = bases[base]
   if (codec == null) {
@@ -31,6 +35,7 @@ export function carFromString(value: string, base: Base = DEFAULT_BASE): CAR {
   return carFactory.fromBytes(codec.decode(value))
 }
 
+/** Encode a signed event into a CAR */
 export function signedEventToCAR(event: SignedEvent): CAR {
   const { jws, linkedBlock, cacaoBlock } = event
   const car = carFactory.build()
@@ -63,6 +68,7 @@ export function signedEventToCAR(event: SignedEvent): CAR {
   return car
 }
 
+/** Encode an unsigned event into a CAR using the provided codec */
 export function encodeEventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   const car = carFactory.build()
   const cid = car.put(codec.encode(event), { isRoot: true })
@@ -72,12 +78,14 @@ export function encodeEventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   return car
 }
 
+/** Encode an event into a CAR using the provided codec for unsigned events */
 export function eventToCAR(codec: Codec<unknown>, event: unknown): CAR {
   return SignedEvent.is(event)
     ? signedEventToCAR(event)
     : encodeEventToCAR(codec, event)
 }
 
+/** Encode an event into a string using the provided codec for unsigned events and the given base (defaults to base64) */
 export function eventToString(
   codec: Codec<unknown>,
   event: unknown,
@@ -86,6 +94,7 @@ export function eventToString(
   return carToString(eventToCAR(codec, event), base)
 }
 
+/** Decode an event from a string using the provided codec for unsigned events */
 export function eventFromCAR<Payload = unknown>(
   decoder: Decoder<unknown, Payload>,
   car: CAR,
@@ -115,6 +124,7 @@ export function eventFromCAR<Payload = unknown>(
   return decode(decoder, root)
 }
 
+/** Decode an event from a string using the provided codec for unsigned events and the given base (defaults to base64) */
 export function eventFromString<Payload = unknown>(
   decoder: Decoder<unknown, Payload>,
   value: string,

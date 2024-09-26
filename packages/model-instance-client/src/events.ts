@@ -21,13 +21,22 @@ import type { UnknownContent } from './types.js'
 import { createInitHeader, getPatchOperations } from './utils.js'
 
 export type CreateInitEventParams<T extends UnknownContent = UnknownContent> = {
+  /** Initial JSON object content for the ModelInstanceDocument stream */
   content: T
+  /** DID controlling the ModelInstanceDocument stream */
   controller: DID
+  /** Stream ID of the Model used by the ModelInstanceDocument stream */
   model: StreamID
+  /** Optional context */
   context?: StreamID
+  /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not, defaults to `true` */
   shouldIndex?: boolean
 }
 
+/**
+ * Create a non-deterministic init event for a ModelInstanceDocument stream.
+ * @see {@link getDeterministicInitEventPayload} for deterministic events.
+ */
 export async function createInitEvent<
   T extends UnknownContent = UnknownContent,
 >(params: CreateInitEventParams<T>): Promise<SignedEvent> {
@@ -41,6 +50,10 @@ export async function createInitEvent<
   return await createSignedInitEvent(controller, content, header)
 }
 
+/**
+ * Get a deterministic init event payload for a ModelInstanceDocument stream.
+ * @see {@link createInitEvent} for creating non-deterministic events.
+ */
 export function getDeterministicInitEventPayload(
   model: StreamID,
   controller: DIDString | string,
@@ -56,6 +69,9 @@ export function getDeterministicInitEventPayload(
   }
 }
 
+/**
+ * Get an encoded deterministic init event for a ModelInstanceDocument stream
+ */
 export function getDeterministicInitEvent(
   model: StreamID,
   controller: DIDString | string,
@@ -70,6 +86,9 @@ export function getDeterministicInitEvent(
   return { data: null, header: InitEventHeader.encode(header) }
 }
 
+/**
+ * Create a data event payload for a ModelInstanceDocument stream
+ */
 export function createDataEventPayload(
   current: CommitID,
   data: Array<JSONPatchOperation>,
@@ -91,13 +110,21 @@ export function createDataEventPayload(
 }
 
 export type CreateDataEventParams<T extends UnknownContent = UnknownContent> = {
+  /** DID controlling the ModelInstanceDocument stream */
   controller: DID
+  /** Commit ID of the current tip of the ModelInstanceDocument stream */
   currentID: CommitID
+  /** Current JSON object content for the ModelInstanceDocument stream, used with `newContent` to create the JSON patch */
   currentContent?: T
+  /** New JSON object content for the ModelInstanceDocument stream, used with `currentContent` to create the JSON patch */
   newContent?: T
+  /** Flag notifying indexers if they should index the ModelInstanceDocument stream or not */
   shouldIndex?: boolean
 }
 
+/**
+ * Create a signed data event for a ModelInstanceDocument stream
+ */
 export async function createDataEvent<
   T extends UnknownContent = UnknownContent,
 >(params: CreateDataEventParams<T>): Promise<SignedEvent> {

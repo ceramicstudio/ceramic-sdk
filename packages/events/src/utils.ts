@@ -1,8 +1,10 @@
 import type { CID } from 'multiformats/cid'
 import { toString as bytesToString, fromString } from 'uint8arrays'
 
+/** @internal */
 export const MAX_BLOCK_SIZE = 256000 // 256 KB
 
+/** @internal */
 export function base64urlToJSON<T = Record<string, unknown>>(value: string): T {
   return JSON.parse(bytesToString(fromString(value, 'base64url')))
 }
@@ -12,6 +14,7 @@ export function base64urlToJSON<T = Record<string, unknown>>(value: string): T {
  *
  * @param block - Uint8Array of IPLD block
  * @param cid - Commit CID
+ * @internal
  */
 export function restrictBlockSize(block: Uint8Array, cid: CID): void {
   const size = block.byteLength

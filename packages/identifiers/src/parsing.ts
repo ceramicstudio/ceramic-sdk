@@ -5,6 +5,7 @@ import varint from 'varint'
 
 import { STREAMID_CODEC, type StreamTypeCode } from './constants.js'
 
+/** @internal */
 export function readVarint(bytes: Uint8Array): [number, Uint8Array, number] {
   const value = varint.decode(bytes)
   const readLength = varint.decode.bytes
@@ -19,6 +20,7 @@ function isCidVersion(input: number): input is 0 | 1 {
   return input === 0 || input === 1
 }
 
+/** @internal */
 export function readCid(bytes: Uint8Array): [CID, Uint8Array] {
   const [cidVersion, cidVersionRemainder] = readVarint(bytes)
   if (!isCidVersion(cidVersion)) {
@@ -40,12 +42,14 @@ export function readCid(bytes: Uint8Array): [CID, Uint8Array] {
   ]
 }
 
+/** @internal */
 export type StreamIDComponents = {
   kind: 'stream-id'
   type: StreamTypeCode
   init: CID
 }
 
+/** @internal */
 export type CommitIDComponents = {
   kind: 'commit-id'
   type: StreamTypeCode
@@ -53,10 +57,12 @@ export type CommitIDComponents = {
   commit: CID | null
 }
 
+/** @internal */
 export type StreamRefComponents = StreamIDComponents | CommitIDComponents
 
 /**
  * Parse StreamID or CommitID from bytes.
+ * @internal
  */
 export function fromBytes(
   input: Uint8Array,
@@ -87,6 +93,7 @@ export function fromBytes(
 const URL_PATTERN =
   /(ceramic:\/\/|\/ceramic\/)?([a-zA-Z0-9]+)(\?commit=([a-zA-Z0-9]+))?/
 
+/** @internal */
 export function fromString(
   input: string,
   title = 'StreamRef',
@@ -113,6 +120,8 @@ export function fromString(
  * Return `undefined` if not CID.
  *
  * @param input - CID or string.
+ *
+ * @internal
  */
 export function parseCID(input: unknown): CID | null {
   try {
@@ -130,6 +139,8 @@ export function parseCID(input: unknown): CID | null {
  *
  * @param genesis - genesis CID for stream
  * @param commit - representation of commit, be it CID, 0, `'0'`, `null`
+ *
+ * @internal
  */
 export function parseCommit(
   genesis: CID,

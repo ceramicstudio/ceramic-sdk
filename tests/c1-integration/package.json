@@ -13,7 +13,7 @@
   "sideEffects": false,
   "scripts": {
     "lint": "eslint src --fix",
-    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
+    "test": "C1_VERSION=0.35.0 node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "@ceramic-sdk/events": "workspace:^",

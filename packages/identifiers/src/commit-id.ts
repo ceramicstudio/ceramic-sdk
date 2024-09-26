@@ -214,7 +214,7 @@ export class CommitID {
    * If commit:
    * CommitID(k3y52l7mkcvtg023bt9txegccxe1bah8os3naw5asin3baf3l3t54atn0cuy98yws, bagjqcgzaday6dzalvmy5ady2m5a5legq5zrbsnlxfc2bfxej532ds7htpova)
    *
-   * @returns {String}
+   * @internal
    */
   [Symbol.for('nodejs.util.inspect.custom')](): string {
     return `CommitID(${this.toString()})`
@@ -222,6 +222,7 @@ export class CommitID {
 
   /**
    * String representation of CommitID.
+   * @internal
    */
   [Symbol.toPrimitive](): string | Uint8Array {
     return this.toString()

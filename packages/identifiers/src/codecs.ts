@@ -4,6 +4,7 @@ import { StreamID } from './stream-id.js'
 
 /**
  * Verify if `input` is a StreamID string.
+ * @internal
  */
 export function isStreamIDString(input: string): input is string {
   try {

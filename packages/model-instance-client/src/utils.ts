@@ -8,12 +8,14 @@ import jsonpatch from 'fast-json-patch'
 
 import type { UnknownContent } from './types.js'
 
+/** @internal */
 export function randomBytes(length: number): Uint8Array {
   const bytes = new Uint8Array(length)
   globalThis.crypto.getRandomValues(bytes)
   return bytes
 }
 
+/** @internal */
 export type CreateInitHeaderParams = {
   model: StreamID
   controller: DIDString | string
@@ -22,6 +24,7 @@ export type CreateInitHeaderParams = {
   shouldIndex?: boolean
 }
 
+/** @internal */
 export function createInitHeader(
   params: CreateInitHeaderParams,
 ): DocumentInitEventHeader {
@@ -55,6 +58,7 @@ export function createInitHeader(
   return header
 }
 
+/** @internal */
 export function getPatchOperations<T extends UnknownContent = UnknownContent>(
   fromContent?: T,
   toContent?: T,
