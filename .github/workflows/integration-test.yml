@@ -6,7 +6,7 @@ on:
 
 env:
   C1_REGISTRY: "public.ecr.aws/r5b3e0r5/3box/ceramic-one"
-  C1_VERSION: "0.35.0"
+  C1_VERSION: "0.37.0"
   CI: true
 
 jobs:
