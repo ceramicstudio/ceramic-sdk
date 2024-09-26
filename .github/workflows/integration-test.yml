@@ -3,8 +3,12 @@ on:
   push:
     branches: ["main"]
   pull_request:
+
 env:
+  C1_REGISTRY: "public.ecr.aws/r5b3e0r5/3box/ceramic-one"
+  C1_VERSION: "0.37.0"
   CI: true
+
 jobs:
   test:
     name: Run integration tests
@@ -32,8 +36,8 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -41,6 +45,21 @@ jobs:
 
       - name: Install dependencies and build
         run: pnpm install --frozen-lockfile
+
+      - name: Restore C1 Docker image if it exists
+        id: cache-docker-c1
+        uses: actions/cache@v4
+        with:
+          path: ci/cache/docker/c1
+          key: cache-docker-c1-${{ env.C1_VERSION }}
+
+      - name: Update C1 Docker image if cache miss
+        if: steps.cache-docker-c1.outputs.cache-hit != 'true'
+        run: docker pull ${{ env.C1_REGISTRY }}:${{ env.C1_VERSION }} && mkdir -p ci/cache/docker/c1 && docker image save ${{ env.C1_REGISTRY }}:${{ env.C1_VERSION }} --output ./ci/cache/docker/c1/${{ env.C1_VERSION }}.tar
+
+      - name: Use C1 Docker image if cache hit
+        if: steps.cache-docker-c1.outputs.cache-hit == 'true'
+        run: docker image load --input ./ci/cache/docker/c1/${{ env.C1_VERSION }}.tar
 
       - name: Test
         run: cd tests/c1-integration && pnpm run test

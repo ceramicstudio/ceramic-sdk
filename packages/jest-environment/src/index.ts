@@ -33,7 +33,8 @@ declare global {
 
 export type EnvironmentOptions = {
   debug?: boolean // default to false
-  image?: string // default to "public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest"
+  image?: string // default to "public.ecr.aws/r5b3e0r5/3box/ceramic-one:{version}"
+  version?: string // default to "latest"
   containerName?: string // default to "ceramic-one"
   internalPort?: number // default to 5001
   defaultExternalPort?: number // default to 5001
@@ -60,9 +61,11 @@ export default class CeramicEnvironment extends NodeEnvironment {
       ? { ...DEFAULT_ENVIRONMENT, ...envOverrides }
       : DEFAULT_ENVIRONMENT
 
+    const version = options.version ?? (process.env.C1_VERSION || 'latest')
     this.#container = await startContainer({
       debug: options.debug ?? false,
-      image: options.image ?? 'public.ecr.aws/r5b3e0r5/3box/ceramic-one:latest',
+      image:
+        options.image ?? `public.ecr.aws/r5b3e0r5/3box/ceramic-one:${version}`,
       containerName:
         options.containerName ??
         `ceramic-${Math.random().toString(36).slice(6)}`,
