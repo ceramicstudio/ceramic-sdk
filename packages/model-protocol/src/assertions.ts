@@ -19,6 +19,7 @@ type Schema = Exclude<JSONSchema, boolean>
 /**
  * Asserts that all the required fields for the Model are set, and throws an error if not.
  * @param content
+ * @internal
  */
 export function assertValidDefinition(
   content: unknown,
@@ -26,8 +27,10 @@ export function assertValidDefinition(
   decode(ModelDefinition, content)
 }
 
+/** @internal */
 export const MODEL_VERSION_REGEXP = /^[0-9]+\.[0-9]+$/
 
+/** @internal */
 export function parseModelVersion(version: string): [number, number] {
   if (!MODEL_VERSION_REGEXP.test(version)) {
     throw new Error(`Unsupported version format: ${version}`)
@@ -49,6 +52,7 @@ export type ValidVersionSatisfies = 'major' | 'minor'
  * Asserts that the version of the model definition is supported.
  * @param content - Model definition object
  * @param satisfies - Version range to satisfy
+ * @internal
  */
 export function assertValidVersion(
   content: ModelDefinition,
@@ -72,8 +76,8 @@ export function assertValidVersion(
 }
 
 /**
- * Asserts that the relations properties of the given ModelDefinition are well formed, and throws
- * an error if not.
+ * Asserts that the relations properties of the given ModelDefinition are well formed, and throws an error if not.
+ * @internal
  */
 export function assertValidRelations(content: ModelDefinition) {
   if (content.relations != null) {
@@ -81,6 +85,7 @@ export function assertValidRelations(content: ModelDefinition) {
   }
 }
 
+/** @internal */
 export function assertValidCacao(cacao: Cacao, controller: string): void {
   if (cacao.p.iss !== controller) {
     throw new Error(
@@ -101,6 +106,7 @@ export function assertValidCacao(cacao: Cacao, controller: string): void {
   }
 }
 
+/** @internal */
 export async function validateController(
   controller: string,
   cacaoBlock?: Uint8Array,
@@ -126,6 +132,7 @@ const SUPPORTED_FIELD_TYPES = ['boolean', 'integer', 'number', 'string']
  * Validate model schema fields used by the SET account relation
  * @param fields - Array of field names used by the SET account relation
  * @param modelSchema - JSON schema of the model
+ * @internal
  */
 export function assertValidSetFields(
   fields: Array<string>,
@@ -185,6 +192,7 @@ export function assertValidSetFields(
   }
 }
 
+/** @internal */
 export function assertValidAccountRelation(content: ModelDefinition) {
   if (content.version !== '1.0' && content.accountRelation.type === 'set') {
     assertValidSetFields(content.accountRelation.fields, content.schema)
@@ -196,7 +204,6 @@ export function assertValidAccountRelation(content: ModelDefinition) {
  *
  * @param schema a SchemaObject schema from JSON Schema standard
  * @param fn a function taking schema's properties and calls recursiveMap recursively on them, if they're object properties
- *
  */
 function recursiveMap(schema: Schema, fn: (schemaProperty: object) => void) {
   fn(schema)
@@ -228,6 +235,7 @@ function validateAdditionalProperties(schema: Schema): void {
   }
 }
 
+/** @internal */
 export function assertValidSchema(
   schema: unknown,
 ): asserts schema is JSONSchema.Object {
@@ -235,6 +243,11 @@ export function assertValidSchema(
   recursiveMap(decoded, validateAdditionalProperties)
 }
 
+/**
+ * Asserts that the model definition is valid and throws an error if it's not.
+ *
+ * @param content the model definition object
+ */
 export function assertValidModelContent(content: ModelDefinition) {
   assertValidVersion(content, 'minor')
   assertValidDefinition(content)

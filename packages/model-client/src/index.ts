@@ -13,6 +13,9 @@ import type { DID } from 'dids'
 
 const header: PartialInitEventHeader = { model: MODEL, sep: 'model' }
 
+/**
+ * Create a signed init event for a model using the provided DID and model definition
+ */
 export async function createInitEvent(
   did: DID,
   data: ModelDefinition,

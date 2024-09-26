@@ -19,13 +19,18 @@ export type Schemas = SimplifyDeep<components['schemas']>
 export type Schema<Name extends keyof Schemas> = SimplifyDeep<Schemas[Name]>
 
 export type ClientParams = {
+  /** Ceramic One server URL */
   url: string
+  /** Custom fetch function to use for requests */
   fetch?: (request: Request) => ReturnType<typeof fetch>
+  /** Additional HTTP headers to send with requests */
   headers?: HeadersOptions
 }
 
 export type EventsFeedParams = {
+  /** Resume token */
   resumeAt?: string
+  /** Maximum number of events to return in response */
   limit?: number
 }
 
@@ -40,10 +45,12 @@ export class CeramicClient {
     })
   }
 
+  /** OpenAPI client used internally, provides low-level access to the HTTP APIs exposed by the Ceramic One server */
   get api(): CeramicAPI {
     return this.#api
   }
 
+  /** Get the raw event response for the given event CID */
   async getEvent(id: string): Promise<Schema<'Event'>> {
     const { data, error } = await this.#api.GET('/events/{event_id}', {
       params: { path: { event_id: id } },
@@ -54,6 +61,7 @@ export class CeramicClient {
     return data
   }
 
+  /** Get the string-encoded event for the given event CID */
   async getEventData(id: string): Promise<string> {
     const event = await this.getEvent(id)
     if (event.data == null) {
@@ -62,11 +70,13 @@ export class CeramicClient {
     return event.data
   }
 
+  /** Get the CAR-encoded event for the given event CID */
   async getEventCAR(id: string): Promise<CAR> {
     const data = await this.getEventData(id)
     return carFromString(data)
   }
 
+  /** Get the decoded event for the given decoder and event CID */
   async getEventType<Payload>(
     decoder: Decoder<unknown, Payload>,
     id: string,
@@ -75,6 +85,7 @@ export class CeramicClient {
     return eventFromString(decoder, data)
   }
 
+  /** Get the events feed based on the given parameters */
   async getEventsFeed(
     params: EventsFeedParams = {},
   ): Promise<Schema<'EventFeed'>> {
@@ -87,6 +98,7 @@ export class CeramicClient {
     return data
   }
 
+  /** Get information about the Ceramic One server version */
   async getVersion(): Promise<Schema<'Version'>> {
     const { data, error } = await this.#api.GET('/version')
     if (error != null) {
@@ -95,6 +107,7 @@ export class CeramicClient {
     return data
   }
 
+  /** Post a string-encoded event to the server */
   async postEvent(data: string): Promise<void> {
     const { error } = await this.#api.POST('/events', { body: { data } })
     if (error != null) {
@@ -102,16 +115,19 @@ export class CeramicClient {
     }
   }
 
+  /** Post a CAR-encoded event to the server */
   async postEventCAR(car: CAR): Promise<CID> {
     await this.postEvent(carToString(car))
     return car.roots[0]
   }
 
+  /** Encode and post an event to the server */
   async postEventType(codec: Codec<unknown>, event: unknown): Promise<CID> {
     const car = eventToCAR(codec, event)
     return await this.postEventCAR(car)
   }
 
+  /** Register interest in streams using the given model stream ID */
   async registerInterestModel(model: string): Promise<void> {
     const { error } = await this.#api.POST('/interests', {
       body: { sep: 'model', sepValue: model },

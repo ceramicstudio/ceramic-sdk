@@ -15,6 +15,7 @@ import {
 import 'multiformats' // Import needed for TS reference
 import 'ts-essentials' // Import needed for TS reference
 
+/** IPLD DAG-encoded JWS */
 export const DagJWS = sparse({
   payload: string,
   signatures: array(JWSSignature),
@@ -22,6 +23,7 @@ export const DagJWS = sparse({
 })
 export type DagJWS = TypeOf<typeof DagJWS>
 
+/** Header structure of Init events */
 export const InitEventHeader = sparse(
   {
     controllers: tuple([didString]),
@@ -35,6 +37,7 @@ export const InitEventHeader = sparse(
 )
 export type InitEventHeader = TypeOf<typeof InitEventHeader>
 
+/** Payload structure of Init events */
 export const InitEventPayload = sparse(
   {
     data: unknown,
@@ -47,7 +50,7 @@ export type InitEventPayload<T = unknown> = {
   header: InitEventHeader
 }
 
-// DagJWSResult in DID package
+/** Signed event structure - equivalent to DagJWSResult in `dids` package */
 export const SignedEvent = sparse(
   {
     jws: DagJWS,
@@ -58,15 +61,19 @@ export const SignedEvent = sparse(
 )
 export type SignedEvent = TypeOf<typeof SignedEvent>
 
+/** Decode the provided `input` as a SignedEvent. Throws if decoding fails. */
 export function decodeSignedEvent(input: unknown): SignedEvent {
   return decode(SignedEvent, input)
 }
+
+/** Assert the provided `input` is a SignedEvent */
 export function assertSignedEvent(
   input: unknown,
 ): asserts input is SignedEvent {
   decodeSignedEvent(input)
 }
 
+/** Time event structure */
 export const TimeEvent = strict(
   {
     id: cid,
@@ -78,9 +85,12 @@ export const TimeEvent = strict(
 )
 export type TimeEvent = TypeOf<typeof TimeEvent>
 
+/** Decode the provided `input` as a TimeEvent. Throws if decoding fails. */
 export function decodeTimeEvent(input: unknown): TimeEvent {
   return decode(TimeEvent, input)
 }
+
+/** Assert the provided `input` is a TimeEvent */
 export function assertTimeEvent(input: unknown): asserts input is TimeEvent {
   decodeTimeEvent(input)
 }

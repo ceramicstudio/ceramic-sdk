@@ -165,7 +165,6 @@ export class StreamID {
 
   /**
    * Copy of self. Exists to maintain compatibility with CommitID.
-   * @readonly
    */
   @Memoize()
   get baseID(): StreamID {
@@ -199,6 +198,7 @@ export class StreamID {
 
   /**
    * StreamId(k3y52l7mkcvtg023bt9txegccxe1bah8os3naw5asin3baf3l3t54atn0cuy98yws)
+   * @internal
    */
   [Symbol.for('nodejs.util.inspect.custom')](): string {
     return `StreamID(${this.toString()})`
@@ -206,6 +206,7 @@ export class StreamID {
 
   /**
    * String representation of StreamID.
+   * @internal
    */
   [Symbol.toPrimitive](): string {
     return this.toString()

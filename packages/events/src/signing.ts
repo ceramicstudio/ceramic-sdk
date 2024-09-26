@@ -11,6 +11,7 @@ import {
   type SignedEvent,
 } from './codecs.js'
 
+/** Sign an event payload using the provided DID */
 export async function signEvent(
   did: DID,
   payload: Record<string, unknown>,
@@ -28,6 +29,7 @@ export type PartialInitEventHeader = Omit<InitEventHeader, 'controllers'> & {
   controllers?: [DIDString]
 }
 
+/** Create a signed init event using the provided DID, data and header */
 export async function createSignedInitEvent<T>(
   did: DID,
   data: T,
@@ -47,6 +49,7 @@ export async function createSignedInitEvent<T>(
   return await signEvent(did, payload, options)
 }
 
+/** Decode the payload of a signed event using the provided decoder */
 export async function getSignedEventPayload<Payload = Record<string, unknown>>(
   decoder: Decoder<unknown, Payload>,
   event: SignedEvent,
